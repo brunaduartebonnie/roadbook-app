@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>RoadBook</title>
+  <link rel="stylesheet" href="css/design.css">
+  <style>
+    body { display: flex; flex-direction: column; min-height: 100vh; }
+
+    /* ── Splash / logo area ── */
+    .auth-hero {
+      flex: 0 0 auto;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 52px 24px 36px;
+      gap: 8px;
+    }
+    .logo-mark {
+      width: 64px; height: 64px; border-radius: 18px;
+      background: var(--blue); display: flex; align-items: center; justify-content: center;
+      margin-bottom: 12px;
+    }
+    .logo-mark svg { width: 32px; height: 32px; fill: #fff; }
+    .logo-name {
+      font-family: var(--font-display); font-size: 36px; letter-spacing: 4px;
+      color: var(--text);
+    }
+    .logo-tagline { font-size: 13px; color: var(--muted); letter-spacing: 0.3px; }
+
+    /* ── Card container ── */
+    .auth-card {
+      flex: 1; background: var(--surface); border-top: 1px solid var(--border);
+      border-radius: 24px 24px 0 0; padding: 28px 24px;
+      display: flex; flex-direction: column; gap: 16px;
+    }
+
+    /* ── Tab switcher ── */
+    .auth-tabs {
+      display: flex; background: var(--surface2); border-radius: 10px; padding: 3px; gap: 3px;
+    }
+    .auth-tab {
+      flex: 1; text-align: center; padding: 9px 0;
+      font-size: 13px; font-weight: 700; letter-spacing: 0.3px;
+      border-radius: 8px; cursor: pointer; color: var(--muted);
+      transition: background 0.15s, color 0.15s; user-select: none;
+    }
+    .auth-tab.active { background: var(--surface); color: var(--text); }
+
+    /* ── Form ── */
+    .auth-form { display: flex; flex-direction: column; gap: 14px; }
+    .auth-form.hidden { display: none; }
+
+    /* ── Forgot password link ── */
+    .forgot-link {
+      font-size: 12px; color: var(--blue); text-align: right;
+      cursor: pointer; margin-top: -6px;
+    }
+
+    /* ── Error message ── */
+    .auth-error {
+      background: rgba(224,92,92,0.12); border: 1px solid var(--danger);
+      border-radius: 8px; padding: 10px 14px;
+      font-size: 13px; color: var(--danger); display: none;
+    }
+    .auth-error.show { display: block; }
+
+    /* ── Forgot password screen ── */
+    #forgot-screen {
+      display: none; flex-direction: column;
+      background: var(--bg); min-height: 100vh; padding: 60px 24px 40px;
+    }
+    #forgot-screen.show { display: flex; }
+    body.forgot-mode .auth-hero,
+    body.forgot-mode .auth-card { display: none !important; }
+
+    /* ── Reset password screen ── */
+    #reset-screen {
+      display: none; flex-direction: column;
+      background: var(--bg); min-height: 100vh; padding: 60px 24px 40px;
+    }
+    #reset-screen.show { display: flex; }
+    body.reset-mode .auth-hero,
+    body.reset-mode .auth-card { display: none !important; }
+
+    /* ── Loading overlay ── */
+    #loading-overlay {
+      position: fixed; inset: 0; background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 999; flex-direction: column; gap: 16px;
+    }
+    #loading-overlay.hidden { display: none; }
+    #loading-overlay .spinner { width: 32px; height: 32px; }
+  </style>
+</head>
+<body>
+
+  <!-- Loading overlay (while checking session) -->
+  <div id="loading-overlay">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Hero -->
+  <div class="auth-hero">
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+    </div>
+    <div class="logo-name">ROADBOOK</div>
+    <div class="logo-tagline">Tour management para artistas</div>
+  </div>
+
+  <!-- Auth card -->
+  <div class="auth-card">
+    <!-- Tab switcher -->
+    <div class="auth-tabs">
+      <div class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Entrar</div>
+      <div class="auth-tab" id="tab-signup" onclick="switchAuthTab('signup')">Criar conta</div>
+    </div>
+
+    <!-- Error -->
+    <div class="auth-error" id="auth-error"></div>
+
+    <!-- Login form -->
+    <form class="auth-form" id="form-login" onsubmit="handleLogin(event)">
+      <div class="input-group">
+        <label class="input-label">Email</label>
+        <input type="email" class="input" id="login-email" placeholder="nome@email.com" autocomplete="email" required>
+      </div>
+      <div class="input-group">
+        <label class="input-label">Password</label>
+        <input type="password" class="input" id="login-password" placeholder="••••••••" autocomplete="current-password" required>
+        <div class="forgot-link" onclick="showForgot()">Esqueceste a password?</div>
+      </div>
+      <button type="submit" class="btn btn-primary" id="btn-login">Entrar</button>
+    </form>
+
+    <!-- Sign up form -->
+    <form class="auth-form hidden" id="form-signup" onsubmit="handleSignup(event)">
+      <div class="input-group">
+        <label class="input-label">Nome completo</label>
+        <input type="text" class="input" id="signup-name" placeholder="O teu nome" autocomplete="name" required>
+      </div>
+      <div class="input-group">
+        <label class="input-label">Email</label>
+        <input type="email" class="input" id="signup-email" placeholder="nome@email.com" autocomplete="email" required>
+      </div>
+      <div class="input-group">
+        <label class="input-label">Password</label>
+        <input type="password" class="input" id="signup-password" placeholder="Mínimo 8 caracteres" autocomplete="new-password" minlength="8" required>
+      </div>
+      <button type="submit" class="btn btn-primary" id="btn-signup">Criar conta</button>
+    </form>
+
+    <!-- Divider -->
+    <div class="divider">ou</div>
+
+    <!-- Google -->
+    <button class="btn btn-google" onclick="handleGoogle()">
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%234285F4' d='M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z'/%3E%3Cpath fill='%2334A853' d='M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z'/%3E%3Cpath fill='%23FBBC05' d='M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z'/%3E%3Cpath fill='%23EA4335' d='M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z'/%3E%3C/svg%3E" alt="Google">
+      Continuar com Google
+    </button>
+
+    <!-- Terms -->
+    <p style="font-size:11px;color:var(--muted);text-align:center;line-height:1.6;">
+      Ao continuar aceitas os <span style="color:var(--blue);cursor:pointer">Termos de Serviço</span> e a <span style="color:var(--blue);cursor:pointer">Política de Privacidade</span>
+    </p>
+  </div>
+
+  <!-- Forgot password screen -->
+  <div id="forgot-screen">
+    <div onclick="hideForgot()" style="display:flex;align-items:center;gap:10px;color:var(--muted);cursor:pointer;margin-bottom:32px;">
+      <span style="font-size:20px;">←</span>
+      <span style="font-size:14px;font-weight:600;">Voltar</span>
+    </div>
+    <h2 style="font-family:var(--font-display);font-size:28px;letter-spacing:2px;margin-bottom:8px;">RECUPERAR<br>PASSWORD</h2>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:28px;line-height:1.6;">Envia-nos o teu email e nós enviamos um link para criares uma nova password.</p>
+    <div class="auth-error" id="forgot-error" style="margin-bottom:12px;"></div>
+    <div id="forgot-success" style="display:none;background:rgba(61,186,110,0.1);border:1px solid var(--confirm);border-radius:8px;padding:12px 14px;font-size:13px;color:var(--confirm);margin-bottom:12px;">
+      Email enviado! Verifica a tua caixa de entrada.
+    </div>
+    <form onsubmit="handleForgot(event)" style="display:flex;flex-direction:column;gap:14px;">
+      <div class="input-group">
+        <label class="input-label">Email</label>
+        <input type="email" class="input" id="forgot-email" placeholder="nome@email.com" required>
+      </div>
+      <button type="submit" class="btn btn-primary" id="btn-forgot">Enviar link</button>
+    </form>
+  </div>
+
+  <!-- Reset password screen (after clicking email link) -->
+  <div id="reset-screen">
+    <h2 style="font-family:var(--font-display);font-size:28px;letter-spacing:2px;margin-bottom:8px;">NOVA<br>PASSWORD</h2>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:28px;line-height:1.6;">Escolhe uma nova password para a tua conta.</p>
+    <div class="auth-error" id="reset-error" style="margin-bottom:12px;"></div>
+    <form onsubmit="handleReset(event)" style="display:flex;flex-direction:column;gap:14px;">
+      <div class="input-group">
+        <label class="input-label">Nova password</label>
+        <input type="password" class="input" id="reset-password" placeholder="Mínimo 8 caracteres" minlength="8" required>
+      </div>
+      <div class="input-group">
+        <label class="input-label">Confirmar password</label>
+        <input type="password" class="input" id="reset-confirm" placeholder="Repetir password" minlength="8" required>
+      </div>
+      <button type="submit" class="btn btn-primary" id="btn-reset">Guardar password</button>
+    </form>
+  </div>
+
+  <script type="module">
+    import { supabase } from './js/config.js';
+    import { signIn, signUp, signInWithGoogle, resetPassword, updatePassword, routeAfterAuth } from './js/auth.js';
+
+    const overlay = document.getElementById('loading-overlay');
+
+    /* ── On load: check session + URL mode ── */
+    window.addEventListener('DOMContentLoaded', async () => {
+      const params = new URLSearchParams(window.location.search);
+      const mode   = params.get('mode');
+
+      // Handle OAuth/magic-link callbacks
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (mode === 'reset') {
+        // Password reset link clicked — show reset form
+        overlay.classList.add('hidden');
+        document.body.classList.add('reset-mode');
+        document.getElementById('reset-screen').classList.add('show');
+        return;
+      }
+
+      if (session?.user) {
+        await routeAfterAuth(session.user);
+        return;
+      }
+
+      overlay.classList.add('hidden');
+    });
+
+    /* ── Tab switch ── */
+    window.switchAuthTab = function(tab) {
+      document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+      document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
+      document.getElementById('form-login').classList.toggle('hidden', tab !== 'login');
+      document.getElementById('form-signup').classList.toggle('hidden', tab !== 'signup');
+      hideError();
+    };
+
+    /* ── Show/hide error ── */
+    function showError(msg, id = 'auth-error') {
+      const el = document.getElementById(id);
+      el.textContent = msg; el.classList.add('show');
+    }
+    function hideError() {
+      document.querySelectorAll('.auth-error').forEach(e => e.classList.remove('show'));
+    }
+
+    function setBtnLoading(id, loading) {
+      const btn = document.getElementById(id);
+      btn.disabled = loading;
+      btn.innerHTML = loading ? '<div class="spinner" style="width:18px;height:18px;border-color:#ffffff55;border-top-color:#fff"></div>' : btn.dataset.label;
+    }
+    document.querySelectorAll('button[id^=btn-]').forEach(b => b.dataset.label = b.innerHTML);
+
+    /* ── Login ── */
+    window.handleLogin = async function(e) {
+      e.preventDefault(); hideError();
+      const email    = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      setBtnLoading('btn-login', true);
+      const { data, error } = await signIn(email, password);
+      setBtnLoading('btn-login', false);
+      if (error) { showError(translateError(error.message)); return; }
+      await routeAfterAuth(data.user);
+    };
+
+    /* ── Sign up ── */
+    window.handleSignup = async function(e) {
+      e.preventDefault(); hideError();
+      const name     = document.getElementById('signup-name').value.trim();
+      const email    = document.getElementById('signup-email').value.trim();
+      const password = document.getElementById('signup-password').value;
+      if (password.length < 8) { showError('A password deve ter pelo menos 8 caracteres.'); return; }
+      setBtnLoading('btn-signup', true);
+      const { data, error } = await signUp(email, password, name);
+      setBtnLoading('btn-signup', false);
+      if (error) { showError(translateError(error.message)); return; }
+      if (data.user && !data.session) {
+        // Email confirmation required
+        showError('✉️ Confirma o teu email antes de entrar. Verifica a caixa de entrada.', 'auth-error');
+        document.getElementById('auth-error').style.background = 'rgba(34,89,224,0.1)';
+        document.getElementById('auth-error').style.borderColor = 'var(--blue)';
+        document.getElementById('auth-error').style.color = 'var(--blue)';
+        return;
+      }
+      if (data.user) await routeAfterAuth(data.user);
+    };
+
+    /* ── Google ── */
+    window.handleGoogle = async function() {
+      hideError();
+      const { error } = await signInWithGoogle();
+      if (error) showError(translateError(error.message));
+    };
+
+    /* ── Forgot ── */
+    window.showForgot = function() {
+      document.body.classList.add('forgot-mode');
+      document.getElementById('forgot-screen').classList.add('show');
+    };
+    window.hideForgot = function() {
+      document.body.classList.remove('forgot-mode');
+      document.getElementById('forgot-screen').classList.remove('show');
+    };
+    window.handleForgot = async function(e) {
+      e.preventDefault();
+      const email = document.getElementById('forgot-email').value.trim();
+      setBtnLoading('btn-forgot', true);
+      const { error } = await resetPassword(email);
+      setBtnLoading('btn-forgot', false);
+      if (error) { showError(translateError(error.message), 'forgot-error'); return; }
+      document.getElementById('forgot-success').style.display = 'block';
+      document.getElementById('btn-forgot').disabled = true;
+    };
+
+    /* ── Reset password ── */
+    window.handleReset = async function(e) {
+      e.preventDefault();
+      const pw1 = document.getElementById('reset-password').value;
+      const pw2 = document.getElementById('reset-confirm').value;
+      if (pw1 !== pw2) { showError('As passwords não coincidem.', 'reset-error'); return; }
+      setBtnLoading('btn-reset', true);
+      const { error } = await updatePassword(pw1);
+      setBtnLoading('btn-reset', false);
+      if (error) { showError(translateError(error.message), 'reset-error'); return; }
+      window.location.href = '/app.html';
+    };
+
+    /* ── Error translations ── */
+    function translateError(msg) {
+      if (!msg) return 'Ocorreu um erro. Tenta de novo.';
+      if (msg.includes('Invalid login credentials'))    return 'Email ou password incorretos.';
+      if (msg.includes('Email not confirmed'))          return 'Confirma o teu email antes de entrar.';
+      if (msg.includes('User already registered'))      return 'Este email já está registado. Tenta entrar.';
+      if (msg.includes('Password should be'))           return 'A password deve ter pelo menos 8 caracteres.';
+      if (msg.includes('rate limit'))                   return 'Demasiadas tentativas. Aguarda um momento.';
+      return msg;
+    }
+  </script>
+</body>
+</html>

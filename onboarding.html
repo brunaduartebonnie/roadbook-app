@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>RoadBook — Configuração inicial</title>
+  <link rel="stylesheet" href="css/design.css">
+  <style>
+    body { display: flex; flex-direction: column; min-height: 100vh; }
+    .ob-wrap { flex: 1; display: flex; flex-direction: column; padding: 0 0 40px; }
+
+    /* slide transition */
+    .ob-step { display: none; flex-direction: column; flex: 1; padding: 24px; animation: fadeUp 0.25s ease; }
+    .ob-step.active { display: flex; }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } }
+
+    .ob-icon  { font-size: 48px; margin-bottom: 16px; }
+    .ob-title { font-family: var(--font-display); font-size: 30px; letter-spacing: 2px; margin-bottom: 8px; }
+    .ob-sub   { font-size: 14px; color: var(--muted); line-height: 1.65; margin-bottom: 28px; }
+
+    /* Type cards */
+    .type-cards { display: flex; flex-direction: column; gap: 12px; }
+    .type-card {
+      background: var(--surface2); border: 2px solid var(--border);
+      border-radius: 16px; padding: 18px; cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      display: flex; align-items: flex-start; gap: 14px;
+    }
+    .type-card.active { border-color: var(--blue); background: rgba(34,89,224,0.06); }
+    .type-card-icon { font-size: 28px; line-height: 1; flex-shrink: 0; margin-top: 2px; }
+    .type-card-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+    .type-card-desc  { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+    /* Band colors */
+    .swatch-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+    .swatch {
+      width: 38px; height: 38px; border-radius: 50%; cursor: pointer;
+      border: 3px solid transparent; transition: border-color 0.15s, transform 0.12s;
+    }
+    .swatch.active { border-color: var(--text); transform: scale(1.18); }
+
+    /* Bottom action area */
+    .ob-action { padding: 0 24px; margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
+
+    /* Loading overlay */
+    #ob-loading {
+      position: fixed; inset: 0; background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 999; flex-direction: column; gap: 16px;
+    }
+    #ob-loading.hidden { display: none; }
+    #ob-loading .spinner { width: 32px; height: 32px; }
+
+    /* Topbar with avatar */
+    .ob-topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 24px 0;
+    }
+    .ob-logo { font-family: var(--font-display); font-size: 18px; letter-spacing: 3px; color: var(--muted); }
+    .ob-user { font-size: 12px; color: var(--muted); }
+
+    /* Trial badge */
+    .trial-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(254,105,119,0.12); border: 1px solid rgba(254,105,119,0.3);
+      border-radius: 20px; padding: 5px 12px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.5px; color: var(--coral);
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="ob-loading">
+    <div class="spinner"></div>
+  </div>
+
+  <div class="ob-topbar">
+    <div class="ob-logo">ROADBOOK</div>
+    <div class="ob-user" id="ob-user-email"></div>
+  </div>
+
+  <!-- Progress steps -->
+  <div class="steps" style="padding:16px 24px 0;">
+    <div class="step-dot" id="dot-0"></div>
+    <div class="step-dot" id="dot-1"></div>
+    <div class="step-dot" id="dot-2"></div>
+  </div>
+
+  <div class="ob-wrap">
+
+    <!-- STEP 0: Account type -->
+    <div class="ob-step active" id="step-0">
+      <div class="ob-icon">👋</div>
+      <div class="ob-title">BEM-VINDO</div>
+      <p class="ob-sub">Como vais usar o RoadBook?</p>
+      <div class="type-cards">
+        <div class="type-card active" id="type-agency" onclick="selectType('agency')">
+          <div class="type-card-icon">🏢</div>
+          <div>
+            <div class="type-card-title">Agência / Promotora</div>
+            <div class="type-card-desc">Geres vários artistas e equipas. A agência é a entidade de faturação.</div>
+          </div>
+        </div>
+        <div class="type-card" id="type-independent" onclick="selectType('independent')">
+          <div class="type-card-icon">🎸</div>
+          <div>
+            <div class="type-card-title">Tour Manager / Freelancer</div>
+            <div class="type-card-desc">Trabalhas para uma ou várias bandas de forma independente. Pagas por banda.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 1: Account name -->
+    <div class="ob-step" id="step-1">
+      <div class="ob-icon" id="step1-icon">🏢</div>
+      <div class="ob-title" id="step1-title">NOME DA<br>AGÊNCIA</div>
+      <p class="ob-sub" id="step1-sub">Como se chama a tua agência ou empresa?</p>
+      <div class="input-group">
+        <label class="input-label">Nome</label>
+        <input type="text" class="input" id="account-name" placeholder="Ex: Realize Concerts" autocomplete="organization">
+      </div>
+    </div>
+
+    <!-- STEP 2: First band -->
+    <div class="ob-step" id="step-2">
+      <div class="trial-pill">🎉 14 dias grátis</div>
+      <div class="ob-icon">🎤</div>
+      <div class="ob-title">PRIMEIRA<br>BANDA</div>
+      <p class="ob-sub">Cria a tua primeira banda. Podes adicionar mais depois.</p>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div class="input-group">
+          <label class="input-label">Nome da banda</label>
+          <input type="text" class="input" id="band-name" placeholder="Ex: Sara Correia">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Género / estilo</label>
+          <input type="text" class="input" id="band-genre" placeholder="Ex: Fado, Jazz, Pop" autocomplete="off">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Cor da banda</label>
+          <div class="swatch-row" id="swatch-row">
+            <!-- swatches injected by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /ob-wrap -->
+
+  <!-- Action buttons (outside scrollable area) -->
+  <div class="ob-action">
+    <div class="auth-error" id="ob-error" style="margin-bottom:4px;"></div>
+    <button class="btn btn-primary" id="ob-next-btn" onclick="nextStep()">Continuar</button>
+    <button class="btn btn-ghost" id="ob-skip-btn" onclick="skipBand()" style="display:none;">Fazer isso mais tarde</button>
+  </div>
+
+  <script type="module">
+    import { supabase, requireAuth } from './js/config.js';
+
+    /* ── Band colors ── */
+    const COLORS = ['#2259e0','#fe6977','#3dba6e','#f5a623','#9b59b6','#1abc9c','#e74c3c','#e67e22'];
+    let selectedColor = COLORS[0];
+
+    /* ── State ── */
+    let currentStep = 0;
+    let accountType = 'agency';
+    let currentUser = null;
+
+    /* ── Init ── */
+    window.addEventListener('DOMContentLoaded', async () => {
+      currentUser = await requireAuth('/index.html');
+      if (!currentUser) return;
+
+      // Check if already has account (shouldn't be here)
+      const { data: profile } = await supabase.from('profiles').select('account_id').eq('id', currentUser.id).single();
+      if (profile?.account_id) { window.location.href = '/app.html'; return; }
+
+      document.getElementById('ob-user-email').textContent = currentUser.email;
+      document.getElementById('ob-loading').classList.add('hidden');
+      renderSwatches();
+      updateDots();
+    });
+
+    /* ── Swatches ── */
+    function renderSwatches() {
+      const row = document.getElementById('swatch-row');
+      row.innerHTML = '';
+      COLORS.forEach(c => {
+        const s = document.createElement('div');
+        s.className = 'swatch' + (c === selectedColor ? ' active' : '');
+        s.style.background = c;
+        s.onclick = () => { selectedColor = c; renderSwatches(); };
+        row.appendChild(s);
+      });
+    }
+
+    /* ── Type selection ── */
+    window.selectType = function(type) {
+      accountType = type;
+      document.getElementById('type-agency').classList.toggle('active', type === 'agency');
+      document.getElementById('type-independent').classList.toggle('active', type === 'independent');
+    };
+
+    /* ── Steps ── */
+    function updateDots() {
+      [0,1,2].forEach(i => {
+        const d = document.getElementById('dot-' + i);
+        d.className = 'step-dot ' + (i < currentStep ? 'done' : i === currentStep ? 'active' : '');
+      });
+      document.getElementById('ob-skip-btn').style.display = currentStep === 2 ? 'block' : 'none';
+    }
+
+    function goToStep(n) {
+      document.getElementById('step-' + currentStep).classList.remove('active');
+      currentStep = n;
+      document.getElementById('step-' + currentStep).classList.add('active');
+      updateDots();
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('ob-error');
+      el.textContent = msg; el.classList.add('show');
+    }
+    function hideError() { document.getElementById('ob-error').classList.remove('show'); }
+
+    /* ── Next ── */
+    window.nextStep = async function() {
+      hideError();
+      if (currentStep === 0) {
+        // Update step 1 labels for TM
+        if (accountType === 'independent') {
+          document.getElementById('step1-icon').textContent = '🎸';
+          document.getElementById('step1-title').textContent = 'O TEU NOME\nDE TRABALHO';
+          document.getElementById('step1-title').style.whiteSpace = 'pre-line';
+          document.getElementById('step1-sub').textContent = 'Usa o teu nome ou o nome com que queres aparecer.';
+          document.getElementById('account-name').placeholder = 'Ex: Bruna Duarte';
+        }
+        goToStep(1);
+        return;
+      }
+
+      if (currentStep === 1) {
+        const name = document.getElementById('account-name').value.trim();
+        if (!name) { showError('Introduz um nome para continuar.'); return; }
+        goToStep(2);
+        return;
+      }
+
+      if (currentStep === 2) {
+        await createAccountAndBand();
+      }
+    };
+
+    window.skipBand = async function() {
+      await createAccountOnly();
+    };
+
+    /* ── Create account + band ── */
+    async function createAccountAndBand() {
+      const accountName = document.getElementById('account-name').value.trim();
+      const bandName    = document.getElementById('band-name').value.trim();
+      const bandGenre   = document.getElementById('band-genre').value.trim();
+
+      if (!bandName) { showError('Introduz o nome da banda para continuar.'); return; }
+
+      setBtnLoading(true);
+
+      try {
+        // 1. Create account
+        const { data: acct, error: acctErr } = await supabase
+          .from('accounts')
+          .insert({ name: accountName, type: accountType, owner_id: currentUser.id })
+          .select()
+          .single();
+        if (acctErr) throw acctErr;
+
+        // 2. Create band (artist)
+        const { data: band, error: bandErr } = await supabase
+          .from('artists')
+          .insert({ name: bandName, genre: bandGenre, color: selectedColor, account_id: acct.id })
+          .select()
+          .single();
+        if (bandErr) throw bandErr;
+
+        // 3. Add current user as tour_manager of the band
+        await supabase.from('band_members').insert({
+          artist_id:  band.id,
+          user_id:    currentUser.id,
+          account_id: acct.id,
+          role:       'tour_manager',
+        });
+
+        // 4. Link profile to account
+        await supabase.from('profiles').update({ account_id: acct.id }).eq('id', currentUser.id);
+
+        window.location.href = '/app.html';
+      } catch (err) {
+        setBtnLoading(false);
+        showError('Erro ao criar conta: ' + (err.message || err));
+      }
+    }
+
+    async function createAccountOnly() {
+      const accountName = document.getElementById('account-name').value.trim();
+      if (!accountName) { showError('Introduz um nome para continuar.'); return; }
+      setBtnLoading(true);
+      try {
+        const { data: acct, error } = await supabase
+          .from('accounts')
+          .insert({ name: accountName, type: accountType, owner_id: currentUser.id })
+          .select().single();
+        if (error) throw error;
+        await supabase.from('profiles').update({ account_id: acct.id }).eq('id', currentUser.id);
+        window.location.href = '/app.html';
+      } catch (err) {
+        setBtnLoading(false);
+        showError('Erro: ' + (err.message || err));
+      }
+    }
+
+    function setBtnLoading(loading) {
+      const btn = document.getElementById('ob-next-btn');
+      btn.disabled = loading;
+      btn.innerHTML = loading
+        ? '<div class="spinner" style="width:18px;height:18px;border-color:#ffffff55;border-top-color:#fff"></div>'
+        : 'Continuar';
+    }
+  </script>
+</body>
+</html>

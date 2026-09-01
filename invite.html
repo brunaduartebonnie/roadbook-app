@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>RoadBook — Convite</title>
+  <link rel="stylesheet" href="css/design.css">
+  <style>
+    body {
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; min-height: 100dvh; padding: 24px;
+    }
+    .invite-wrap {
+      width: 100%; max-width: 420px;
+      display: flex; flex-direction: column; align-items: center; gap: 0;
+    }
+    .invite-logo {
+      font-family: var(--font-display); font-size: 22px; letter-spacing: 4px;
+      color: var(--muted); margin-bottom: 32px;
+    }
+    .invite-card {
+      width: 100%; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 20px; padding: 28px 24px; display: flex; flex-direction: column; gap: 20px;
+    }
+    .invite-band-color { height: 5px; border-radius: 3px; width: 100%; margin-bottom: 4px; }
+    .invite-icon { font-size: 40px; text-align: center; }
+    .invite-heading { font-family: var(--font-display); font-size: 26px; letter-spacing: 2px; text-align: center; }
+    .invite-meta { font-size: 14px; color: var(--muted); text-align: center; line-height: 1.7; }
+    .invite-band-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 20px; padding: 6px 14px;
+      font-size: 13px; font-weight: 700; color: var(--text);
+      margin: 0 auto;
+    }
+    .invite-band-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .role-pill {
+      background: rgba(34,89,224,0.1); border: 1px solid rgba(34,89,224,0.2);
+      border-radius: 20px; padding: 4px 12px;
+      font-size: 11px; font-weight: 700; color: var(--blue); text-transform: uppercase; letter-spacing: 0.5px;
+      margin: 0 auto; display: inline-block;
+    }
+    /* Error / success states */
+    .state-error, .state-success {
+      text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12px;
+    }
+    .state-icon  { font-size: 52px; }
+    .state-title { font-family: var(--font-display); font-size: 26px; letter-spacing: 2px; }
+    .state-sub   { font-size: 14px; color: var(--muted); line-height: 1.65; }
+  </style>
+</head>
+<body>
+
+  <div class="invite-wrap">
+    <div class="invite-logo">ROADBOOK</div>
+
+    <!-- Loading state -->
+    <div id="state-loading" style="display:flex;flex-direction:column;align-items:center;gap:16px;">
+      <div class="spinner" style="width:32px;height:32px;"></div>
+      <p style="font-size:13px;color:var(--muted);">A verificar convite...</p>
+    </div>
+
+    <!-- Invalid / expired state -->
+    <div id="state-invalid" style="display:none;" class="invite-card">
+      <div class="state-error">
+        <div class="state-icon">⚠️</div>
+        <div class="state-title">CONVITE<br>INVÁLIDO</div>
+        <div class="state-sub">Este convite não é válido ou já expirou. Pede ao administrador um novo link.</div>
+      </div>
+    </div>
+
+    <!-- Main invite card -->
+    <div id="state-invite" style="display:none;" class="invite-card">
+      <div class="invite-band-color" id="inv-color"></div>
+      <div class="invite-icon">🎤</div>
+      <div class="invite-heading">FOSTE<br>CONVIDADO</div>
+      <div class="invite-band-pill">
+        <div class="invite-band-dot" id="inv-dot"></div>
+        <span id="inv-band-name">—</span>
+      </div>
+      <div class="role-pill" id="inv-role">Membro</div>
+      <div class="invite-meta" id="inv-meta">—</div>
+      <div class="auth-error" id="inv-error" style="display:none;"></div>
+
+      <!-- Not logged in -->
+      <div id="inv-auth-required" style="display:none;flex-direction:column;gap:10px;">
+        <p style="font-size:13px;color:var(--muted);text-align:center;">Para aceitar o convite precisas de ter uma conta RoadBook.</p>
+        <button class="btn btn-primary" onclick="loginAndAccept()">Entrar e aceitar</button>
+        <button class="btn btn-outline" onclick="signupAndAccept()">Criar conta</button>
+      </div>
+
+      <!-- Logged in -->
+      <div id="inv-accept-btn-wrap" style="display:none;">
+        <button class="btn btn-primary" id="inv-accept-btn" onclick="acceptInvite()">Aceitar convite</button>
+      </div>
+    </div>
+
+    <!-- Already accepted / success -->
+    <div id="state-success" style="display:none;" class="invite-card">
+      <div class="state-success">
+        <div class="state-icon">🎉</div>
+        <div class="state-title">BEM-VINDO<br>À EQUIPA</div>
+        <div class="state-sub" id="success-msg">Já fazes parte da banda. Abre a app para começar.</div>
+        <a href="/app.html" class="btn btn-primary mt-16">Ir para a app</a>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="module">
+    import { supabase, getUser } from './js/config.js';
+
+    const token = new URLSearchParams(window.location.search).get('token');
+    let invitation = null;
+    let currentUser = null;
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      if (!token) { show('state-invalid'); return; }
+
+      // Fetch invitation
+      const { data, error } = await supabase
+        .from('invitations')
+        .select('*, artists(name, color), accounts(name)')
+        .eq('token', token)
+        .single();
+
+      if (error || !data) { show('state-invalid'); return; }
+
+      const now = new Date();
+      if (data.status !== 'pending' || new Date(data.expires_at) < now) {
+        show('state-invalid'); return;
+      }
+
+      invitation = data;
+
+      // Render card
+      const color = data.artists?.color || '#2259e0';
+      document.getElementById('inv-color').style.background   = color;
+      document.getElementById('inv-dot').style.background     = color;
+      document.getElementById('inv-band-name').textContent    = data.artists?.name || '—';
+      document.getElementById('inv-role').textContent         = translateRole(data.role);
+      document.getElementById('inv-meta').innerHTML =
+        `Tens até <strong>${new Date(data.expires_at).toLocaleDateString('pt-PT')}</strong> para aceitar.`;
+
+      // Check session
+      currentUser = await getUser();
+
+      if (currentUser) {
+        document.getElementById('inv-accept-btn-wrap').style.display = 'block';
+      } else {
+        document.getElementById('inv-auth-required').style.display = 'flex';
+      }
+
+      show('state-invite');
+    });
+
+    /* ── Accept ── */
+    window.acceptInvite = async function() {
+      const btn = document.getElementById('inv-accept-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<div class="spinner" style="width:18px;height:18px;border-color:#ffffff55;border-top-color:#fff"></div>';
+
+      const { data, error } = await supabase.rpc('accept_invitation', { p_token: token });
+
+      if (error || data?.error) {
+        const msg = data?.error || error?.message || 'Erro ao aceitar convite.';
+        const errEl = document.getElementById('inv-error');
+        errEl.textContent = msg; errEl.style.display = 'block';
+        btn.disabled = false; btn.textContent = 'Aceitar convite';
+        return;
+      }
+
+      // Check if profile has account_id — if not, set it
+      if (currentUser && invitation?.account_id) {
+        const { data: profile } = await supabase.from('profiles').select('account_id').eq('id', currentUser.id).single();
+        if (!profile?.account_id) {
+          await supabase.from('profiles').update({ account_id: invitation.account_id }).eq('id', currentUser.id);
+        }
+      }
+
+      document.getElementById('success-msg').textContent =
+        `Já fazes parte de ${invitation?.artists?.name || 'a banda'}. Abre a app para começar.`;
+      show('state-success');
+    };
+
+    /* ── Auth redirects (preserve token in URL) ── */
+    window.loginAndAccept = function() {
+      window.location.href = `/index.html?next=${encodeURIComponent(window.location.href)}`;
+    };
+    window.signupAndAccept = function() {
+      window.location.href = `/index.html?mode=signup&next=${encodeURIComponent(window.location.href)}`;
+    };
+
+    /* ── Utils ── */
+    function show(id) {
+      ['state-loading','state-invalid','state-invite','state-success'].forEach(s => {
+        document.getElementById(s).style.display = s === id ? (id === 'state-invite' ? 'flex' : id === 'state-loading' ? 'flex' : 'block') : 'none';
+      });
+    }
+
+    function translateRole(role) {
+      const map = {
+        tour_manager: 'Tour Manager', artist: 'Artista',
+        crew: 'Crew', backline: 'Backline', production: 'Produção', admin: 'Admin'
+      };
+      return map[role] || role;
+    }
+  </script>
+</body>
+</html>

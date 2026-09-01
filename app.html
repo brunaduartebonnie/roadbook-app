@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>RoadBook</title>
+  <link rel="stylesheet" href="css/design.css">
+  <style>
+    body { display: flex; flex-direction: column; min-height: 100dvh; }
+
+    /* ── Loading ── */
+    #app-loading {
+      position: fixed; inset: 0; background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 999; flex-direction: column; gap: 14px;
+    }
+    #app-loading.hidden { display: none; }
+    #app-loading .spinner { width: 32px; height: 32px; }
+
+    /* ── Header ── */
+    .app-header {
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: 14px 16px 12px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .header-logo { font-family: var(--font-display); font-size: 20px; letter-spacing: 3px; }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    .header-btn {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: var(--surface2); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 16px; color: var(--text);
+    }
+
+    /* ── Main scroll area ── */
+    main {
+      flex: 1; overflow-y: auto; padding-bottom: calc(70px + env(safe-area-inset-bottom));
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* ── Account header strip ── */
+    .account-strip {
+      padding: 14px 16px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .account-name { font-size: 13px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .trial-badge  {
+      font-size: 9px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;
+      background: rgba(254,105,119,0.15); color: var(--coral);
+      border: 1px solid rgba(254,105,119,0.3); border-radius: 20px; padding: 3px 9px;
+    }
+
+    /* ── Section header ── */
+    .section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 16px 10px;
+    }
+    .section-label { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--blue); }
+    .section-add { font-size: 20px; color: var(--blue); cursor: pointer; line-height: 1; }
+
+    /* ── Band cards ── */
+    .bands-list { padding: 0 16px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+    .band-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; overflow: hidden; cursor: pointer;
+      transition: transform 0.1s, box-shadow 0.1s;
+      display: flex; flex-direction: column;
+    }
+    .band-card:active { transform: scale(0.98); }
+    .band-card-accent { height: 4px; }
+    .band-card-body { padding: 14px; display: flex; align-items: center; gap: 12px; }
+    .band-avatar {
+      width: 46px; height: 46px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display); font-size: 18px; color: #fff; flex-shrink: 0;
+    }
+    .band-info { flex: 1; min-width: 0; }
+    .band-name { font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .band-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .band-stats { display: flex; gap: 12px; margin-top: 8px; }
+    .band-stat { font-size: 11px; color: var(--muted); }
+    .band-stat strong { color: var(--text); font-size: 13px; font-weight: 700; }
+    .band-chevron { font-size: 14px; color: var(--muted2); }
+
+    /* ── Next show card ── */
+    .next-show-card {
+      margin: 0 16px 20px;
+      background: linear-gradient(135deg, rgba(34,89,224,0.15) 0%, rgba(34,89,224,0.04) 100%);
+      border: 1px solid rgba(34,89,224,0.25); border-radius: 16px;
+      padding: 16px;
+    }
+    .next-show-label { font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--blue); margin-bottom: 10px; }
+    .next-show-date  { font-family: var(--font-display); font-size: 22px; letter-spacing: 1px; color: var(--text); }
+    .next-show-venue { font-size: 13px; color: var(--muted); margin-top: 3px; }
+    .next-show-band  { font-size: 11px; font-weight: 700; color: var(--blue); margin-top: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* ── Empty state ── */
+    .empty-state {
+      text-align: center; padding: 48px 32px;
+      display: flex; flex-direction: column; align-items: center; gap: 12px;
+    }
+    .empty-icon  { font-size: 48px; }
+    .empty-title { font-size: 16px; font-weight: 700; color: var(--text); }
+    .empty-sub   { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* ── Bottom nav ── */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: var(--surface); border-top: 1px solid var(--border);
+      display: flex; z-index: 200;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    .bn-item {
+      flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+      padding: 9px 0 11px; font-size: 9px; font-weight: 700; letter-spacing: 0.5px;
+      text-transform: uppercase; color: var(--muted); cursor: pointer;
+    }
+    .bn-item.active { color: var(--blue); }
+    .bn-icon { font-size: 19px; line-height: 1; }
+
+    /* ── Modal (add band) ── */
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+      display: flex; align-items: flex-end; z-index: 500;
+      opacity: 0; pointer-events: none; transition: opacity 0.2s;
+    }
+    .modal-backdrop.show { opacity: 1; pointer-events: all; }
+    .modal-sheet {
+      width: 100%; background: var(--surface); border-radius: 24px 24px 0 0;
+      padding: 24px 20px calc(40px + env(safe-area-inset-bottom));
+      transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+    .modal-backdrop.show .modal-sheet { transform: translateY(0); }
+    .modal-handle { width: 36px; height: 4px; border-radius: 2px; background: var(--border); margin: 0 auto 20px; }
+    .modal-title { font-family: var(--font-display); font-size: 22px; letter-spacing: 2px; margin-bottom: 20px; }
+
+    .swatch-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+    .swatch {
+      width: 36px; height: 36px; border-radius: 50%; cursor: pointer;
+      border: 3px solid transparent; transition: border-color 0.15s, transform 0.12s;
+    }
+    .swatch.active { border-color: var(--text); transform: scale(1.18); }
+
+    /* ── Profile modal ── */
+    #profile-modal .profile-head {
+      display: flex; align-items: center; gap: 14px; margin-bottom: 24px;
+    }
+    #profile-modal .profile-avatar {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--blue); display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display); font-size: 22px; color: #fff; flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Loading -->
+  <div id="app-loading">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-logo">ROADBOOK</div>
+    <div class="header-right">
+      <div class="header-btn" onclick="openModal('add-band-modal')" title="Nova banda">＋</div>
+      <div class="header-btn" onclick="openModal('profile-modal')">👤</div>
+    </div>
+  </header>
+
+  <!-- Main content -->
+  <main id="main-content">
+
+    <!-- Account strip -->
+    <div class="account-strip">
+      <span class="account-name" id="account-name-label">—</span>
+      <span class="trial-badge" id="plan-badge">Trial</span>
+    </div>
+
+    <!-- Next show -->
+    <div id="next-show-wrap"></div>
+
+    <!-- Bands -->
+    <div class="section-header">
+      <span class="section-label">Bandas</span>
+      <span class="section-add" onclick="openModal('add-band-modal')">＋</span>
+    </div>
+    <div class="bands-list" id="bands-list">
+      <div class="empty-state">
+        <div class="empty-icon">🎤</div>
+        <div class="empty-title">Nenhuma banda ainda</div>
+        <div class="empty-sub">Cria a tua primeira banda e começa a gerir os teus concertos.</div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Bottom nav -->
+  <nav class="bottom-nav">
+    <div class="bn-item active" id="bn-home">
+      <div class="bn-icon">🏠</div>
+      <span>Início</span>
+    </div>
+    <div class="bn-item" id="bn-events">
+      <div class="bn-icon">📅</div>
+      <span>Eventos</span>
+    </div>
+    <div class="bn-item" id="bn-team">
+      <div class="bn-icon">👥</div>
+      <span>Equipa</span>
+    </div>
+    <div class="bn-item" id="bn-settings">
+      <div class="bn-icon">⚙️</div>
+      <span>Conta</span>
+    </div>
+  </nav>
+
+  <!-- ── ADD BAND MODAL ── -->
+  <div class="modal-backdrop" id="add-band-modal" onclick="closeOnBackdrop(event, 'add-band-modal')">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-title">NOVA BANDA</div>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div class="input-group">
+          <label class="input-label">Nome da banda</label>
+          <input type="text" class="input" id="new-band-name" placeholder="Ex: Danni Gato">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Género / estilo</label>
+          <input type="text" class="input" id="new-band-genre" placeholder="Ex: Afrohouse, Pop">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Cor</label>
+          <div class="swatch-row" id="new-swatch-row"></div>
+        </div>
+        <div class="auth-error" id="add-band-error" style="display:none;"></div>
+        <button class="btn btn-primary" onclick="createBand()">Criar banda</button>
+        <button class="btn btn-ghost" onclick="closeModal('add-band-modal')">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PROFILE MODAL ── -->
+  <div class="modal-backdrop" id="profile-modal" onclick="closeOnBackdrop(event, 'profile-modal')">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="profile-head">
+        <div class="profile-avatar" id="profile-initials">?</div>
+        <div>
+          <div style="font-size:15px;font-weight:700;" id="profile-name">—</div>
+          <div style="font-size:12px;color:var(--muted);" id="profile-email">—</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <button class="btn btn-surface" onclick="window.location.href='/invite.html'">Convidar membro</button>
+        <button class="btn btn-surface">Plano e faturação</button>
+        <button class="btn btn-danger" onclick="handleSignOut()">Terminar sessão</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { supabase, requireAuth, getProfile } from './js/config.js';
+    import { signOut } from './js/auth.js';
+
+    const COLORS = ['#2259e0','#fe6977','#3dba6e','#f5a623','#9b59b6','#1abc9c','#e74c3c','#e67e22'];
+    let newBandColor = COLORS[0];
+    let accountId = null;
+    let currentUser = null;
+
+    /* ── Init ── */
+    window.addEventListener('DOMContentLoaded', async () => {
+      currentUser = await requireAuth('/index.html');
+      if (!currentUser) return;
+
+      const profile = await getProfile(currentUser.id);
+      if (!profile?.account_id) { window.location.href = '/onboarding.html'; return; }
+
+      accountId = profile.account_id;
+
+      // Fill profile modal
+      const name = profile.full_name || currentUser.email.split('@')[0];
+      document.getElementById('profile-name').textContent = name;
+      document.getElementById('profile-email').textContent = currentUser.email;
+      document.getElementById('profile-initials').textContent = name[0]?.toUpperCase() || '?';
+
+      // Account info
+      if (profile.accounts) {
+        document.getElementById('account-name-label').textContent = profile.accounts.name;
+        const plan = profile.accounts.plan || 'trial';
+        const badge = document.getElementById('plan-badge');
+        badge.textContent = plan === 'trial' ? '🎉 Trial' : plan === 'annual' ? 'Annual' : 'Mensal';
+        badge.style.display = plan === 'annual' || plan === 'monthly' ? 'none' : 'inline-flex';
+      }
+
+      renderNewBandSwatches();
+      await loadBands();
+
+      document.getElementById('app-loading').classList.add('hidden');
+    });
+
+    /* ── Load bands ── */
+    async function loadBands() {
+      const { data: bands, error } = await supabase
+        .from('artists')
+        .select(`
+          id, name, genre, color, created_at,
+          events(count)
+        `)
+        .eq('account_id', accountId)
+        .order('name');
+
+      if (error) { console.error(error); return; }
+
+      // Next show
+      const { data: nextEvents } = await supabase
+        .from('events')
+        .select('*, artists(name, color)')
+        .eq('account_id', accountId)
+        .gte('date', new Date().toISOString().split('T')[0])
+        .order('date', { ascending: true })
+        .limit(1);
+
+      renderNextShow(nextEvents?.[0]);
+      renderBands(bands || []);
+    }
+
+    function renderNextShow(ev) {
+      const wrap = document.getElementById('next-show-wrap');
+      if (!ev) { wrap.innerHTML = ''; return; }
+      const d = new Date(ev.date + 'T12:00:00');
+      const dateStr = d.toLocaleDateString('pt-PT', { weekday:'long', day:'numeric', month:'long' });
+      const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+      wrap.innerHTML = `
+        <div class="next-show-card">
+          <div class="next-show-label">Próximo concerto</div>
+          <div class="next-show-date">${cap(dateStr)}</div>
+          <div class="next-show-venue">${ev.venue || 'Local a confirmar'}${ev.city ? ' · ' + ev.city : ''}</div>
+          <div class="next-show-band">${ev.artists?.name || ''}</div>
+        </div>`;
+    }
+
+    function renderBands(bands) {
+      const list = document.getElementById('bands-list');
+      if (!bands.length) {
+        list.innerHTML = `<div class="empty-state">
+          <div class="empty-icon">🎤</div>
+          <div class="empty-title">Nenhuma banda ainda</div>
+          <div class="empty-sub">Cria a tua primeira banda e começa a gerir os teus concertos.</div>
+        </div>`;
+        return;
+      }
+      list.innerHTML = bands.map(b => {
+        const color = b.color || '#2259e0';
+        const init  = b.name[0]?.toUpperCase();
+        const evCount = b.events?.[0]?.count ?? '—';
+        return `<div class="band-card" onclick="openBand('${b.id}')">
+          <div class="band-card-accent" style="background:${color}"></div>
+          <div class="band-card-body">
+            <div class="band-avatar" style="background:${color}">${init}</div>
+            <div class="band-info">
+              <div class="band-name">${esc(b.name)}</div>
+              <div class="band-meta">${esc(b.genre || '')}</div>
+              <div class="band-stats">
+                <div class="band-stat"><strong>${evCount}</strong> eventos</div>
+              </div>
+            </div>
+            <div class="band-chevron">›</div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    /* ── Create band ── */
+    window.createBand = async function() {
+      const name  = document.getElementById('new-band-name').value.trim();
+      const genre = document.getElementById('new-band-genre').value.trim();
+      const errEl = document.getElementById('add-band-error');
+      if (!name) { errEl.textContent = 'Introduz o nome da banda.'; errEl.style.display = 'block'; return; }
+      errEl.style.display = 'none';
+
+      const { data: band, error } = await supabase
+        .from('artists')
+        .insert({ name, genre, color: newBandColor, account_id: accountId })
+        .select().single();
+
+      if (error) { errEl.textContent = error.message; errEl.style.display = 'block'; return; }
+
+      // Add current user as TM
+      await supabase.from('band_members').insert({
+        artist_id:  band.id,
+        user_id:    currentUser.id,
+        account_id: accountId,
+        role:       'tour_manager'
+      }).select();
+
+      document.getElementById('new-band-name').value = '';
+      document.getElementById('new-band-genre').value = '';
+      closeModal('add-band-modal');
+      await loadBands();
+    };
+
+    /* ── Navigate to band ── */
+    window.openBand = function(id) {
+      window.location.href = `/band.html?id=${id}`;
+    };
+
+    /* ── Sign out ── */
+    window.handleSignOut = function() { signOut(); };
+
+    /* ── Modals ── */
+    window.openModal  = function(id) { document.getElementById(id).classList.add('show'); };
+    window.closeModal = function(id) { document.getElementById(id).classList.remove('show'); };
+    window.closeOnBackdrop = function(e, id) { if (e.target.id === id) closeModal(id); };
+
+    /* ── Swatches ── */
+    function renderNewBandSwatches() {
+      const row = document.getElementById('new-swatch-row');
+      row.innerHTML = '';
+      COLORS.forEach(c => {
+        const s = document.createElement('div');
+        s.className = 'swatch' + (c === newBandColor ? ' active' : '');
+        s.style.background = c;
+        s.onclick = () => { newBandColor = c; renderNewBandSwatches(); };
+        row.appendChild(s);
+      });
+    }
+
+    /* ── Utils ── */
+    function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  </script>
+</body>
+</html>
