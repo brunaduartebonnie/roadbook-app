@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>RoadBook — Banda</title>
+  <link rel="stylesheet" href="css/design.css">
+  <style>
+    body { display: flex; flex-direction: column; min-height: 100dvh; }
+
+    /* ── Loading ── */
+    #band-loading {
+      position: fixed; inset: 0; background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 999; flex-direction: column; gap: 14px;
+    }
+    #band-loading.hidden { display: none; }
+    #band-loading .spinner { width: 32px; height: 32px; }
+
+    /* ── Hero ── */
+    .band-hero {
+      padding: 0;
+      display: flex; flex-direction: column;
+    }
+    .band-hero-accent { height: 5px; width: 100%; }
+    .band-hero-body {
+      display: flex; align-items: center; gap: 14px;
+      padding: 16px 16px 14px;
+      background: var(--surface); border-bottom: 1px solid var(--border);
+    }
+    .band-hero-back {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--surface2); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 16px; flex-shrink: 0;
+    }
+    .band-hero-avatar {
+      width: 48px; height: 48px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display); font-size: 20px; color: #fff;
+      flex-shrink: 0;
+    }
+    .band-hero-info { flex: 1; min-width: 0; }
+    .band-hero-name { font-size: 17px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .band-hero-genre { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .band-hero-action {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--surface2); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 16px; flex-shrink: 0;
+    }
+
+    /* ── Tabs ── */
+    .tabs-row {
+      display: flex; background: var(--surface); border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 90;
+    }
+    .tab-item {
+      flex: 1; text-align: center; padding: 12px 4px 10px;
+      font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;
+      color: var(--muted); cursor: pointer; border-bottom: 2.5px solid transparent;
+      transition: color 0.15s, border-color 0.15s; user-select: none;
+    }
+    .tab-item.active { color: var(--text); border-bottom-color: var(--blue); }
+
+    /* ── Content panels ── */
+    .panel { display: none; flex: 1; overflow-y: auto; padding-bottom: 90px; -webkit-overflow-scrolling: touch; }
+    .panel.active { display: block; }
+
+    /* ── Events panel ── */
+    .events-section { padding: 14px 0 0; }
+    .events-section-title {
+      font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--muted); padding: 0 16px 8px;
+    }
+
+    .event-card {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 16px; border-bottom: 1px solid var(--border);
+      cursor: pointer; transition: background 0.1s;
+    }
+    .event-card:active { background: var(--surface2); }
+    .event-date-block {
+      width: 44px; flex-shrink: 0; text-align: center;
+      background: var(--surface2); border-radius: 10px; padding: 6px 4px;
+      border: 1px solid var(--border);
+    }
+    .event-date-day   { font-family: var(--font-display); font-size: 22px; line-height: 1; }
+    .event-date-month { font-size: 9px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; color: var(--muted); }
+    .event-info { flex: 1; min-width: 0; }
+    .event-venue { font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .event-city  { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .event-status {
+      font-size: 9px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;
+      padding: 3px 8px; border-radius: 20px; flex-shrink: 0;
+    }
+    .status-confirmed { background: rgba(61,186,110,0.15); color: var(--confirm); }
+    .status-hold      { background: rgba(245,166,35,0.15);  color: #f5a623; }
+    .status-cancelled { background: rgba(224,92,92,0.15);   color: var(--danger); }
+    .status-pendente  { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
+
+    /* ── Add event FAB ── */
+    .fab {
+      position: fixed; bottom: calc(16px + env(safe-area-inset-bottom));
+      right: 16px; z-index: 300;
+      width: 52px; height: 52px; border-radius: 50%;
+      background: var(--blue); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; cursor: pointer; box-shadow: 0 4px 20px rgba(34,89,224,0.4);
+      transition: transform 0.15s; border: none;
+    }
+    .fab:active { transform: scale(0.93); }
+
+    /* ── Team panel ── */
+    .member-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 13px 16px; border-bottom: 1px solid var(--border);
+    }
+    .member-avatar {
+      width: 42px; height: 42px; border-radius: 50%;
+      background: var(--surface2); border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display); font-size: 16px; flex-shrink: 0;
+      color: var(--text);
+    }
+    .member-info { flex: 1; min-width: 0; }
+    .member-name { font-size: 14px; font-weight: 700; }
+    .member-email { font-size: 11px; color: var(--muted); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .member-role-tag {
+      font-size: 9px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;
+      padding: 3px 9px; border-radius: 20px; flex-shrink: 0;
+      background: rgba(34,89,224,0.1); color: var(--blue);
+    }
+    .member-role-tag.tm { background: rgba(254,105,119,0.1); color: var(--coral); }
+
+    .invite-strip {
+      margin: 16px; background: var(--surface);
+      border: 1.5px dashed var(--border); border-radius: 14px;
+      padding: 16px; text-align: center; cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .invite-strip:hover { border-color: var(--blue); }
+    .invite-strip-icon  { font-size: 28px; margin-bottom: 8px; }
+    .invite-strip-title { font-size: 13px; font-weight: 700; }
+    .invite-strip-sub   { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+    /* ── Merch panel ── */
+    .merch-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 16px; border-bottom: 1px solid var(--border);
+    }
+    .merch-thumb {
+      width: 48px; height: 48px; border-radius: 10px;
+      background: var(--surface2); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; flex-shrink: 0;
+    }
+    .merch-info { flex: 1; min-width: 0; }
+    .merch-name  { font-size: 14px; font-weight: 700; }
+    .merch-price { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .merch-stock { font-size: 13px; font-weight: 700; flex-shrink: 0; }
+    .stock-ok  { color: var(--confirm); }
+    .stock-low { color: #f5a623; }
+    .stock-out { color: var(--danger); }
+
+    /* ── Empty state ── */
+    .empty-state { text-align: center; padding: 56px 32px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .empty-icon  { font-size: 44px; }
+    .empty-title { font-size: 15px; font-weight: 700; }
+    .empty-sub   { font-size: 13px; color: var(--muted); line-height: 1.65; }
+
+    /* ── Modals ── */
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+      display: flex; align-items: flex-end; z-index: 500;
+      opacity: 0; pointer-events: none; transition: opacity 0.2s;
+    }
+    .modal-backdrop.show { opacity: 1; pointer-events: all; }
+    .modal-sheet {
+      width: 100%; background: var(--surface); border-radius: 24px 24px 0 0;
+      padding: 24px 20px calc(40px + env(safe-area-inset-bottom));
+      transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+      max-height: 92dvh; overflow-y: auto;
+    }
+    .modal-backdrop.show .modal-sheet { transform: translateY(0); }
+    .modal-handle { width: 36px; height: 4px; border-radius: 2px; background: var(--border); margin: 0 auto 20px; }
+    .modal-title  { font-family: var(--font-display); font-size: 22px; letter-spacing: 2px; margin-bottom: 20px; }
+
+    /* date input styling */
+    input[type="date"] { color-scheme: dark; }
+
+    /* status selector */
+    .status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .status-opt {
+      padding: 10px; border-radius: 10px; text-align: center; cursor: pointer;
+      font-size: 12px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
+      border: 1.5px solid var(--border); background: var(--surface2); color: var(--muted);
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+    }
+    .status-opt.sel-confirmed { border-color: var(--confirm); background: rgba(61,186,110,0.1); color: var(--confirm); }
+    .status-opt.sel-hold      { border-color: #f5a623; background: rgba(245,166,35,0.1); color: #f5a623; }
+    .status-opt.sel-cancelled { border-color: var(--danger); background: rgba(224,92,92,0.1); color: var(--danger); }
+    .status-opt.sel-pendente  { border-color: var(--blue); background: rgba(34,89,224,0.08); color: var(--blue); }
+
+    /* invite role grid */
+    .role-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .role-opt {
+      padding: 10px 8px; border-radius: 10px; text-align: center; cursor: pointer;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.3px; text-transform: uppercase;
+      border: 1.5px solid var(--border); background: var(--surface2); color: var(--muted);
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+    }
+    .role-opt.active { border-color: var(--blue); background: rgba(34,89,224,0.08); color: var(--blue); }
+  </style>
+</head>
+<body>
+
+  <!-- Loading -->
+  <div id="band-loading">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Hero header -->
+  <div class="band-hero" id="band-hero">
+    <div class="band-hero-accent" id="hero-accent"></div>
+    <div class="band-hero-body">
+      <div class="band-hero-back" onclick="history.back()">←</div>
+      <div class="band-hero-avatar" id="hero-avatar"></div>
+      <div class="band-hero-info">
+        <div class="band-hero-name" id="hero-name">—</div>
+        <div class="band-hero-genre" id="hero-genre"></div>
+      </div>
+      <div class="band-hero-action" onclick="openModal('band-settings-modal')">⋯</div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs-row">
+    <div class="tab-item active" id="tab-eventos" onclick="switchTab('eventos')">Eventos</div>
+    <div class="tab-item"        id="tab-equipa"  onclick="switchTab('equipa')">Equipa</div>
+    <div class="tab-item"        id="tab-merch"   onclick="switchTab('merch')">Merch</div>
+  </div>
+
+  <!-- EVENTOS panel -->
+  <div class="panel active" id="panel-eventos">
+    <div id="events-content">
+      <div class="empty-state">
+        <div class="empty-icon">📅</div>
+        <div class="empty-title">Sem eventos</div>
+        <div class="empty-sub">Adiciona o primeiro concerto desta banda.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EQUIPA panel -->
+  <div class="panel" id="panel-equipa">
+    <div id="team-content">
+      <div class="empty-state">
+        <div class="spinner" style="width:24px;height:24px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MERCH panel -->
+  <div class="panel" id="panel-merch">
+    <div id="merch-content">
+      <div class="empty-state">
+        <div class="empty-icon">👕</div>
+        <div class="empty-title">Sem merch</div>
+        <div class="empty-sub">Adiciona produtos para gerir o stock em tour.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAB -->
+  <button class="fab" id="fab-btn" onclick="fabAction()">＋</button>
+
+  <!-- ══════════════════════════════════════
+       ADD EVENT MODAL
+  ══════════════════════════════════════ -->
+  <div class="modal-backdrop" id="add-event-modal" onclick="closeOnBackdrop(event,'add-event-modal')">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-title">NOVO EVENTO</div>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+
+        <div class="input-group">
+          <label class="input-label">Data</label>
+          <input type="date" class="input" id="ev-date">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Venue / Local</label>
+          <input type="text" class="input" id="ev-venue" placeholder="Ex: Coliseu do Porto">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Cidade</label>
+          <input type="text" class="input" id="ev-city" placeholder="Ex: Porto, Portugal">
+        </div>
+        <div class="input-group">
+          <label class="input-label">País</label>
+          <input type="text" class="input" id="ev-country" placeholder="Ex: Portugal">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Promotor</label>
+          <input type="text" class="input" id="ev-promoter" placeholder="Ex: Everything is New">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Fee (€)</label>
+          <input type="number" class="input" id="ev-fee" placeholder="0" min="0">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Estado</label>
+          <div class="status-grid">
+            <div class="status-opt sel-confirmed" data-status="confirmed" onclick="selectStatus('confirmed')">Confirmado</div>
+            <div class="status-opt" data-status="hold" onclick="selectStatus('hold')">Hold</div>
+            <div class="status-opt" data-status="pendente" onclick="selectStatus('pendente')">Pendente</div>
+            <div class="status-opt" data-status="cancelled" onclick="selectStatus('cancelled')">Cancelado</div>
+          </div>
+        </div>
+        <div class="input-group">
+          <label class="input-label">Notas</label>
+          <input type="text" class="input" id="ev-notes" placeholder="Informação adicional...">
+        </div>
+
+        <div class="auth-error" id="ev-error" style="display:none;"></div>
+        <button class="btn btn-primary" onclick="createEvent()">Criar evento</button>
+        <button class="btn btn-ghost" onclick="closeModal('add-event-modal')">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       INVITE MEMBER MODAL
+  ══════════════════════════════════════ -->
+  <div class="modal-backdrop" id="invite-modal" onclick="closeOnBackdrop(event,'invite-modal')">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-title">CONVIDAR<br>MEMBRO</div>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+
+        <div class="input-group">
+          <label class="input-label">Email</label>
+          <input type="email" class="input" id="inv-email" placeholder="email@exemplo.com">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Função na equipa</label>
+          <div class="role-grid" id="role-grid">
+            <div class="role-opt active" data-role="tour_manager" onclick="selectRole('tour_manager')">Tour Manager</div>
+            <div class="role-opt" data-role="artist" onclick="selectRole('artist')">Artista</div>
+            <div class="role-opt" data-role="crew" onclick="selectRole('crew')">Crew</div>
+            <div class="role-opt" data-role="backline" onclick="selectRole('backline')">Backline</div>
+            <div class="role-opt" data-role="production" onclick="selectRole('production')">Produção</div>
+            <div class="role-opt" data-role="admin" onclick="selectRole('admin')">Admin</div>
+          </div>
+        </div>
+
+        <div class="auth-error" id="inv-error-modal" style="display:none;"></div>
+        <div id="inv-success-wrap" style="display:none;background:rgba(61,186,110,0.1);border:1px solid var(--confirm);border-radius:8px;padding:12px;font-size:13px;color:var(--confirm);">
+          Convite criado! Copia o link abaixo e envia ao membro.
+          <div id="inv-link-box" style="margin-top:10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px;font-size:12px;word-break:break-all;color:var(--text);cursor:pointer;" onclick="copyInviteLink()"></div>
+          <div style="font-size:11px;color:var(--muted);margin-top:6px;text-align:center;">Toca no link para copiar</div>
+        </div>
+        <button class="btn btn-primary" id="inv-btn" onclick="createInvite()">Enviar convite</button>
+        <button class="btn btn-ghost" onclick="closeModal('invite-modal')">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       BAND SETTINGS MODAL
+  ══════════════════════════════════════ -->
+  <div class="modal-backdrop" id="band-settings-modal" onclick="closeOnBackdrop(event,'band-settings-modal')">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-title">BANDA</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <button class="btn btn-surface" onclick="closeModal('band-settings-modal'); openModal('edit-band-modal')">Editar banda</button>
+        <button class="btn btn-surface" onclick="closeModal('band-settings-modal'); openModal('invite-modal')">Convidar membro</button>
+        <button class="btn btn-danger" onclick="confirmDeleteBand()">Apagar banda</button>
+        <button class="btn btn-ghost" onclick="closeModal('band-settings-modal')">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       EDIT BAND MODAL
+  ══════════════════════════════════════ -->
+  <div class="modal-backdrop" id="edit-band-modal" onclick="closeOnBackdrop(event,'edit-band-modal')">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-title">EDITAR BANDA</div>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div class="input-group">
+          <label class="input-label">Nome</label>
+          <input type="text" class="input" id="edit-band-name">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Género / estilo</label>
+          <input type="text" class="input" id="edit-band-genre">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Cor</label>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;" id="edit-swatch-row"></div>
+        </div>
+        <div class="auth-error" id="edit-band-error" style="display:none;"></div>
+        <button class="btn btn-primary" onclick="saveBand()">Guardar</button>
+        <button class="btn btn-ghost" onclick="closeModal('edit-band-modal')">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { supabase, requireAuth } from './js/config.js';
+
+    /* ── State ── */
+    const bandId = new URLSearchParams(window.location.search).get('id');
+    let band         = null;
+    let currentUser  = null;
+    let activeTab    = 'eventos';
+    let evStatus     = 'confirmed';
+    let invRole      = 'tour_manager';
+    let editColor    = '#2259e0';
+    let lastInvLink  = '';
+
+    const COLORS = ['#2259e0','#fe6977','#3dba6e','#f5a623','#9b59b6','#1abc9c','#e74c3c','#e67e22'];
+    const MONTHS_PT = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+
+    /* ── Init ── */
+    window.addEventListener('DOMContentLoaded', async () => {
+      if (!bandId) { window.location.href = '/app.html'; return; }
+      currentUser = await requireAuth('/index.html');
+      if (!currentUser) return;
+
+      await loadBand();
+      document.getElementById('band-loading').classList.add('hidden');
+    });
+
+    /* ── Load band ── */
+    async function loadBand() {
+      const { data, error } = await supabase
+        .from('artists')
+        .select('*')
+        .eq('id', bandId)
+        .single();
+      if (error || !data) { window.location.href = '/app.html'; return; }
+      band = data;
+      renderHero();
+      await loadEvents();
+    }
+
+    function renderHero() {
+      const color = band.color || '#2259e0';
+      document.getElementById('hero-accent').style.background = color;
+      document.getElementById('hero-avatar').style.background = color;
+      document.getElementById('hero-avatar').textContent      = band.name[0]?.toUpperCase();
+      document.getElementById('hero-name').textContent        = band.name;
+      document.getElementById('hero-genre').textContent       = band.genre || '';
+      document.title = `RoadBook — ${band.name}`;
+      editColor = color;
+    }
+
+    /* ── Tab switch ── */
+    window.switchTab = function(tab) {
+      activeTab = tab;
+      document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('tab-' + tab).classList.add('active');
+      document.getElementById('panel-' + tab).classList.add('active');
+
+      if (tab === 'equipa' && !document.getElementById('team-content').dataset.loaded) {
+        loadTeam();
+      }
+      if (tab === 'merch' && !document.getElementById('merch-content').dataset.loaded) {
+        loadMerch();
+      }
+
+      // Update FAB
+      const fab = document.getElementById('fab-btn');
+      fab.style.display = tab === 'merch' ? 'none' : 'flex';
+    };
+
+    window.fabAction = function() {
+      if (activeTab === 'eventos') openModal('add-event-modal');
+      if (activeTab === 'equipa')  openModal('invite-modal');
+    };
+
+    /* ══════════════════════
+       EVENTS
+    ══════════════════════ */
+    async function loadEvents() {
+      const { data, error } = await supabase
+        .from('events')
+        .select('*')
+        .eq('artist_id', bandId)
+        .order('date', { ascending: true });
+
+      if (error) { console.error(error); return; }
+      renderEvents(data || []);
+    }
+
+    function renderEvents(events) {
+      const today = new Date().toISOString().split('T')[0];
+      const upcoming = events.filter(e => e.date >= today);
+      const past     = events.filter(e => e.date <  today).reverse();
+      const el = document.getElementById('events-content');
+
+      if (!events.length) {
+        el.innerHTML = `<div class="empty-state">
+          <div class="empty-icon">📅</div>
+          <div class="empty-title">Sem eventos</div>
+          <div class="empty-sub">Toca no + para adicionar o primeiro concerto.</div>
+        </div>`;
+        return;
+      }
+
+      let html = '';
+      if (upcoming.length) {
+        html += `<div class="events-section"><div class="events-section-title">Próximos</div>`;
+        html += upcoming.map(e => eventCard(e)).join('');
+        html += `</div>`;
+      }
+      if (past.length) {
+        html += `<div class="events-section"><div class="events-section-title">Passados</div>`;
+        html += past.map(e => eventCard(e, true)).join('');
+        html += `</div>`;
+      }
+      el.innerHTML = html;
+    }
+
+    function eventCard(ev, past = false) {
+      const d   = new Date(ev.date + 'T12:00:00');
+      const day = d.getDate();
+      const mon = MONTHS_PT[d.getMonth()];
+      const statusLabel = { confirmed:'Confirmado', hold:'Hold', cancelled:'Cancelado', pendente:'Pendente' };
+      const statusCls   = { confirmed:'status-confirmed', hold:'status-hold', cancelled:'status-cancelled', pendente:'status-pendente' };
+      const st = ev.status || 'pendente';
+      return `<div class="event-card" onclick="openEvent('${ev.id}')" style="${past ? 'opacity:0.55;' : ''}">
+        <div class="event-date-block">
+          <div class="event-date-day">${day}</div>
+          <div class="event-date-month">${mon}</div>
+        </div>
+        <div class="event-info">
+          <div class="event-venue">${esc(ev.venue || 'Local a confirmar')}</div>
+          <div class="event-city">${esc(ev.city || '')}${ev.country ? ' · ' + esc(ev.country) : ''}</div>
+        </div>
+        <div class="event-status ${statusCls[st] || 'status-pendente'}">${statusLabel[st] || st}</div>
+      </div>`;
+    }
+
+    window.openEvent = function(id) {
+      window.location.href = `/event.html?id=${id}`;
+    };
+
+    /* Create event */
+    window.selectStatus = function(s) {
+      evStatus = s;
+      document.querySelectorAll('.status-opt').forEach(el => {
+        el.className = 'status-opt' + (el.dataset.status === s ? ` sel-${s}` : '');
+      });
+    };
+
+    window.createEvent = async function() {
+      const date    = document.getElementById('ev-date').value;
+      const venue   = document.getElementById('ev-venue').value.trim();
+      const city    = document.getElementById('ev-city').value.trim();
+      const country = document.getElementById('ev-country').value.trim();
+      const prom    = document.getElementById('ev-promoter').value.trim();
+      const fee     = document.getElementById('ev-fee').value;
+      const notes   = document.getElementById('ev-notes').value.trim();
+      const errEl   = document.getElementById('ev-error');
+
+      if (!date)  { errEl.textContent = 'Selecciona uma data.'; errEl.style.display='block'; return; }
+      if (!venue) { errEl.textContent = 'Introduz o nome do local.'; errEl.style.display='block'; return; }
+      errEl.style.display = 'none';
+
+      const payload = {
+        artist_id:   bandId,
+        account_id:  band.account_id,
+        date, venue, city, country, status: evStatus,
+        promoter: prom || null,
+        fee:      fee ? parseFloat(fee) : null,
+        notes:    notes || null,
+      };
+
+      const { error } = await supabase.from('events').insert(payload);
+      if (error) { errEl.textContent = error.message; errEl.style.display='block'; return; }
+
+      // Reset form
+      ['ev-date','ev-venue','ev-city','ev-country','ev-promoter','ev-fee','ev-notes'].forEach(id => document.getElementById(id).value = '');
+      selectStatus('confirmed');
+      closeModal('add-event-modal');
+      await loadEvents();
+    };
+
+    /* ══════════════════════
+       TEAM
+    ══════════════════════ */
+    async function loadTeam() {
+      const tc = document.getElementById('team-content');
+      tc.dataset.loaded = '1';
+
+      const { data, error } = await supabase
+        .from('band_members')
+        .select('*, profiles(full_name, email, phone)')
+        .eq('artist_id', bandId)
+        .order('joined_at', { ascending: true });
+
+      if (error) { tc.innerHTML = `<div class="empty-state"><div class="empty-sub">${error.message}</div></div>`; return; }
+
+      let html = (data || []).map(m => {
+        const name  = m.profiles?.full_name || m.profiles?.email || 'Sem nome';
+        const email = m.profiles?.email || '';
+        const init  = name[0]?.toUpperCase() || '?';
+        const isTM  = m.role === 'tour_manager';
+        const roleLbl = translateRole(m.role);
+        return `<div class="member-row">
+          <div class="member-avatar">${init}</div>
+          <div class="member-info">
+            <div class="member-name">${esc(name)}</div>
+            <div class="member-email">${esc(email)}</div>
+          </div>
+          <div class="member-role-tag ${isTM ? 'tm' : ''}">${roleLbl}</div>
+        </div>`;
+      }).join('');
+
+      // Pending invitations
+      const { data: invites } = await supabase
+        .from('invitations')
+        .select('*')
+        .eq('band_id', bandId)
+        .eq('status', 'pending');
+
+      if (invites?.length) {
+        html += `<div style="padding:12px 16px 4px;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);">Convites pendentes</div>`;
+        html += invites.map(inv => `
+          <div class="member-row" style="opacity:0.6;">
+            <div class="member-avatar" style="font-size:18px;">📨</div>
+            <div class="member-info">
+              <div class="member-name">${esc(inv.email || inv.phone || '—')}</div>
+              <div class="member-email">Convite enviado · expira ${new Date(inv.expires_at).toLocaleDateString('pt-PT')}</div>
+            </div>
+            <div class="member-role-tag">${translateRole(inv.role)}</div>
+          </div>`).join('');
+      }
+
+      html += `<div class="invite-strip" onclick="openModal('invite-modal')">
+        <div class="invite-strip-icon">➕</div>
+        <div class="invite-strip-title">Convidar membro</div>
+        <div class="invite-strip-sub">Envia um link de convite por email</div>
+      </div>`;
+
+      tc.innerHTML = html;
+    }
+
+    /* Create invite */
+    window.selectRole = function(role) {
+      invRole = role;
+      document.querySelectorAll('.role-opt').forEach(el => {
+        el.classList.toggle('active', el.dataset.role === role);
+      });
+    };
+
+    window.createInvite = async function() {
+      const email = document.getElementById('inv-email').value.trim();
+      const errEl = document.getElementById('inv-error-modal');
+      if (!email) { errEl.textContent = 'Introduz um email.'; errEl.style.display='block'; return; }
+      errEl.style.display = 'none';
+
+      document.getElementById('inv-btn').disabled = true;
+      document.getElementById('inv-btn').innerHTML = '<div class="spinner" style="width:18px;height:18px;border-color:#ffffff55;border-top-color:#fff"></div>';
+
+      const { data, error } = await supabase
+        .from('invitations')
+        .insert({
+          band_id:    bandId,
+          account_id: band.account_id,
+          email,
+          role:       invRole,
+          invited_by: currentUser.id,
+        })
+        .select()
+        .single();
+
+      document.getElementById('inv-btn').disabled = false;
+      document.getElementById('inv-btn').textContent = 'Enviar convite';
+
+      if (error) { errEl.textContent = error.message; errEl.style.display='block'; return; }
+
+      lastInvLink = `${window.location.origin}/invite.html?token=${data.token}`;
+      document.getElementById('inv-link-box').textContent = lastInvLink;
+      document.getElementById('inv-success-wrap').style.display = 'block';
+      document.getElementById('inv-email').value = '';
+
+      // Reload team if tab is visible
+      if (activeTab === 'equipa') {
+        document.getElementById('team-content').dataset.loaded = '';
+        loadTeam();
+      }
+    };
+
+    window.copyInviteLink = function() {
+      navigator.clipboard.writeText(lastInvLink).then(() => {
+        const box = document.getElementById('inv-link-box');
+        const orig = box.textContent;
+        box.textContent = '✓ Copiado!';
+        setTimeout(() => { box.textContent = orig; }, 1500);
+      });
+    };
+
+    /* ══════════════════════
+       MERCH
+    ══════════════════════ */
+    async function loadMerch() {
+      const mc = document.getElementById('merch-content');
+      mc.dataset.loaded = '1';
+
+      // Check if merch table exists
+      const { data, error } = await supabase
+        .from('merch')
+        .select('*')
+        .eq('artist_id', bandId)
+        .order('name');
+
+      if (error) {
+        mc.innerHTML = `<div class="empty-state">
+          <div class="empty-icon">👕</div>
+          <div class="empty-title">Merch em breve</div>
+          <div class="empty-sub">A gestão de merch está em desenvolvimento.</div>
+        </div>`;
+        return;
+      }
+
+      if (!data?.length) {
+        mc.innerHTML = `<div class="empty-state">
+          <div class="empty-icon">👕</div>
+          <div class="empty-title">Sem merch</div>
+          <div class="empty-sub">Adiciona produtos para gerir o stock em tour.</div>
+        </div>`;
+        return;
+      }
+
+      mc.innerHTML = data.map(item => {
+        const stockCls = item.stock > 5 ? 'stock-ok' : item.stock > 0 ? 'stock-low' : 'stock-out';
+        const stockTxt = item.stock > 0 ? item.stock + ' un.' : 'Esgotado';
+        return `<div class="merch-item">
+          <div class="merch-thumb">${item.emoji || '📦'}</div>
+          <div class="merch-info">
+            <div class="merch-name">${esc(item.name)}</div>
+            <div class="merch-price">${item.price ? '€' + item.price.toFixed(2) : '—'}</div>
+          </div>
+          <div class="merch-stock ${stockCls}">${stockTxt}</div>
+        </div>`;
+      }).join('');
+    }
+
+    /* ══════════════════════
+       EDIT BAND
+    ══════════════════════ */
+    window.openEditBand = function() {
+      document.getElementById('edit-band-name').value  = band.name;
+      document.getElementById('edit-band-genre').value = band.genre || '';
+      editColor = band.color || '#2259e0';
+      renderEditSwatches();
+      openModal('edit-band-modal');
+    };
+
+    function renderEditSwatches() {
+      const row = document.getElementById('edit-swatch-row');
+      row.innerHTML = '';
+      COLORS.forEach(c => {
+        const s = document.createElement('div');
+        s.style.cssText = `width:36px;height:36px;border-radius:50%;cursor:pointer;background:${c};border:3px solid ${c === editColor ? 'var(--text)' : 'transparent'};transform:${c === editColor ? 'scale(1.18)' : 'scale(1)'};transition:border-color 0.15s,transform 0.12s;`;
+        s.onclick = () => { editColor = c; renderEditSwatches(); };
+        row.appendChild(s);
+      });
+    }
+
+    window.saveBand = async function() {
+      const name  = document.getElementById('edit-band-name').value.trim();
+      const genre = document.getElementById('edit-band-genre').value.trim();
+      const errEl = document.getElementById('edit-band-error');
+      if (!name) { errEl.textContent = 'O nome não pode estar vazio.'; errEl.style.display='block'; return; }
+      errEl.style.display = 'none';
+
+      const { error } = await supabase.from('artists').update({ name, genre, color: editColor }).eq('id', bandId);
+      if (error) { errEl.textContent = error.message; errEl.style.display='block'; return; }
+
+      band = { ...band, name, genre, color: editColor };
+      renderHero();
+      closeModal('edit-band-modal');
+    };
+
+    window.confirmDeleteBand = async function() {
+      if (!confirm(`Tens a certeza que queres apagar "${band.name}"? Esta acção é irreversível.`)) return;
+      await supabase.from('artists').delete().eq('id', bandId);
+      window.location.href = '/app.html';
+    };
+
+    /* ── Modal helpers ── */
+    window.openModal  = function(id) { document.getElementById(id).classList.add('show'); };
+    window.closeModal = function(id) { document.getElementById(id).classList.remove('show'); };
+    window.closeOnBackdrop = function(e, id) { if (e.target.id === id) closeModal(id); };
+
+    /* ── Utils ── */
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    function translateRole(r) {
+      return { tour_manager:'TM', artist:'Artista', crew:'Crew', backline:'Backline', production:'Produção', admin:'Admin' }[r] || r;
+    }
+  </script>
+</body>
+</html>
