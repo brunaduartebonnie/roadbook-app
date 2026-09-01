@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>RoadBook — Evento</title>
+  <link rel="stylesheet" href="css/design.css">
+  <style>
+    body { display: flex; flex-direction: column; min-height: 100dvh; }
+
+    /* ── Loading ── */
+    #ev-loading {
+      position: fixed; inset: 0; background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 999; flex-direction: column; gap: 14px;
+    }
+    #ev-loading.hidden { display: none; }
+
+    /* ── Hero ── */
+    .ev-hero {
+      background: var(--surface); border-bottom: 1px solid var(--border);
+    }
+    .ev-hero-accent { height: 4px; width: 100%; }
+    .ev-hero-top {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 16px 0;
+    }
+    .back-btn {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--surface2); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 16px; flex-shrink: 0;
+    }
+    .ev-band-pill {
+      display: flex; align-items: center; gap: 6px; flex: 1;
+      cursor: pointer;
+    }
+    .ev-band-dot  { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .ev-band-name { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .ev-options {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--surface2); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 18px; color: var(--muted);
+    }
+
+    .ev-hero-body { padding: 14px 16px 16px; }
+    .ev-date-big {
+      font-family: var(--font-display); font-size: 34px; letter-spacing: 2px;
+      line-height: 1; margin-bottom: 4px;
+    }
+    .ev-weekday { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+    .ev-venue   { font-size: 17px; font-weight: 800; margin-bottom: 2px; }
+    .ev-city    { font-size: 13px; color: var(--muted); }
+
+    .ev-status-row { display: flex; align-items: center; gap: 8px; margin-top: 12px; }
+    .status-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;
+      padding: 5px 12px; border-radius: 20px; cursor: pointer;
+    }
+    .chip-confirmed { background: rgba(61,186,110,0.15);  color: var(--confirm); border: 1px solid rgba(61,186,110,0.3); }
+    .chip-hold      { background: rgba(245,166,35,0.15);  color: #f5a623;        border: 1px solid rgba(245,166,35,0.3); }
+    .chip-cancelled { background: rgba(224,92,92,0.15);   color: var(--danger);  border: 1px solid rgba(224,92,92,0.3); }
+    .chip-pendente  { background: var(--surface2);        color: var(--muted);   border: 1px solid var(--border); }
+
+    .ev-fee-pill {
+      display: inline-flex; align-items: center;
+      font-size: 12px; font-weight: 800; color: var(--text);
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 20px; padding: 4px 12px;
+    }
+
+    /* ── Tabs ── */
+    .tabs-row {
+      display: flex; background: var(--surface); border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 90; overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .tabs-row::-webkit-scrollbar { display: none; }
+    .tab-item {
+      flex: 1; min-width: 70px; text-align: center; padding: 12px 8px 10px;
+      font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;
+      color: var(--muted); cursor: pointer; border-bottom: 2.5px solid transparent;
+      transition: color 0.15s, border-color 0.15s; user-select: none; white-space: nowrap;
+    }
+    .tab-item.active { color: var(--text); border-bottom-color: var(--blue); }
+
+    /* ── Panels ── */
+    .panel { display: none; overflow-y: auto; padding-bottom: 90px; -webkit-overflow-scrolling: touch; }
+    .panel.active { display: block; }
+
+    /* ── Info panel ── */
+    .info-section { padding: 16px 16px 4px; }
+    .info-section-title {
+      font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--blue); margin-bottom: 12px; padding-bottom: 8px;
+      border-bottom: 1px solid rgba(34,89,224,0.15);
+    }
+    .info-row {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 10px 0; border-bottom: 1px solid var(--border);
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
+      color: var(--muted); flex: 0 0 90px; padding-top: 1px;
+    }
+    .info-value { font-size: 14px; color: var(--text); flex: 1; line-height: 1.5; }
+    .info-value.empty { color: var(--muted2); font-style: italic; }
+    .info-edit-btn {
+      font-size: 11px; font-weight: 700; color: var(--blue); cursor: pointer; flex-shrink: 0;
+    }
+
+    /* ── Schedule panel ── */
+    .schedule-grid { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+    .schedule-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      display: flex; align-items: center; gap: 14px; padding: 14px;
+    }
+    .schedule-icon { font-size: 26px; flex-shrink: 0; }
+    .schedule-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 4px; }
+    .schedule-time  {
+      font-family: var(--font-display); font-size: 26px; letter-spacing: 1px;
+      color: var(--text); cursor: pointer; min-width: 70px;
+    }
+    .schedule-time.empty { color: var(--muted2); font-size: 20px; }
+    .schedule-time input[type="time"] {
+      background: none; border: none; font-family: var(--font-display);
+      font-size: 26px; letter-spacing: 1px; color: var(--text); width: 110px;
+      outline: none; padding: 0; cursor: pointer; color-scheme: dark;
+    }
+
+    /* ── Checklist panel ── */
+    .checklist-header {
+      padding: 14px 16px 8px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .progress-bar-wrap { flex: 1; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; margin: 0 12px; }
+    .progress-bar-fill { height: 100%; background: var(--confirm); border-radius: 2px; transition: width 0.4s; }
+    .progress-label    { font-size: 11px; font-weight: 700; color: var(--muted); }
+
+    .checklist-category { padding: 0 16px; }
+    .cat-title {
+      font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--muted); padding: 14px 0 8px;
+    }
+    .checklist-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 0; border-bottom: 1px solid var(--border);
+    }
+    .checklist-item:last-child { border-bottom: none; }
+    .check-box {
+      width: 22px; height: 22px; border-radius: 6px;
+      border: 2px solid var(--border); flex-shrink: 0; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .check-box.checked { background: var(--confirm); border-color: var(--confirm); }
+    .check-box.checked::after { content: '✓'; font-size: 13px; color: #fff; font-weight: 800; }
+    .check-text {
+      flex: 1; font-size: 14px; color: var(--text);
+      transition: color 0.15s, text-decoration 0.15s;
+    }
+    .check-text.done { color: var(--muted2); text-decoration: line-through; }
+    .check-delete { font-size: 16px; color: var(--muted2); cursor: pointer; padding: 4px; }
+
+    .add-item-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 16px; border-top: 1px solid var(--border); margin-top: 4px;
+    }
+    .add-item-input {
+      flex: 1; background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 9px 12px;
+      font-family: var(--font-body); font-size: 14px; color: var(--text);
+      outline: none;
+    }
+    .add-item-input:focus { border-color: var(--blue); }
+    .add-item-input::placeholder { color: var(--muted2); }
+    .add-item-btn {
+      width: 34px; height: 34px; border-radius: 50%; background: var(--blue);
+      color: #fff; border: none; font-size: 20px; cursor: pointer; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* ── Notas panel ── */
+    .notes-wrap { padding: 16px; }
+    .notes-textarea {
+      width: 100%; min-height: 300px; background: var(--surface);
+      border: 1px solid var(--border); border-radius: 14px;
+      padding: 16px; font-family: var(--font-body); font-size: 15px;
+      color: var(--text); resize: vertical; outline: none; line-height: 1.7;
+      -webkit-appearance: none;
+    }
+    .notes-textarea:focus  { border-color: var(--blue); }
+    .notes-textarea::placeholder { color: var(--muted2); }
+    .notes-saved {
+      font-size: 11px; color: var(--muted); margin-top: 8px; text-align: right;
+      min-height: 16px; transition: opacity 0.3s;
+    }
+
+    /* ── Modals ── */
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+      display: flex; align-items: flex-end; z-index: 500;
+      opacity: 0; pointer-events: none; transition: opacity 0.2s;
+    }
+    .modal-backdrop.show { opacity: 1; pointer-events: all; }
+    .modal-sheet {
+      width: 100%; background: var(--surface); border-radius: 24px 24px 0 0;
+      padding: 24px 20px calc(40px + env(safe-area-inset-bottom));
+      transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+      max-height: 92dvh; overflow-y: auto;
+    }
+    .modal-backdrop.show .modal-sheet { transform: translateY(0); }
+    .modal-handle { width: 36px; height: 4px; border-radius: 2px; background: var(--border); margin: 0 auto 20px; }
+    .modal-title  { font-family: var(--font-display); font-size: 22px; letter-spacing: 2px; margin-bottom: 20px; }
+
+    /* status picker in modal */
+    .status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .status-opt {
+      padding: 10px; border-radius: 10px; text-align: center; cursor: pointer;
+      font-size: 12px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
+      border: 1.5px solid var(--border); background: var(--surface2); color: var(--muted);
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+    }
+    .status-opt.sel-confirmed { border-color: var(--confirm); background: rgba(61,186,110,0.1); color: var(--confirm); }
+    .status-opt.sel-hold      { border-color: #f5a623; background: rgba(245,166,35,0.1); color: #f5a623; }
+    .status-opt.sel-cancelled { border-color: var(--danger); background: rgba(224,92,92,0.1); color: var(--danger); }
+    .status-opt.sel-pendente  { border-color: var(--blue); background: rgba(34,89,224,0.08); color: var(--blue); }
+
+    input[type="date"] { color-scheme: dark; }
+  </style>
+</head>
+<body>
+
+  <div id="ev-loading"><div class="spinner" style="width:32px;height:32px;"></div></div>
+
+  <!-- Hero -->
+  <div class="ev-hero" id="ev-hero">
+    <div class="ev-hero-accent" id="ev-accent"></div>
+    <div class="ev-hero-top">
+      <div class="back-btn" id="back-btn" onclick="goBack()">←</div>
+      <div class="ev-band-pill" id="band-pill" onclick="goBack()">
+        <div class="ev-band-dot" id="band-dot"></div>
+        <div class="ev-band-name" id="band-name-label">—</div>
+      </div>
+      <div class="ev-options" onclick="openModal('ev-options-modal')">⋯</div>
+    </div>
+    <div class="ev-hero-body">
+      <div class="ev-date-big" id="ev-date-big">—</div>
+      <div class="ev-weekday"  id="ev-weekday"></div>
+      <div class="ev-venue"    id="ev-venue-label">—</div>
+      <div class="ev-city"     id="ev-city-label"></div>
+      <div class="ev-status-row">
+        <div class="status-chip" id="status-chip" onclick="openModal('edit-info-modal')"></div>
+        <div class="ev-fee-pill" id="ev-fee-pill" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs-row">
+    <div class="tab-item active" id="tab-info"      onclick="switchTab('info')">Info</div>
+    <div class="tab-item"        id="tab-horarios"  onclick="switchTab('horarios')">Horários</div>
+    <div class="tab-item"        id="tab-checklist" onclick="switchTab('checklist')">Checklist</div>
+    <div class="tab-item"        id="tab-notas"     onclick="switchTab('notas')">Notas</div>
+  </div>
+
+  <!-- INFO panel -->
+  <div class="panel active" id="panel-info">
+
+    <div class="info-section">
+      <div class="info-section-title">Local</div>
+      <div class="info-row">
+        <div class="info-label">Venue</div>
+        <div class="info-value" id="info-venue">—</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Morada</div>
+        <div class="info-value" id="info-address"></div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Cidade</div>
+        <div class="info-value" id="info-city">—</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">País</div>
+        <div class="info-value" id="info-country">—</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Capacidade</div>
+        <div class="info-value" id="info-capacity"></div>
+      </div>
+    </div>
+
+    <div class="info-section">
+      <div class="info-section-title">Promotor</div>
+      <div class="info-row">
+        <div class="info-label">Nome</div>
+        <div class="info-value" id="info-promoter">—</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Email</div>
+        <div class="info-value" id="info-promoter-email"></div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Telefone</div>
+        <div class="info-value" id="info-promoter-phone"></div>
+      </div>
+    </div>
+
+    <div class="info-section">
+      <div class="info-section-title">Financeiro</div>
+      <div class="info-row">
+        <div class="info-label">Fee</div>
+        <div class="info-value" id="info-fee">—</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Estado</div>
+        <div class="info-value" id="info-status">—</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Restrição</div>
+        <div class="info-value" id="info-age"></div>
+      </div>
+    </div>
+
+    <div style="padding:16px;">
+      <button class="btn btn-outline" onclick="openModal('edit-info-modal')">✏️ Editar informações</button>
+    </div>
+  </div>
+
+  <!-- HORÁRIOS panel -->
+  <div class="panel" id="panel-horarios">
+    <div class="schedule-grid" id="schedule-grid">
+      <!-- injected by JS -->
+    </div>
+    <div style="padding:0 16px 16px;">
+      <button class="btn btn-primary" id="save-schedule-btn" onclick="saveSchedule()" style="display:none;">Guardar horários</button>
+    </div>
+  </div>
+
+  <!-- CHECKLIST panel -->
+  <div class="panel" id="panel-checklist">
+    <div class="checklist-header">
+      <span style="font-size:11px;font-weight:800;letter-spacing:0.5px;color:var(--muted);" id="checklist-progress-label">0 / 0</span>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
+      <span style="font-size:11px;color:var(--muted);" id="checklist-pct">0%</span>
+    </div>
+    <div id="checklist-body">
+      <!-- injected by JS -->
+    </div>
+    <div class="add-item-row">
+      <input type="text" class="add-item-input" id="new-item-input" placeholder="Adicionar item..." onkeydown="if(event.key==='Enter')addItem()">
+      <button class="add-item-btn" onclick="addItem()">＋</button>
+    </div>
+  </div>
+
+  <!-- NOTAS panel -->
+  <div class="panel" id="panel-notas">
+    <div class="notes-wrap">
+      <textarea class="notes-textarea" id="notes-area" placeholder="Notas sobre este evento — rider, instruções, contactos, tudo o que precisas..." oninput="scheduleNotesSave()"></textarea>
+      <div class="notes-saved" id="notes-saved"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       EDIT INFO MODAL
+  ══════════════════════════════ -->
+  <div class="modal-backdrop" id="edit-info-modal" onclick="closeOnBackdrop(event,'edit-info-modal')">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-title">EDITAR<br>EVENTO</div>
+      <div style="display:flex;flex-direction:column;gap:13px;">
+
+        <div class="input-group">
+          <label class="input-label">Data</label>
+          <input type="date" class="input" id="edit-date">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Estado</label>
+          <div class="status-grid">
+            <div class="status-opt" data-status="confirmed" onclick="selectStatus('confirmed')">Confirmado</div>
+            <div class="status-opt" data-status="hold"      onclick="selectStatus('hold')">Hold</div>
+            <div class="status-opt" data-status="pendente"  onclick="selectStatus('pendente')">Pendente</div>
+            <div class="status-opt" data-status="cancelled" onclick="selectStatus('cancelled')">Cancelado</div>
+          </div>
+        </div>
+        <div class="input-group">
+          <label class="input-label">Venue / Local</label>
+          <input type="text" class="input" id="edit-venue" placeholder="Ex: Coliseu do Porto">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Morada</label>
+          <input type="text" class="input" id="edit-address" placeholder="Ex: Rua de Passos Manuel 137">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Cidade</label>
+          <input type="text" class="input" id="edit-city" placeholder="Porto">
+        </div>
+        <div class="input-group">
+          <label class="input-label">País</label>
+          <input type="text" class="input" id="edit-country" placeholder="Portugal">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Capacidade</label>
+          <input type="number" class="input" id="edit-capacity" placeholder="Ex: 3500" min="0">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Restrição de idade</label>
+          <input type="text" class="input" id="edit-age" placeholder="Ex: M/6, M/16, Todas as idades">
+        </div>
+
+        <div style="height:1px;background:var(--border);margin:4px 0;"></div>
+
+        <div class="input-group">
+          <label class="input-label">Promotor</label>
+          <input type="text" class="input" id="edit-promoter" placeholder="Nome do promotor">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Email do promotor</label>
+          <input type="email" class="input" id="edit-promoter-email" placeholder="promotor@email.com">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Telefone do promotor</label>
+          <input type="tel" class="input" id="edit-promoter-phone" placeholder="+351 912 345 678">
+        </div>
+
+        <div style="height:1px;background:var(--border);margin:4px 0;"></div>
+
+        <div style="display:flex;gap:10px;">
+          <div class="input-group" style="flex:2;">
+            <label class="input-label">Fee</label>
+            <input type="number" class="input" id="edit-fee" placeholder="0" min="0">
+          </div>
+          <div class="input-group" style="flex:1;">
+            <label class="input-label">Moeda</label>
+            <select class="input" id="edit-currency" style="cursor:pointer;">
+              <option value="EUR">EUR €</option>
+              <option value="GBP">GBP £</option>
+              <option value="USD">USD $</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="auth-error" id="edit-ev-error" style="display:none;"></div>
+        <button class="btn btn-primary" onclick="saveInfo()">Guardar</button>
+        <button class="btn btn-ghost" onclick="closeModal('edit-info-modal')">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       OPTIONS MODAL
+  ══════════════════════════════ -->
+  <div class="modal-backdrop" id="ev-options-modal" onclick="closeOnBackdrop(event,'ev-options-modal')">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-title">OPÇÕES</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <button class="btn btn-surface" onclick="shareEvent()">Partilhar evento</button>
+        <button class="btn btn-surface" onclick="closeModal('ev-options-modal');openModal('edit-info-modal')">Editar evento</button>
+        <button class="btn btn-danger"  onclick="confirmDeleteEvent()">Apagar evento</button>
+        <button class="btn btn-ghost"   onclick="closeModal('ev-options-modal')">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { supabase, requireAuth } from './js/config.js';
+
+    /* ── State ── */
+    const evId = new URLSearchParams(window.location.search).get('id');
+    let ev          = null;
+    let band        = null;
+    let schedule    = {};
+    let checklist   = [];
+    let editStatus  = 'confirmed';
+    let notesTimer  = null;
+    let activeTab   = 'info';
+
+    const MONTHS_PT  = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+    const WEEKS_PT   = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+
+    const SCHEDULE_SLOTS = [
+      { key: 'load_in',    label: 'Load In',    icon: '🚛' },
+      { key: 'soundcheck', label: 'Soundcheck', icon: '🎚️' },
+      { key: 'doors',      label: 'Portas',     icon: '🚪' },
+      { key: 'showtime',   label: 'Showtime',   icon: '🎤' },
+    ];
+
+    const DEFAULT_CHECKLIST = [
+      { cat: 'Técnico',       items: ['Rider técnico enviado','PA confirmado','Stage plot enviado','Backline confirmado','Soundcheck agendado'] },
+      { cat: 'Hospitalidade', items: ['Rider de catering enviado','Hotel reservado','Transfer organizado','Acreditações pedidas'] },
+      { cat: 'Logística',     items: ['Contrato assinado','Adiantamento recebido','Saldo a receber','Seguro em dia'] },
+    ];
+
+    /* ── Init ── */
+    window.addEventListener('DOMContentLoaded', async () => {
+      if (!evId) { window.location.href = '/app.html'; return; }
+      const user = await requireAuth('/index.html');
+      if (!user) return;
+
+      await loadEvent();
+      document.getElementById('ev-loading').classList.add('hidden');
+    });
+
+    async function loadEvent() {
+      const { data, error } = await supabase
+        .from('events')
+        .select('*, artists(id, name, color)')
+        .eq('id', evId)
+        .single();
+
+      if (error || !data) { window.location.href = '/app.html'; return; }
+      ev       = data;
+      band     = data.artists;
+      schedule = data.schedule || {};
+      checklist = data.checklist?.length ? data.checklist : buildDefaultChecklist();
+
+      renderHero();
+      renderInfoPanel();
+      renderSchedulePanel();
+      renderChecklist();
+      document.getElementById('notes-area').value = ev.notes || '';
+    }
+
+    /* ── Hero ── */
+    function renderHero() {
+      const color = band?.color || '#2259e0';
+      const d     = new Date(ev.date + 'T12:00:00');
+
+      document.getElementById('ev-accent').style.background = color;
+      document.getElementById('band-dot').style.background  = color;
+      document.getElementById('band-name-label').textContent = band?.name || '—';
+
+      document.getElementById('ev-date-big').textContent  = `${d.getDate()} ${MONTHS_PT[d.getMonth()].toUpperCase()} ${d.getFullYear()}`;
+      document.getElementById('ev-weekday').textContent   = WEEKS_PT[d.getDay()];
+      document.getElementById('ev-venue-label').textContent = ev.venue || 'Local a confirmar';
+      document.getElementById('ev-city-label').textContent  = [ev.city, ev.country].filter(Boolean).join(' · ');
+      document.title = `RoadBook — ${ev.venue || ev.date}`;
+
+      // Status chip
+      const chip = document.getElementById('status-chip');
+      const statusMap = {
+        confirmed: { label: '● Confirmado', cls: 'chip-confirmed' },
+        hold:      { label: '◐ Hold',       cls: 'chip-hold' },
+        cancelled: { label: '✕ Cancelado',  cls: 'chip-cancelled' },
+        pendente:  { label: '○ Pendente',   cls: 'chip-pendente' },
+      };
+      const s = statusMap[ev.status] || statusMap.pendente;
+      chip.textContent = s.label;
+      chip.className   = 'status-chip ' + s.cls;
+
+      // Fee pill
+      const feePill = document.getElementById('ev-fee-pill');
+      if (ev.fee) {
+        const sym = { EUR: '€', GBP: '£', USD: '$' }[ev.fee_currency || 'EUR'] || '€';
+        feePill.textContent = sym + Number(ev.fee).toLocaleString('pt-PT');
+        feePill.style.display = 'inline-flex';
+      } else {
+        feePill.style.display = 'none';
+      }
+    }
+
+    /* ── Info panel ── */
+    function renderInfoPanel() {
+      const set = (id, val, fallback = '—') => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const v = val?.toString().trim();
+        el.textContent   = v || fallback;
+        el.className     = 'info-value' + (!v ? ' empty' : '');
+      };
+      const sym = { EUR: '€', GBP: '£', USD: '$' }[ev.fee_currency || 'EUR'] || '€';
+      const statusLabels = { confirmed:'Confirmado', hold:'Hold', cancelled:'Cancelado', pendente:'Pendente' };
+
+      set('info-venue',          ev.venue);
+      set('info-address',        ev.venue_address, '—');
+      set('info-city',           ev.city);
+      set('info-country',        ev.country);
+      set('info-capacity',       ev.capacity ? ev.capacity.toLocaleString('pt-PT') + ' pessoas' : null, '—');
+      set('info-promoter',       ev.promoter);
+      set('info-promoter-email', ev.promoter_email, '—');
+      set('info-promoter-phone', ev.promoter_phone, '—');
+      set('info-fee',            ev.fee ? sym + Number(ev.fee).toLocaleString('pt-PT') : null, '—');
+      set('info-status',         statusLabels[ev.status] || ev.status);
+      set('info-age',            ev.age_restriction, '—');
+    }
+
+    /* ── Schedule ── */
+    function renderSchedulePanel() {
+      const grid = document.getElementById('schedule-grid');
+      grid.innerHTML = SCHEDULE_SLOTS.map(slot => {
+        const val = schedule[slot.key] || '';
+        return `<div class="schedule-card">
+          <div class="schedule-icon">${slot.icon}</div>
+          <div style="flex:1;">
+            <div class="schedule-label">${slot.label}</div>
+            <div class="schedule-time ${val ? '' : 'empty'}">
+              <input type="time" value="${val}" placeholder="--:--"
+                onchange="onTimeChange('${slot.key}', this.value)"
+                oninput="document.getElementById('save-schedule-btn').style.display='block'">
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    window.onTimeChange = function(key, val) {
+      schedule[key] = val;
+      document.getElementById('save-schedule-btn').style.display = 'block';
+    };
+
+    window.saveSchedule = async function() {
+      const { error } = await supabase.from('events').update({ schedule }).eq('id', evId);
+      if (!error) {
+        document.getElementById('save-schedule-btn').style.display = 'none';
+        showToast('Horários guardados');
+      }
+    };
+
+    /* ── Checklist ── */
+    function buildDefaultChecklist() {
+      return DEFAULT_CHECKLIST.flatMap(c =>
+        c.items.map(text => ({ id: crypto.randomUUID(), cat: c.cat, text, done: false }))
+      );
+    }
+
+    function renderChecklist() {
+      const body  = document.getElementById('checklist-body');
+      const total = checklist.length;
+      const done  = checklist.filter(i => i.done).length;
+      const pct   = total ? Math.round((done / total) * 100) : 0;
+
+      document.getElementById('checklist-progress-label').textContent = `${done} / ${total}`;
+      document.getElementById('progress-fill').style.width = pct + '%';
+      document.getElementById('checklist-pct').textContent = pct + '%';
+
+      // Group by category
+      const cats = [...new Set(checklist.map(i => i.cat))];
+      body.innerHTML = cats.map(cat => {
+        const items = checklist.filter(i => i.cat === cat);
+        return `<div class="checklist-category">
+          <div class="cat-title">${esc(cat)}</div>
+          ${items.map(item => `
+            <div class="checklist-item" id="ci-${item.id}">
+              <div class="check-box ${item.done ? 'checked' : ''}" onclick="toggleCheck('${item.id}')"></div>
+              <div class="check-text ${item.done ? 'done' : ''}">${esc(item.text)}</div>
+              <div class="check-delete" onclick="deleteItem('${item.id}')">✕</div>
+            </div>`).join('')}
+        </div>`;
+      }).join('');
+    }
+
+    window.toggleCheck = function(id) {
+      const item = checklist.find(i => i.id === id);
+      if (item) { item.done = !item.done; renderChecklist(); saveChecklist(); }
+    };
+
+    window.deleteItem = function(id) {
+      checklist = checklist.filter(i => i.id !== id);
+      renderChecklist(); saveChecklist();
+    };
+
+    window.addItem = function() {
+      const input = document.getElementById('new-item-input');
+      const text  = input.value.trim();
+      if (!text) return;
+      checklist.push({ id: crypto.randomUUID(), cat: 'Outros', text, done: false });
+      input.value = '';
+      renderChecklist(); saveChecklist();
+    };
+
+    async function saveChecklist() {
+      await supabase.from('events').update({ checklist }).eq('id', evId);
+    }
+
+    /* ── Notes auto-save ── */
+    window.scheduleNotesSave = function() {
+      clearTimeout(notesTimer);
+      document.getElementById('notes-saved').textContent = 'A guardar...';
+      document.getElementById('notes-saved').style.opacity = '1';
+      notesTimer = setTimeout(async () => {
+        const notes = document.getElementById('notes-area').value;
+        const { error } = await supabase.from('events').update({ notes }).eq('id', evId);
+        if (!error) {
+          document.getElementById('notes-saved').textContent = '✓ Guardado';
+          setTimeout(() => { document.getElementById('notes-saved').style.opacity = '0'; }, 2000);
+        }
+      }, 1200);
+    };
+
+    /* ── Edit info modal ── */
+    document.addEventListener('DOMContentLoaded', () => {});
+
+    function populateEditModal() {
+      document.getElementById('edit-date').value           = ev.date || '';
+      document.getElementById('edit-venue').value          = ev.venue || '';
+      document.getElementById('edit-address').value        = ev.venue_address || '';
+      document.getElementById('edit-city').value           = ev.city || '';
+      document.getElementById('edit-country').value        = ev.country || '';
+      document.getElementById('edit-capacity').value       = ev.capacity || '';
+      document.getElementById('edit-age').value            = ev.age_restriction || '';
+      document.getElementById('edit-promoter').value       = ev.promoter || '';
+      document.getElementById('edit-promoter-email').value = ev.promoter_email || '';
+      document.getElementById('edit-promoter-phone').value = ev.promoter_phone || '';
+      document.getElementById('edit-fee').value            = ev.fee || '';
+      document.getElementById('edit-currency').value       = ev.fee_currency || 'EUR';
+      editStatus = ev.status || 'confirmed';
+      selectStatus(editStatus);
+    }
+
+    window.selectStatus = function(s) {
+      editStatus = s;
+      document.querySelectorAll('.status-opt').forEach(el => {
+        el.className = 'status-opt' + (el.dataset.status === s ? ` sel-${s}` : '');
+      });
+    };
+
+    window.saveInfo = async function() {
+      const errEl = document.getElementById('edit-ev-error');
+      errEl.style.display = 'none';
+
+      const payload = {
+        date:             document.getElementById('edit-date').value,
+        status:           editStatus,
+        venue:            document.getElementById('edit-venue').value.trim() || null,
+        venue_address:    document.getElementById('edit-address').value.trim() || null,
+        city:             document.getElementById('edit-city').value.trim() || null,
+        country:          document.getElementById('edit-country').value.trim() || null,
+        capacity:         document.getElementById('edit-capacity').value || null,
+        age_restriction:  document.getElementById('edit-age').value.trim() || null,
+        promoter:         document.getElementById('edit-promoter').value.trim() || null,
+        promoter_email:   document.getElementById('edit-promoter-email').value.trim() || null,
+        promoter_phone:   document.getElementById('edit-promoter-phone').value.trim() || null,
+        fee:              document.getElementById('edit-fee').value || null,
+        fee_currency:     document.getElementById('edit-currency').value,
+      };
+
+      const { data, error } = await supabase.from('events').update(payload).eq('id', evId).select().single();
+      if (error) { errEl.textContent = error.message; errEl.style.display = 'block'; return; }
+      ev = { ...ev, ...data };
+      renderHero();
+      renderInfoPanel();
+      closeModal('edit-info-modal');
+      showToast('Evento actualizado');
+    };
+
+    /* ── Delete event ── */
+    window.confirmDeleteEvent = async function() {
+      closeModal('ev-options-modal');
+      if (!confirm(`Apagar este evento? Esta acção é irreversível.`)) return;
+      await supabase.from('events').delete().eq('id', evId);
+      window.location.href = band ? `/band.html?id=${band.id}` : '/app.html';
+    };
+
+    /* ── Share ── */
+    window.shareEvent = function() {
+      closeModal('ev-options-modal');
+      const d   = new Date(ev.date + 'T12:00:00');
+      const txt = `${ev.venue || 'Evento'}\n${d.toLocaleDateString('pt-PT')}\n${[ev.city, ev.country].filter(Boolean).join(', ')}`;
+      if (navigator.share) {
+        navigator.share({ title: band?.name, text: txt });
+      } else {
+        navigator.clipboard.writeText(txt).then(() => showToast('Copiado para o clipboard'));
+      }
+    };
+
+    /* ── Navigation ── */
+    window.goBack = function() {
+      if (band?.id) window.location.href = `/band.html?id=${band.id}`;
+      else history.back();
+    };
+
+    /* ── Tab switch ── */
+    window.switchTab = function(tab) {
+      activeTab = tab;
+      document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('tab-' + tab).classList.add('active');
+      document.getElementById('panel-' + tab).classList.add('active');
+
+      if (tab === 'info' && ev) populateEditModalLazy();
+    };
+
+    // Lazy populate on first info tab view
+    let editPopulated = false;
+    function populateEditModalLazy() {
+      if (!editPopulated && ev) { populateEditModal(); editPopulated = true; }
+    }
+
+    /* ── Open modal (also populate edit) ── */
+    window.openModal = function(id) {
+      if (id === 'edit-info-modal' && ev) { populateEditModal(); editPopulated = true; }
+      document.getElementById(id).classList.add('show');
+    };
+    window.closeModal = function(id) { document.getElementById(id).classList.remove('show'); };
+    window.closeOnBackdrop = function(e, id) { if (e.target.id === id) closeModal(id); };
+
+    /* ── Toast ── */
+    function showToast(msg) {
+      const t = document.createElement('div');
+      t.className = 'toast'; t.textContent = msg;
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 2500);
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  </script>
+</body>
+</html>
