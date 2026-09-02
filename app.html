@@ -20,11 +20,14 @@
     /* ── Header ── */
     .app-header {
       background: var(--surface); border-bottom: 1px solid var(--border);
-      padding: 14px 16px 12px;
+      padding: 12px 16px 10px;
       display: flex; align-items: center; justify-content: space-between;
       position: sticky; top: 0; z-index: 100;
     }
-    .header-logo { font-family: var(--font-display); font-size: 20px; letter-spacing: 3px; }
+    .header-logo { display: flex; align-items: center; gap: 7px; }
+    .header-logo-road { font-family: var(--font-display); font-size: 22px; letter-spacing: 1px; color: var(--text); line-height: 1; }
+    .header-logo-dot  { width: 7px; height: 7px; border-radius: 50%; background: var(--coral); flex-shrink: 0; }
+    .header-logo-book { font-family: var(--font-display); font-size: 22px; letter-spacing: 1px; color: var(--coral); line-height: 1; }
     .header-right { display: flex; align-items: center; gap: 10px; }
     .header-btn {
       width: 34px; height: 34px; border-radius: 50%;
@@ -162,7 +165,11 @@
 
   <!-- Header -->
   <header class="app-header">
-    <div class="header-logo">ROADBOOK</div>
+    <div class="header-logo">
+      <span class="header-logo-road">ROAD</span>
+      <span class="header-logo-dot"></span>
+      <span class="header-logo-book">BOOK</span>
+    </div>
     <div class="header-right">
       <div class="header-btn" onclick="openModal('add-band-modal')" title="Nova banda">＋</div>
       <div class="header-btn" onclick="openModal('profile-modal')">👤</div>

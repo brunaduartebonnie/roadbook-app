@@ -9,18 +9,19 @@
 
 /* ── Tokens ── */
 :root {
-  --bg:        #0a0a0a;
-  --surface:   #141414;
-  --surface2:  #1c1c1c;
-  --surface3:  #242424;
-  --border:    #2a2a2a;
+  /* Light theme — default */
+  --bg:        #f7f4ef;
+  --surface:   #ffffff;
+  --surface2:  #f0ede6;
+  --surface3:  #e8e4dc;
+  --border:    #d8d3c8;
   --blue:      #2259e0;
-  --blue-dim:  #1040a0;
+  --blue-dim:  #d0d9fb;
   --coral:     #fe6977;
-  --coral-dim: #8a2f1a;
-  --text:      #f2f2f2;
-  --muted:     #777;
-  --muted2:    #444;
+  --coral-dim: #fde2e5;
+  --text:      #1a1817;
+  --muted:     #8a7f70;
+  --muted2:    #bbb5a8;
   --confirm:   #3dba6e;
   --danger:    #e05c5c;
   --radius:    10px;
@@ -29,17 +30,17 @@
   --font-card:    'Plus Jakarta Sans', sans-serif;
 }
 
-body.light {
-  --bg:        #f7f4ef;
-  --surface:   #ffffff;
-  --surface2:  #f0ede6;
-  --surface3:  #e8e4dc;
-  --border:    #d8d3c8;
-  --text:      #1a1817;
-  --muted:     #8a7f70;
-  --muted2:    #bbb5a8;
-  --blue-dim:  #d0d9fb;
-  --coral-dim: #fde2e5;
+body.dark {
+  --bg:        #0a0a0a;
+  --surface:   #141414;
+  --surface2:  #1c1c1c;
+  --surface3:  #242424;
+  --border:    #2a2a2a;
+  --text:      #f2f2f2;
+  --muted:     #777;
+  --muted2:    #444;
+  --blue-dim:  #1040a0;
+  --coral-dim: #8a2f1a;
 }
 
 html, body {

@@ -14,10 +14,10 @@
       width: 100%; max-width: 420px;
       display: flex; flex-direction: column; align-items: center; gap: 0;
     }
-    .invite-logo {
-      font-family: var(--font-display); font-size: 22px; letter-spacing: 4px;
-      color: var(--muted); margin-bottom: 32px;
-    }
+    .invite-logo { display: flex; align-items: center; gap: 7px; margin-bottom: 32px; }
+    .invite-logo-road { font-family: var(--font-display); font-size: 22px; letter-spacing: 1px; color: var(--text); line-height: 1; }
+    .invite-logo-dot  { width: 7px; height: 7px; border-radius: 50%; background: var(--coral); flex-shrink: 0; }
+    .invite-logo-book { font-family: var(--font-display); font-size: 22px; letter-spacing: 1px; color: var(--coral); line-height: 1; }
     .invite-card {
       width: 100%; background: var(--surface); border: 1px solid var(--border);
       border-radius: 20px; padding: 28px 24px; display: flex; flex-direction: column; gap: 20px;
@@ -52,7 +52,11 @@
 <body>
 
   <div class="invite-wrap">
-    <div class="invite-logo">ROADBOOK</div>
+    <div class="invite-logo">
+      <span class="invite-logo-road">ROAD</span>
+      <span class="invite-logo-dot"></span>
+      <span class="invite-logo-book">BOOK</span>
+    </div>
 
     <!-- Loading state -->
     <div id="state-loading" style="display:flex;flex-direction:column;align-items:center;gap:16px;">

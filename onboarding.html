@@ -56,7 +56,10 @@
       display: flex; align-items: center; justify-content: space-between;
       padding: 14px 24px 0;
     }
-    .ob-logo { font-family: var(--font-display); font-size: 18px; letter-spacing: 3px; color: var(--muted); }
+    .ob-logo { display: flex; align-items: center; gap: 5px; }
+    .ob-logo-road { font-family: var(--font-display); font-size: 18px; letter-spacing: 1px; color: var(--text); line-height: 1; }
+    .ob-logo-dot  { width: 6px; height: 6px; border-radius: 50%; background: var(--coral); flex-shrink: 0; }
+    .ob-logo-book { font-family: var(--font-display); font-size: 18px; letter-spacing: 1px; color: var(--coral); line-height: 1; }
     .ob-user { font-size: 12px; color: var(--muted); }
 
     /* Trial badge */
@@ -76,7 +79,11 @@
   </div>
 
   <div class="ob-topbar">
-    <div class="ob-logo">ROADBOOK</div>
+    <div class="ob-logo">
+      <span class="ob-logo-road">ROAD</span>
+      <span class="ob-logo-dot"></span>
+      <span class="ob-logo-book">BOOK</span>
+    </div>
     <div class="ob-user" id="ob-user-email"></div>
   </div>
 
