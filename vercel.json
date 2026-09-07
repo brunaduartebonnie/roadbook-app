@@ -1,0 +1,22 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    }
+  ],
+  "rewrites": [
+    { "source": "/app",        "destination": "/app.html" },
+    { "source": "/band",       "destination": "/band.html" },
+    { "source": "/event",      "destination": "/event.html" },
+    { "source": "/onboarding", "destination": "/onboarding.html" },
+    { "source": "/invite",     "destination": "/invite.html" },
+    { "source": "/billing",    "destination": "/billing.html" }
+  ]
+}
