@@ -178,7 +178,8 @@
       <span class="header-logo-book">BOOK</span>
     </div>
     <div class="header-right">
-      <div class="header-btn" onclick="openModal('add-band-modal')" title="Nova banda">＋</div>
+      <button class="rb-lang-toggle" onclick="window._toggleLang()">PT</button>
+      <div class="header-btn" onclick="openModal('add-band-modal')">＋</div>
       <div class="header-btn" onclick="openModal('profile-modal')">👤</div>
     </div>
   </header>
@@ -214,19 +215,19 @@
   <nav class="bottom-nav">
     <div class="bn-item active" id="bn-home">
       <div class="bn-icon">🏠</div>
-      <span>Início</span>
+      <span data-i18n="app.nav.home">Início</span>
     </div>
     <div class="bn-item" id="bn-events">
       <div class="bn-icon">📅</div>
-      <span>Eventos</span>
+      <span data-i18n="app.nav.events">Eventos</span>
     </div>
     <div class="bn-item" id="bn-team">
       <div class="bn-icon">👥</div>
-      <span>Equipa</span>
+      <span data-i18n="app.nav.team">Equipa</span>
     </div>
     <div class="bn-item" id="bn-settings">
       <div class="bn-icon">⚙️</div>
-      <span>Conta</span>
+      <span data-i18n="app.nav.account">Conta</span>
     </div>
   </nav>
 
@@ -234,7 +235,7 @@
   <div class="modal-backdrop" id="add-band-modal" onclick="closeOnBackdrop(event, 'add-band-modal')">
     <div class="modal-sheet">
       <div class="modal-handle"></div>
-      <div class="modal-title">NOVA BANDA</div>
+      <div class="modal-title" data-i18n="app.modal.newband">NOVA BANDA</div>
       <div style="display:flex;flex-direction:column;gap:14px;">
         <div class="input-group">
           <label class="input-label">Nome da banda</label>
@@ -268,8 +269,8 @@
       </div>
       <div style="display:flex;flex-direction:column;gap:10px;">
         <button class="btn btn-surface" onclick="window.location.href='/invite.html'">Convidar membro</button>
-        <button class="btn btn-surface" onclick="window.location.href='/billing'">Plano e faturação</button>
-        <button class="btn btn-danger" onclick="handleSignOut()">Terminar sessão</button>
+        <button class="btn btn-surface" onclick="window.location.href='/billing'" data-i18n="app.profile.billing">Plano e faturação</button>
+        <button class="btn btn-danger" onclick="handleSignOut()" data-i18n="app.profile.signout">Terminar sessão</button>
       </div>
     </div>
   </div>
@@ -277,6 +278,8 @@
   <script type="module">
     import { supabase, requireAuth, getProfile } from './js/config.js';
     import { signOut } from './js/auth.js';
+    import { t, toggleLang } from './js/i18n.js';
+    window._toggleLang = () => { toggleLang(); location.reload(); };
 
     const COLORS = ['#2259e0','#fe6977','#3dba6e','#f5a623','#9b59b6','#1abc9c','#e74c3c','#e67e22'];
     let newBandColor = COLORS[0];

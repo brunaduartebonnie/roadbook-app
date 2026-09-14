@@ -31,7 +31,7 @@
     }
     .invite-band-color { height: 5px; border-radius: 3px; width: 100%; margin-bottom: 4px; }
     .invite-icon { font-size: 40px; text-align: center; }
-    .invite-heading { font-family: var(--font-display); font-size: 26px; letter-spacing: 2px; text-align: center; }
+    .invite-heading { font-family: var(--font-display); font-size: 26px; letter-spacing: 2px; text-align: center; white-space: pre-line; }
     .invite-meta { font-size: 14px; color: var(--muted); text-align: center; line-height: 1.7; }
     .invite-band-pill {
       display: inline-flex; align-items: center; gap: 8px;
@@ -52,11 +52,20 @@
       text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12px;
     }
     .state-icon  { font-size: 52px; }
-    .state-title { font-family: var(--font-display); font-size: 26px; letter-spacing: 2px; }
+    .state-title { font-family: var(--font-display); font-size: 26px; letter-spacing: 2px; white-space: pre-line; }
     .state-sub   { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+    /* Lang toggle position */
+    .lang-wrap {
+      position: fixed; top: 16px; right: 16px; z-index: 200;
+    }
   </style>
 </head>
 <body>
+
+  <div class="lang-wrap">
+    <button class="rb-lang-toggle" onclick="window._toggleLang()">PT</button>
+  </div>
 
   <div class="invite-wrap">
     <div class="invite-logo">
@@ -68,15 +77,16 @@
     <!-- Loading state -->
     <div id="state-loading" style="display:flex;flex-direction:column;align-items:center;gap:16px;">
       <div class="spinner" style="width:32px;height:32px;"></div>
-      <p style="font-size:13px;color:var(--muted);">A verificar convite...</p>
+      <p style="font-size:13px;color:var(--muted);" data-i18n="inv.loading">A verificar convite...</p>
     </div>
 
     <!-- Invalid / expired state -->
     <div id="state-invalid" style="display:none;" class="invite-card">
       <div class="state-error">
         <div class="state-icon">⚠️</div>
-        <div class="state-title">CONVITE<br>INVÁLIDO</div>
-        <div class="state-sub">Este convite não é válido ou já expirou. Pede ao administrador um novo link.</div>
+        <div class="state-title" data-i18n="inv.invalid.title">CONVITE
+INVÁLIDO</div>
+        <div class="state-sub" data-i18n="inv.invalid.sub">Este convite não é válido ou já expirou. Pede ao administrador um novo link.</div>
       </div>
     </div>
 
@@ -84,7 +94,8 @@
     <div id="state-invite" style="display:none;" class="invite-card">
       <div class="invite-band-color" id="inv-color"></div>
       <div class="invite-icon">🎤</div>
-      <div class="invite-heading">FOSTE<br>CONVIDADO</div>
+      <div class="invite-heading" data-i18n="inv.heading">FOSTE
+CONVIDADO</div>
       <div class="invite-band-pill">
         <div class="invite-band-dot" id="inv-dot"></div>
         <span id="inv-band-name">—</span>
@@ -95,14 +106,14 @@
 
       <!-- Not logged in -->
       <div id="inv-auth-required" style="display:none;flex-direction:column;gap:10px;">
-        <p style="font-size:13px;color:var(--muted);text-align:center;">Para aceitar o convite precisas de ter uma conta RoadBook.</p>
-        <button class="btn btn-primary" onclick="loginAndAccept()">Entrar e aceitar</button>
-        <button class="btn btn-outline" onclick="signupAndAccept()">Criar conta</button>
+        <p style="font-size:13px;color:var(--muted);text-align:center;" data-i18n="inv.noauth.desc">Para aceitar o convite precisas de ter uma conta RoadBook.</p>
+        <button class="btn btn-primary" onclick="loginAndAccept()" data-i18n="inv.btn.login">Entrar e aceitar</button>
+        <button class="btn btn-outline" onclick="signupAndAccept()" data-i18n="inv.btn.signup">Criar conta</button>
       </div>
 
       <!-- Logged in -->
       <div id="inv-accept-btn-wrap" style="display:none;">
-        <button class="btn btn-primary" id="inv-accept-btn" onclick="acceptInvite()">Aceitar convite</button>
+        <button class="btn btn-primary" id="inv-accept-btn" onclick="acceptInvite()" data-i18n="inv.btn.accept">Aceitar convite</button>
       </div>
     </div>
 
@@ -110,9 +121,10 @@
     <div id="state-success" style="display:none;" class="invite-card">
       <div class="state-success">
         <div class="state-icon">🎉</div>
-        <div class="state-title">BEM-VINDO<br>À EQUIPA</div>
-        <div class="state-sub" id="success-msg">Já fazes parte da banda. Abre a app para começar.</div>
-        <a href="/app.html" class="btn btn-primary mt-16">Ir para a app</a>
+        <div class="state-title" data-i18n="inv.success.title">BEM-VINDO
+À EQUIPA</div>
+        <div class="state-sub" id="success-msg" data-i18n="inv.success.default">Já fazes parte da banda. Abre a app para começar.</div>
+        <a href="/app.html" class="btn btn-primary mt-16" data-i18n="inv.btn.app">Ir para a app</a>
       </div>
     </div>
 
@@ -120,6 +132,9 @@
 
   <script type="module">
     import { supabase, getUser } from './js/config.js';
+    import { t, toggleLang } from './js/i18n.js';
+
+    window._toggleLang = () => { toggleLang(); location.reload(); };
 
     const token = new URLSearchParams(window.location.search).get('token');
     let invitation = null;
@@ -149,9 +164,9 @@
       document.getElementById('inv-color').style.background   = color;
       document.getElementById('inv-dot').style.background     = color;
       document.getElementById('inv-band-name').textContent    = data.artists?.name || '—';
-      document.getElementById('inv-role').textContent         = translateRole(data.role);
+      document.getElementById('inv-role').textContent         = t('role.' + data.role) || data.role;
       document.getElementById('inv-meta').innerHTML =
-        `Tens até <strong>${new Date(data.expires_at).toLocaleDateString('pt-PT')}</strong> para aceitar.`;
+        t('inv.valid.until', { date: `<strong>${new Date(data.expires_at).toLocaleDateString()}</strong>` });
 
       // Check session
       currentUser = await getUser();
@@ -174,10 +189,10 @@
       const { data, error } = await supabase.rpc('accept_invitation', { p_token: token });
 
       if (error || data?.error) {
-        const msg = data?.error || error?.message || 'Erro ao aceitar convite.';
+        const msg = data?.error || error?.message || t('common.error');
         const errEl = document.getElementById('inv-error');
         errEl.textContent = msg; errEl.style.display = 'block';
-        btn.disabled = false; btn.textContent = 'Aceitar convite';
+        btn.disabled = false; btn.textContent = t('inv.btn.accept');
         return;
       }
 
@@ -189,8 +204,11 @@
         }
       }
 
-      document.getElementById('success-msg').textContent =
-        `Já fazes parte de ${invitation?.artists?.name || 'a banda'}. Abre a app para começar.`;
+      const bandName = invitation?.artists?.name;
+      document.getElementById('success-msg').textContent = bandName
+        ? `${t('inv.success.default').replace('da banda', `de ${bandName}`)}`
+        : t('inv.success.default');
+      document.getElementById('success-msg').removeAttribute('data-i18n');
       show('state-success');
     };
 
@@ -205,16 +223,13 @@
     /* ── Utils ── */
     function show(id) {
       ['state-loading','state-invalid','state-invite','state-success'].forEach(s => {
-        document.getElementById(s).style.display = s === id ? (id === 'state-invite' ? 'flex' : id === 'state-loading' ? 'flex' : 'block') : 'none';
+        const el = document.getElementById(s);
+        if (s === id) {
+          el.style.display = s === 'state-invite' ? 'flex' : s === 'state-loading' ? 'flex' : 'block';
+        } else {
+          el.style.display = 'none';
+        }
       });
-    }
-
-    function translateRole(role) {
-      const map = {
-        tour_manager: 'Tour Manager', artist: 'Artista',
-        crew: 'Crew', backline: 'Backline', production: 'Produção', admin: 'Admin'
-      };
-      return map[role] || role;
     }
   </script>
 </body>

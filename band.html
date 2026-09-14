@@ -237,15 +237,16 @@
         <div class="band-hero-name" id="hero-name">—</div>
         <div class="band-hero-genre" id="hero-genre"></div>
       </div>
+      <button class="rb-lang-toggle" onclick="window._toggleLang()" style="margin-right:4px;">PT</button>
       <div class="band-hero-action" onclick="openModal('band-settings-modal')">⋯</div>
     </div>
   </div>
 
   <!-- Tabs -->
   <div class="tabs-row">
-    <div class="tab-item active" id="tab-eventos" onclick="switchTab('eventos')">Eventos</div>
-    <div class="tab-item"        id="tab-equipa"  onclick="switchTab('equipa')">Equipa</div>
-    <div class="tab-item"        id="tab-merch"   onclick="switchTab('merch')">Merch</div>
+    <div class="tab-item active" id="tab-eventos" onclick="switchTab('eventos')" data-i18n="band.tab.events">Eventos</div>
+    <div class="tab-item"        id="tab-equipa"  onclick="switchTab('equipa')"  data-i18n="band.tab.team">Equipa</div>
+    <div class="tab-item"        id="tab-merch"   onclick="switchTab('merch')"   data-i18n="band.tab.merch">Merch</div>
   </div>
 
   <!-- EVENTOS panel -->
@@ -253,8 +254,8 @@
     <div id="events-content">
       <div class="empty-state">
         <div class="empty-icon">📅</div>
-        <div class="empty-title">Sem eventos</div>
-        <div class="empty-sub">Adiciona o primeiro concerto desta banda.</div>
+        <div class="empty-title" data-i18n="band.empty.events.title">Sem eventos</div>
+        <div class="empty-sub" data-i18n="band.empty.events.sub">Adiciona o primeiro concerto desta banda.</div>
       </div>
     </div>
   </div>
@@ -273,8 +274,8 @@
     <div id="merch-content">
       <div class="empty-state">
         <div class="empty-icon">👕</div>
-        <div class="empty-title">Sem merch</div>
-        <div class="empty-sub">Adiciona produtos para gerir o stock em tour.</div>
+        <div class="empty-title" data-i18n="band.merch.empty.title">Sem merch</div>
+        <div class="empty-sub" data-i18n="band.merch.empty.sub">Adiciona produtos para gerir o stock em tour.</div>
       </div>
     </div>
   </div>
@@ -288,50 +289,50 @@
   <div class="modal-backdrop" id="add-event-modal" onclick="closeOnBackdrop(event,'add-event-modal')">
     <div class="modal-sheet">
       <div class="modal-handle"></div>
-      <div class="modal-title">NOVO EVENTO</div>
+      <div class="modal-title" data-i18n="band.modal.event">NOVO EVENTO</div>
       <div style="display:flex;flex-direction:column;gap:14px;">
 
         <div class="input-group">
-          <label class="input-label">Data</label>
+          <label class="input-label" data-i18n="band.form.date">Data</label>
           <input type="date" class="input" id="ev-date">
         </div>
         <div class="input-group">
-          <label class="input-label">Venue / Local</label>
-          <input type="text" class="input" id="ev-venue" placeholder="Ex: Coliseu do Porto">
+          <label class="input-label" data-i18n="band.form.venue">Venue / Local</label>
+          <input type="text" class="input" id="ev-venue" data-i18n-ph="band.form.venue.ph" placeholder="Ex: Coliseu do Porto">
         </div>
         <div class="input-group">
-          <label class="input-label">Cidade</label>
-          <input type="text" class="input" id="ev-city" placeholder="Ex: Porto, Portugal">
+          <label class="input-label" data-i18n="band.form.city">Cidade</label>
+          <input type="text" class="input" id="ev-city" data-i18n-ph="band.form.city.ph" placeholder="Ex: Porto, Portugal">
         </div>
         <div class="input-group">
-          <label class="input-label">País</label>
-          <input type="text" class="input" id="ev-country" placeholder="Ex: Portugal">
+          <label class="input-label" data-i18n="band.form.country">País</label>
+          <input type="text" class="input" id="ev-country" data-i18n-ph="band.form.country.ph" placeholder="Ex: Portugal">
         </div>
         <div class="input-group">
-          <label class="input-label">Promotor</label>
-          <input type="text" class="input" id="ev-promoter" placeholder="Ex: Everything is New">
+          <label class="input-label" data-i18n="band.form.promoter">Promotor</label>
+          <input type="text" class="input" id="ev-promoter" data-i18n-ph="band.form.promoter.ph" placeholder="Ex: Everything is New">
         </div>
         <div class="input-group">
-          <label class="input-label">Fee (€)</label>
+          <label class="input-label" data-i18n="band.form.fee">Fee (€)</label>
           <input type="number" class="input" id="ev-fee" placeholder="0" min="0">
         </div>
         <div class="input-group">
-          <label class="input-label">Estado</label>
+          <label class="input-label" data-i18n="band.form.status">Estado</label>
           <div class="status-grid">
-            <div class="status-opt sel-confirmed" data-status="confirmed" onclick="selectStatus('confirmed')">Confirmado</div>
-            <div class="status-opt" data-status="hold" onclick="selectStatus('hold')">Hold</div>
-            <div class="status-opt" data-status="pendente" onclick="selectStatus('pendente')">Pendente</div>
-            <div class="status-opt" data-status="cancelled" onclick="selectStatus('cancelled')">Cancelado</div>
+            <div class="status-opt sel-confirmed" data-status="confirmed" onclick="selectStatus('confirmed')" data-i18n="status.confirmed">Confirmado</div>
+            <div class="status-opt" data-status="hold" onclick="selectStatus('hold')" data-i18n="status.hold">Hold</div>
+            <div class="status-opt" data-status="pendente" onclick="selectStatus('pendente')" data-i18n="status.pendente">Pendente</div>
+            <div class="status-opt" data-status="cancelled" onclick="selectStatus('cancelled')" data-i18n="status.cancelled">Cancelado</div>
           </div>
         </div>
         <div class="input-group">
-          <label class="input-label">Notas</label>
-          <input type="text" class="input" id="ev-notes" placeholder="Informação adicional...">
+          <label class="input-label" data-i18n="band.form.notes">Notas</label>
+          <input type="text" class="input" id="ev-notes" data-i18n-ph="band.form.notes.ph" placeholder="Informação adicional...">
         </div>
 
         <div class="auth-error" id="ev-error" style="display:none;"></div>
-        <button class="btn btn-primary" onclick="createEvent()">Criar evento</button>
-        <button class="btn btn-ghost" onclick="closeModal('add-event-modal')">Cancelar</button>
+        <button class="btn btn-primary" onclick="createEvent()" data-i18n="band.btn.create.event">Criar evento</button>
+        <button class="btn btn-ghost" onclick="closeModal('add-event-modal')" data-i18n="common.cancel">Cancelar</button>
       </div>
     </div>
   </div>
@@ -342,33 +343,34 @@
   <div class="modal-backdrop" id="invite-modal" onclick="closeOnBackdrop(event,'invite-modal')">
     <div class="modal-sheet">
       <div class="modal-handle"></div>
-      <div class="modal-title">CONVIDAR<br>MEMBRO</div>
+      <div class="modal-title" data-i18n="band.modal.invite" style="white-space:pre-line;">CONVIDAR
+MEMBRO</div>
       <div style="display:flex;flex-direction:column;gap:14px;">
 
         <div class="input-group">
-          <label class="input-label">Email</label>
+          <label class="input-label" data-i18n="band.form.email">Email</label>
           <input type="email" class="input" id="inv-email" placeholder="email@exemplo.com">
         </div>
         <div class="input-group">
-          <label class="input-label">Função na equipa</label>
+          <label class="input-label" data-i18n="band.form.role">Função na equipa</label>
           <div class="role-grid" id="role-grid">
-            <div class="role-opt active" data-role="tour_manager" onclick="selectRole('tour_manager')">Tour Manager</div>
-            <div class="role-opt" data-role="artist" onclick="selectRole('artist')">Artista</div>
-            <div class="role-opt" data-role="crew" onclick="selectRole('crew')">Crew</div>
-            <div class="role-opt" data-role="backline" onclick="selectRole('backline')">Backline</div>
-            <div class="role-opt" data-role="production" onclick="selectRole('production')">Produção</div>
-            <div class="role-opt" data-role="admin" onclick="selectRole('admin')">Admin</div>
+            <div class="role-opt active" data-role="tour_manager" onclick="selectRole('tour_manager')" data-i18n="role.tour_manager">Tour Manager</div>
+            <div class="role-opt" data-role="artist"      onclick="selectRole('artist')"      data-i18n="role.artist">Artista</div>
+            <div class="role-opt" data-role="crew"        onclick="selectRole('crew')"        data-i18n="role.crew">Crew</div>
+            <div class="role-opt" data-role="backline"    onclick="selectRole('backline')"    data-i18n="role.backline">Backline</div>
+            <div class="role-opt" data-role="production"  onclick="selectRole('production')"  data-i18n="role.production">Produção</div>
+            <div class="role-opt" data-role="admin"       onclick="selectRole('admin')"       data-i18n="role.admin">Admin</div>
           </div>
         </div>
 
         <div class="auth-error" id="inv-error-modal" style="display:none;"></div>
         <div id="inv-success-wrap" style="display:none;background:rgba(61,186,110,0.1);border:1px solid var(--confirm);border-radius:8px;padding:12px;font-size:13px;color:var(--confirm);">
-          ✉️ Email enviado! O link abaixo serve de backup caso o email não chegue.
+          <span data-i18n="band.invite.success">✉️ Email enviado! O link abaixo serve de backup caso o email não chegue.</span>
           <div id="inv-link-box" style="margin-top:10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px;font-size:12px;word-break:break-all;color:var(--text);cursor:pointer;" onclick="copyInviteLink()"></div>
-          <div style="font-size:11px;color:var(--muted);margin-top:6px;text-align:center;">Toca no link para copiar</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:6px;text-align:center;" data-i18n="band.invite.copy">Toca no link para copiar</div>
         </div>
-        <button class="btn btn-primary" id="inv-btn" onclick="createInvite()">Enviar convite</button>
-        <button class="btn btn-ghost" onclick="closeModal('invite-modal')">Fechar</button>
+        <button class="btn btn-primary" id="inv-btn" onclick="createInvite()" data-i18n="band.btn.invite">Enviar convite</button>
+        <button class="btn btn-ghost" onclick="closeModal('invite-modal')" data-i18n="band.btn.close">Fechar</button>
       </div>
     </div>
   </div>
@@ -379,12 +381,12 @@
   <div class="modal-backdrop" id="band-settings-modal" onclick="closeOnBackdrop(event,'band-settings-modal')">
     <div class="modal-sheet">
       <div class="modal-handle"></div>
-      <div class="modal-title">BANDA</div>
+      <div class="modal-title" data-i18n="band.settings.title">BANDA</div>
       <div style="display:flex;flex-direction:column;gap:10px;">
-        <button class="btn btn-surface" onclick="closeModal('band-settings-modal'); openModal('edit-band-modal')">Editar banda</button>
-        <button class="btn btn-surface" onclick="closeModal('band-settings-modal'); openModal('invite-modal')">Convidar membro</button>
-        <button class="btn btn-danger" onclick="confirmDeleteBand()">Apagar banda</button>
-        <button class="btn btn-ghost" onclick="closeModal('band-settings-modal')">Cancelar</button>
+        <button class="btn btn-surface" onclick="closeModal('band-settings-modal'); openModal('edit-band-modal')" data-i18n="band.settings.edit">Editar banda</button>
+        <button class="btn btn-surface" onclick="closeModal('band-settings-modal'); openModal('invite-modal')" data-i18n="band.settings.invite">Convidar membro</button>
+        <button class="btn btn-danger" onclick="confirmDeleteBand()" data-i18n="band.settings.delete">Apagar banda</button>
+        <button class="btn btn-ghost" onclick="closeModal('band-settings-modal')" data-i18n="common.cancel">Cancelar</button>
       </div>
     </div>
   </div>
@@ -395,29 +397,33 @@
   <div class="modal-backdrop" id="edit-band-modal" onclick="closeOnBackdrop(event,'edit-band-modal')">
     <div class="modal-sheet">
       <div class="modal-handle"></div>
-      <div class="modal-title">EDITAR BANDA</div>
+      <div class="modal-title" data-i18n="band.edit.title">EDITAR BANDA</div>
       <div style="display:flex;flex-direction:column;gap:14px;">
         <div class="input-group">
-          <label class="input-label">Nome</label>
+          <label class="input-label" data-i18n="ob.step1.label">Nome</label>
           <input type="text" class="input" id="edit-band-name">
         </div>
         <div class="input-group">
-          <label class="input-label">Género / estilo</label>
+          <label class="input-label" data-i18n="app.form.genre.label">Género / estilo</label>
           <input type="text" class="input" id="edit-band-genre">
         </div>
         <div class="input-group">
-          <label class="input-label">Cor</label>
+          <label class="input-label" data-i18n="app.form.color.label">Cor</label>
           <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;" id="edit-swatch-row"></div>
         </div>
         <div class="auth-error" id="edit-band-error" style="display:none;"></div>
-        <button class="btn btn-primary" onclick="saveBand()">Guardar</button>
-        <button class="btn btn-ghost" onclick="closeModal('edit-band-modal')">Cancelar</button>
+        <button class="btn btn-primary" onclick="saveBand()" data-i18n="band.btn.save">Guardar</button>
+        <button class="btn btn-ghost" onclick="closeModal('edit-band-modal')" data-i18n="common.cancel">Cancelar</button>
       </div>
     </div>
   </div>
 
   <script type="module">
     import { supabase, requireAuth } from './js/config.js';
+    import { t, toggleLang, applyTranslations } from './js/i18n.js';
+
+    /* Reload on language change so JS-rendered content updates */
+    window._toggleLang = () => { toggleLang(); location.reload(); };
 
     /* ── State ── */
     const bandId = new URLSearchParams(window.location.search).get('id');
@@ -430,7 +436,6 @@
     let lastInvLink  = '';
 
     const COLORS = ['#2259e0','#fe6977','#3dba6e','#f5a623','#9b59b6','#1abc9c','#e74c3c','#e67e22'];
-    const MONTHS_PT = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 
     /* ── Init ── */
     window.addEventListener('DOMContentLoaded', async () => {
@@ -514,20 +519,20 @@
       if (!events.length) {
         el.innerHTML = `<div class="empty-state">
           <div class="empty-icon">📅</div>
-          <div class="empty-title">Sem eventos</div>
-          <div class="empty-sub">Toca no + para adicionar o primeiro concerto.</div>
+          <div class="empty-title">${t('band.empty.events.title')}</div>
+          <div class="empty-sub">${t('band.empty.events.sub')}</div>
         </div>`;
         return;
       }
 
       let html = '';
       if (upcoming.length) {
-        html += `<div class="events-section"><div class="events-section-title">Próximos</div>`;
+        html += `<div class="events-section"><div class="events-section-title">${t('band.section.upcoming')}</div>`;
         html += upcoming.map(e => eventCard(e)).join('');
         html += `</div>`;
       }
       if (past.length) {
-        html += `<div class="events-section"><div class="events-section-title">Passados</div>`;
+        html += `<div class="events-section"><div class="events-section-title">${t('band.section.past')}</div>`;
         html += past.map(e => eventCard(e, true)).join('');
         html += `</div>`;
       }
@@ -537,20 +542,20 @@
     function eventCard(ev, past = false) {
       const d   = new Date(ev.date + 'T12:00:00');
       const day = d.getDate();
-      const mon = MONTHS_PT[d.getMonth()];
-      const statusLabel = { confirmed:'Confirmado', hold:'Hold', cancelled:'Cancelado', pendente:'Pendente' };
+      const mon = t('month.' + d.getMonth());
+      const st  = ev.status || 'pendente';
+      const statusLabel = t('status.' + st) || st;
       const statusCls   = { confirmed:'status-confirmed', hold:'status-hold', cancelled:'status-cancelled', pendente:'status-pendente' };
-      const st = ev.status || 'pendente';
       return `<div class="event-card" onclick="openEvent('${ev.id}')" style="${past ? 'opacity:0.55;' : ''}">
         <div class="event-date-block">
           <div class="event-date-day">${day}</div>
           <div class="event-date-month">${mon}</div>
         </div>
         <div class="event-info">
-          <div class="event-venue">${esc(ev.venue || 'Local a confirmar')}</div>
+          <div class="event-venue">${esc(ev.venue || t('ev.venue.tbc'))}</div>
           <div class="event-city">${esc(ev.city || '')}${ev.country ? ' · ' + esc(ev.country) : ''}</div>
         </div>
-        <div class="event-status ${statusCls[st] || 'status-pendente'}">${statusLabel[st] || st}</div>
+        <div class="event-status ${statusCls[st] || 'status-pendente'}">${statusLabel}</div>
       </div>`;
     }
 
@@ -564,6 +569,7 @@
       document.querySelectorAll('.status-opt').forEach(el => {
         el.className = 'status-opt' + (el.dataset.status === s ? ` sel-${s}` : '');
       });
+      applyTranslations(); // re-apply so data-i18n text stays correct
     };
 
     window.createEvent = async function() {
@@ -576,8 +582,8 @@
       const notes   = document.getElementById('ev-notes').value.trim();
       const errEl   = document.getElementById('ev-error');
 
-      if (!date)  { errEl.textContent = 'Selecciona uma data.'; errEl.style.display='block'; return; }
-      if (!venue) { errEl.textContent = 'Introduz o nome do local.'; errEl.style.display='block'; return; }
+      if (!date)  { errEl.textContent = t('band.form.date') + ' obrigatória.'; errEl.style.display='block'; return; }
+      if (!venue) { errEl.textContent = t('band.form.venue') + ' obrigatório.'; errEl.style.display='block'; return; }
       errEl.style.display = 'none';
 
       const payload = {
@@ -612,14 +618,14 @@
         .eq('artist_id', bandId)
         .order('joined_at', { ascending: true });
 
-      if (error) { tc.innerHTML = `<div class="empty-state"><div class="empty-sub">${error.message}</div></div>`; return; }
+      if (error) { tc.innerHTML = `<div class="empty-state"><div class="empty-sub">${esc(error.message)}</div></div>`; return; }
 
       let html = (data || []).map(m => {
-        const name  = m.profiles?.full_name || m.profiles?.email || 'Sem nome';
+        const name  = m.profiles?.full_name || m.profiles?.email || '—';
         const email = m.profiles?.email || '';
         const init  = name[0]?.toUpperCase() || '?';
         const isTM  = m.role === 'tour_manager';
-        const roleLbl = translateRole(m.role);
+        const roleLbl = t('role.' + m.role) || m.role;
         return `<div class="member-row">
           <div class="member-avatar">${init}</div>
           <div class="member-info">
@@ -638,22 +644,22 @@
         .eq('status', 'pending');
 
       if (invites?.length) {
-        html += `<div style="padding:12px 16px 4px;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);">Convites pendentes</div>`;
+        html += `<div style="padding:12px 16px 4px;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);">${t('band.pending.invites')}</div>`;
         html += invites.map(inv => `
           <div class="member-row" style="opacity:0.6;">
             <div class="member-avatar" style="font-size:18px;">📨</div>
             <div class="member-info">
               <div class="member-name">${esc(inv.email || inv.phone || '—')}</div>
-              <div class="member-email">Convite enviado · expira ${new Date(inv.expires_at).toLocaleDateString('pt-PT')}</div>
+              <div class="member-email">${t('band.invite.expires', { date: new Date(inv.expires_at).toLocaleDateString() })}</div>
             </div>
-            <div class="member-role-tag">${translateRole(inv.role)}</div>
+            <div class="member-role-tag">${t('role.' + inv.role) || inv.role}</div>
           </div>`).join('');
       }
 
       html += `<div class="invite-strip" onclick="openModal('invite-modal')">
         <div class="invite-strip-icon">➕</div>
-        <div class="invite-strip-title">Convidar membro</div>
-        <div class="invite-strip-sub">Envia um link de convite por email</div>
+        <div class="invite-strip-title">${t('band.invite.strip.title')}</div>
+        <div class="invite-strip-sub">${t('band.invite.strip.sub')}</div>
       </div>`;
 
       tc.innerHTML = html;
@@ -665,12 +671,13 @@
       document.querySelectorAll('.role-opt').forEach(el => {
         el.classList.toggle('active', el.dataset.role === role);
       });
+      applyTranslations(); // keep data-i18n text
     };
 
     window.createInvite = async function() {
       const email = document.getElementById('inv-email').value.trim();
       const errEl = document.getElementById('inv-error-modal');
-      if (!email) { errEl.textContent = 'Introduz um email.'; errEl.style.display='block'; return; }
+      if (!email) { errEl.textContent = t('band.form.email') + ' obrigatório.'; errEl.style.display='block'; return; }
       errEl.style.display = 'none';
 
       const invBtn = document.getElementById('inv-btn');
@@ -693,14 +700,14 @@
         .single();
 
       invBtn.disabled = false;
-      invBtn.textContent = 'Enviar convite';
+      invBtn.textContent = t('band.btn.invite');
 
       if (error) { errEl.textContent = error.message; errEl.style.display='block'; return; }
 
       const invite_url = `${window.location.origin}/invite?token=${data.token}`;
       lastInvLink = invite_url;
 
-      // 2. Send email via Edge Function (fire-and-forget — show success regardless)
+      // 2. Send email via Edge Function (fire-and-forget)
       supabase.functions.invoke('send-invite', {
         body: {
           to:         email,
@@ -710,9 +717,9 @@
           invite_url,
           expires_at: data.expires_at || expires_at,
         },
-      }).catch(() => { /* email failed silently — link still works */ });
+      }).catch(() => {});
 
-      // 3. Show success + fallback link (in case they want to share manually)
+      // 3. Show success + fallback link
       document.getElementById('inv-link-box').textContent = invite_url;
       document.getElementById('inv-success-wrap').style.display = 'block';
       document.getElementById('inv-email').value = '';
@@ -728,7 +735,7 @@
       navigator.clipboard.writeText(lastInvLink).then(() => {
         const box = document.getElementById('inv-link-box');
         const orig = box.textContent;
-        box.textContent = '✓ Copiado!';
+        box.textContent = '✓ OK';
         setTimeout(() => { box.textContent = orig; }, 1500);
       });
     };
@@ -740,7 +747,6 @@
       const mc = document.getElementById('merch-content');
       mc.dataset.loaded = '1';
 
-      // Check if merch table exists
       const { data, error } = await supabase
         .from('merch')
         .select('*')
@@ -750,8 +756,8 @@
       if (error) {
         mc.innerHTML = `<div class="empty-state">
           <div class="empty-icon">👕</div>
-          <div class="empty-title">Merch em breve</div>
-          <div class="empty-sub">A gestão de merch está em desenvolvimento.</div>
+          <div class="empty-title">${t('band.merch.soon.title')}</div>
+          <div class="empty-sub">${t('band.merch.soon.sub')}</div>
         </div>`;
         return;
       }
@@ -759,15 +765,15 @@
       if (!data?.length) {
         mc.innerHTML = `<div class="empty-state">
           <div class="empty-icon">👕</div>
-          <div class="empty-title">Sem merch</div>
-          <div class="empty-sub">Adiciona produtos para gerir o stock em tour.</div>
+          <div class="empty-title">${t('band.merch.empty.title')}</div>
+          <div class="empty-sub">${t('band.merch.empty.sub')}</div>
         </div>`;
         return;
       }
 
       mc.innerHTML = data.map(item => {
         const stockCls = item.stock > 5 ? 'stock-ok' : item.stock > 0 ? 'stock-low' : 'stock-out';
-        const stockTxt = item.stock > 0 ? item.stock + ' un.' : 'Esgotado';
+        const stockTxt = item.stock > 0 ? item.stock + ' un.' : t('status.cancelled'); // reuse or add out-of-stock key
         return `<div class="merch-item">
           <div class="merch-thumb">${item.emoji || '📦'}</div>
           <div class="merch-info">
@@ -805,7 +811,7 @@
       const name  = document.getElementById('edit-band-name').value.trim();
       const genre = document.getElementById('edit-band-genre').value.trim();
       const errEl = document.getElementById('edit-band-error');
-      if (!name) { errEl.textContent = 'O nome não pode estar vazio.'; errEl.style.display='block'; return; }
+      if (!name) { errEl.textContent = t('ob.step1.label') + ' obrigatório.'; errEl.style.display='block'; return; }
       errEl.style.display = 'none';
 
       const { error } = await supabase.from('artists').update({ name, genre, color: editColor }).eq('id', bandId);
@@ -817,7 +823,7 @@
     };
 
     window.confirmDeleteBand = async function() {
-      if (!confirm(`Tens a certeza que queres apagar "${band.name}"? Esta acção é irreversível.`)) return;
+      if (!confirm(`${t('band.settings.delete')} "${band.name}"?`)) return;
       await supabase.from('artists').delete().eq('id', bandId);
       window.location.href = '/app.html';
     };
@@ -829,9 +835,6 @@
 
     /* ── Utils ── */
     function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-    function translateRole(r) {
-      return { tour_manager:'TM', artist:'Artista', crew:'Crew', backline:'Backline', production:'Produção', admin:'Admin' }[r] || r;
-    }
   </script>
 </body>
 </html>

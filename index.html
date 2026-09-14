@@ -180,6 +180,9 @@
 </head>
 <body>
 
+  <!-- Language toggle -->
+  <button class="rb-lang-toggle" onclick="window._toggleLang()" style="position:fixed;top:16px;right:16px;z-index:200;">PT</button>
+
   <!-- Loading overlay -->
   <div id="loading-overlay">
     <div class="spinner"></div>
@@ -195,7 +198,7 @@
       <div class="rb-logo-dot"></div>
       <div class="rb-logo-book">BOOK</div>
     </div>
-    <div class="rb-logo-sub">Tour Management &amp; Produção</div>
+    <div class="rb-logo-sub" data-i18n="logo.sub">Tour Management &amp; Produção</div>
   </div>
 
   <!-- Auth form -->
@@ -203,8 +206,8 @@
 
     <!-- Tabs -->
     <div class="auth-tabs">
-      <div class="auth-tab active" id="tab-login" onclick="switchTab('login')">Entrar</div>
-      <div class="auth-tab" id="tab-signup" onclick="switchTab('signup')">Criar conta</div>
+      <div class="auth-tab active" id="tab-login" onclick="switchTab('login')" data-i18n="auth.tab.login">Entrar</div>
+      <div class="auth-tab" id="tab-signup" onclick="switchTab('signup')" data-i18n="auth.tab.signup">Criar conta</div>
     </div>
 
     <!-- Error -->
@@ -213,45 +216,45 @@
     <!-- Login -->
     <form class="auth-form" id="form-login" onsubmit="handleLogin(event)">
       <div>
-        <label class="input-label">Email</label>
-        <input type="email" class="login-input" id="login-email" placeholder="nome@email.com" autocomplete="email" required>
+        <label class="input-label" data-i18n="auth.label.email">Email</label>
+        <input type="email" class="login-input" id="login-email" data-i18n-ph="auth.placeholder.email" placeholder="nome@email.com" autocomplete="email" required>
       </div>
       <div>
-        <label class="input-label">Password</label>
+        <label class="input-label" data-i18n="auth.label.password">Password</label>
         <input type="password" class="login-input" id="login-password" placeholder="••••••••" autocomplete="current-password" required>
-        <div class="forgot-link" onclick="showForgot()" style="margin-top:8px;">Esqueceste a password?</div>
+        <div class="forgot-link" onclick="showForgot()" style="margin-top:8px;" data-i18n="auth.forgot">Esqueceste a password?</div>
       </div>
-      <button type="submit" class="btn-cta" id="btn-login">ENTRAR</button>
+      <button type="submit" class="btn-cta" id="btn-login" data-i18n="auth.btn.login">ENTRAR</button>
     </form>
 
     <!-- Sign up -->
     <form class="auth-form hidden" id="form-signup" onsubmit="handleSignup(event)">
       <div>
-        <label class="input-label">Nome completo</label>
-        <input type="text" class="login-input" id="signup-name" placeholder="O teu nome" autocomplete="name" required>
+        <label class="input-label" data-i18n="auth.label.name.full">Nome completo</label>
+        <input type="text" class="login-input" id="signup-name" data-i18n-ph="auth.placeholder.name" placeholder="O teu nome" autocomplete="name" required>
       </div>
       <div>
-        <label class="input-label">Email</label>
-        <input type="email" class="login-input" id="signup-email" placeholder="nome@email.com" autocomplete="email" required>
+        <label class="input-label" data-i18n="auth.label.email">Email</label>
+        <input type="email" class="login-input" id="signup-email" data-i18n-ph="auth.placeholder.email" placeholder="nome@email.com" autocomplete="email" required>
       </div>
       <div>
-        <label class="input-label">Password</label>
-        <input type="password" class="login-input" id="signup-password" placeholder="Mínimo 8 caracteres" autocomplete="new-password" minlength="8" required>
+        <label class="input-label" data-i18n="auth.label.password">Password</label>
+        <input type="password" class="login-input" id="signup-password" data-i18n-ph="auth.placeholder.newpw" placeholder="Mínimo 8 caracteres" autocomplete="new-password" minlength="8" required>
       </div>
-      <button type="submit" class="btn-cta" id="btn-signup">CRIAR CONTA</button>
+      <button type="submit" class="btn-cta" id="btn-signup" data-i18n="auth.btn.signup">CRIAR CONTA</button>
     </form>
 
     <!-- OAuth -->
-    <div class="oauth-divider">ou</div>
+    <div class="oauth-divider" data-i18n="auth.or">ou</div>
     <div style="display:flex;flex-direction:column;gap:10px;">
       <button class="oauth-btn" onclick="handleGoogle()">
         <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-        Entrar com Google
+        <span data-i18n="auth.btn.google">Entrar com Google</span>
       </button>
     </div>
 
     <div class="auth-switch">
-      <span id="auth-switch-text">Não tens conta? <span onclick="switchTab('signup')">Criar conta</span></span>
+      <span id="auth-switch-text" data-i18n-html="auth.switch.to.signup">Não tens conta? <span onclick="switchTab('signup')">Criar conta</span></span>
     </div>
   </div>
 
@@ -261,44 +264,53 @@
   <div id="forgot-screen">
     <div onclick="hideForgot()" style="display:flex;align-items:center;gap:10px;color:var(--muted);cursor:pointer;margin-bottom:32px;">
       <span style="font-size:20px;">←</span>
-      <span style="font-size:14px;font-weight:600;">Voltar</span>
+      <span style="font-size:14px;font-weight:600;" data-i18n="auth.forgot.back">← Voltar ao login</span>
     </div>
     <h2 style="font-family:var(--font-display);font-size:36px;letter-spacing:2px;margin-bottom:8px;">RECUPERAR<br>PASSWORD</h2>
-    <p style="font-size:14px;color:var(--muted);margin-bottom:28px;line-height:1.6;">Envia-nos o teu email e enviamos um link para criares uma nova password.</p>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:28px;line-height:1.6;" data-i18n="auth.forgot.desc">Envia-nos o teu email e enviamos um link para criares uma nova password.</p>
     <div class="auth-error" id="forgot-error" style="margin-bottom:12px;"></div>
     <div id="forgot-success" style="display:none;background:rgba(61,186,110,0.1);border:1px solid var(--confirm);border-radius:8px;padding:12px 14px;font-size:13px;color:var(--confirm);margin-bottom:12px;">
       Email enviado! Verifica a tua caixa de entrada.
     </div>
     <form onsubmit="handleForgot(event)" style="display:flex;flex-direction:column;gap:14px;">
       <div>
-        <label class="input-label">Email</label>
-        <input type="email" class="login-input" id="forgot-email" placeholder="nome@email.com" required>
+        <label class="input-label" data-i18n="auth.label.email">Email</label>
+        <input type="email" class="login-input" id="forgot-email" data-i18n-ph="auth.placeholder.email" placeholder="nome@email.com" required>
       </div>
-      <button type="submit" class="btn-cta" id="btn-forgot">ENVIAR LINK</button>
+      <button type="submit" class="btn-cta" id="btn-forgot" data-i18n="auth.forgot.btn">ENVIAR LINK</button>
     </form>
   </div>
 
   <!-- Reset password screen -->
   <div id="reset-screen">
     <h2 style="font-family:var(--font-display);font-size:36px;letter-spacing:2px;margin-bottom:8px;">NOVA<br>PASSWORD</h2>
-    <p style="font-size:14px;color:var(--muted);margin-bottom:28px;line-height:1.6;">Escolhe uma nova password para a tua conta.</p>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:28px;line-height:1.6;" data-i18n="auth.reset.desc">Escolhe uma nova password para a tua conta.</p>
     <div class="auth-error" id="reset-error" style="margin-bottom:12px;"></div>
     <form onsubmit="handleReset(event)" style="display:flex;flex-direction:column;gap:14px;">
       <div>
-        <label class="input-label">Nova password</label>
-        <input type="password" class="login-input" id="reset-password" placeholder="Mínimo 8 caracteres" minlength="8" required>
+        <label class="input-label" data-i18n="auth.label.newpw">Nova password</label>
+        <input type="password" class="login-input" id="reset-password" data-i18n-ph="auth.placeholder.newpw" placeholder="Mínimo 8 caracteres" minlength="8" required>
       </div>
       <div>
-        <label class="input-label">Confirmar password</label>
-        <input type="password" class="login-input" id="reset-confirm" placeholder="Repetir password" minlength="8" required>
+        <label class="input-label" data-i18n="auth.label.confirmpw">Confirmar password</label>
+        <input type="password" class="login-input" id="reset-confirm" data-i18n-ph="auth.placeholder.confirmpw" placeholder="Repetir password" minlength="8" required>
       </div>
-      <button type="submit" class="btn-cta" id="btn-reset">GUARDAR PASSWORD</button>
+      <button type="submit" class="btn-cta" id="btn-reset" data-i18n="auth.reset.btn">GUARDAR PASSWORD</button>
     </form>
   </div>
 
   <script type="module">
     import { supabase } from './js/config.js';
     import { signIn, signUp, signInWithGoogle, resetPassword, updatePassword, routeAfterAuth } from './js/auth.js';
+    import { t, toggleLang, applyTranslations, getLang } from './js/i18n.js';
+
+    window._toggleLang = () => { toggleLang(); updateSwitchText(); };
+
+    function updateSwitchText() {
+      const el = document.getElementById('auth-switch-text');
+      const activeTab = document.getElementById('tab-login').classList.contains('active') ? 'login' : 'signup';
+      el.innerHTML = t(activeTab === 'login' ? 'auth.switch.to.signup' : 'auth.switch.to.login');
+    }
 
     const overlay = document.getElementById('loading-overlay');
 

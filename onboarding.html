@@ -22,7 +22,7 @@
     @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } }
 
     .ob-icon  { font-size: 48px; margin-bottom: 16px; }
-    .ob-title { font-family: var(--font-display); font-size: 30px; letter-spacing: 2px; margin-bottom: 8px; }
+    .ob-title { font-family: var(--font-display); font-size: 30px; letter-spacing: 2px; margin-bottom: 8px; white-space: pre-line; }
     .ob-sub   { font-size: 14px; color: var(--muted); line-height: 1.65; margin-bottom: 28px; }
 
     /* Type cards */
@@ -91,7 +91,10 @@
       <span class="ob-logo-dot"></span>
       <span class="ob-logo-book">BOOK</span>
     </div>
-    <div class="ob-user" id="ob-user-email"></div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button class="rb-lang-toggle" onclick="window._toggleLang()">PT</button>
+      <div class="ob-user" id="ob-user-email"></div>
+    </div>
   </div>
 
   <!-- Progress steps -->
@@ -106,21 +109,21 @@
     <!-- STEP 0: Account type -->
     <div class="ob-step active" id="step-0">
       <div class="ob-icon">👋</div>
-      <div class="ob-title">BEM-VINDO</div>
-      <p class="ob-sub">Como vais usar o RoadBook?</p>
+      <div class="ob-title" data-i18n="ob.welcome.title">BEM-VINDO</div>
+      <p class="ob-sub" data-i18n="ob.welcome.sub">Como vais usar o RoadBook?</p>
       <div class="type-cards">
         <div class="type-card active" id="type-agency" onclick="selectType('agency')">
           <div class="type-card-icon">🏢</div>
           <div>
-            <div class="type-card-title">Agência / Promotora</div>
-            <div class="type-card-desc">Geres vários artistas e equipas. A agência é a entidade de faturação.</div>
+            <div class="type-card-title" data-i18n="ob.type.agency.title">Agência / Promotora</div>
+            <div class="type-card-desc"  data-i18n="ob.type.agency.desc">Geres vários artistas e equipas. A agência é a entidade de faturação.</div>
           </div>
         </div>
         <div class="type-card" id="type-independent" onclick="selectType('independent')">
           <div class="type-card-icon">🎸</div>
           <div>
-            <div class="type-card-title">Tour Manager / Freelancer</div>
-            <div class="type-card-desc">Trabalhas para uma ou várias bandas de forma independente. Pagas por banda.</div>
+            <div class="type-card-title" data-i18n="ob.type.indie.title">Tour Manager / Freelancer</div>
+            <div class="type-card-desc"  data-i18n="ob.type.indie.desc">Trabalhas para uma ou várias bandas de forma independente. Pagas por banda.</div>
           </div>
         </div>
       </div>
@@ -129,31 +132,33 @@
     <!-- STEP 1: Account name -->
     <div class="ob-step" id="step-1">
       <div class="ob-icon" id="step1-icon">🏢</div>
-      <div class="ob-title" id="step1-title">NOME DA<br>AGÊNCIA</div>
-      <p class="ob-sub" id="step1-sub">Como se chama a tua agência ou empresa?</p>
+      <div class="ob-title" id="step1-title" data-i18n="ob.step1.title.agency">NOME DA
+AGÊNCIA</div>
+      <p class="ob-sub" id="step1-sub" data-i18n="ob.step1.sub.agency">Como se chama a tua agência ou empresa?</p>
       <div class="input-group">
-        <label class="input-label">Nome</label>
-        <input type="text" class="input" id="account-name" placeholder="Ex: Realize Concerts" autocomplete="organization">
+        <label class="input-label" data-i18n="ob.step1.label">Nome</label>
+        <input type="text" class="input" id="account-name" data-i18n-ph="ob.step1.placeholder.agency" placeholder="Ex: Realize Concerts" autocomplete="organization">
       </div>
     </div>
 
     <!-- STEP 2: First band -->
     <div class="ob-step" id="step-2">
-      <div class="trial-pill">🎉 14 dias grátis</div>
+      <div class="trial-pill" data-i18n="ob.step2.badge">🎉 14 dias grátis</div>
       <div class="ob-icon">🎤</div>
-      <div class="ob-title">PRIMEIRA<br>BANDA</div>
-      <p class="ob-sub">Cria a tua primeira banda. Podes adicionar mais depois.</p>
+      <div class="ob-title" data-i18n="ob.step2.title" style="white-space:pre-line;">PRIMEIRA
+BANDA</div>
+      <p class="ob-sub" data-i18n="ob.step2.sub">Cria a tua primeira banda. Podes adicionar mais depois.</p>
       <div style="display:flex;flex-direction:column;gap:14px;">
         <div class="input-group">
-          <label class="input-label">Nome da banda</label>
-          <input type="text" class="input" id="band-name" placeholder="Ex: Sara Correia">
+          <label class="input-label" data-i18n="ob.form.band.name.label">Nome da banda</label>
+          <input type="text" class="input" id="band-name" data-i18n-ph="ob.form.band.name.placeholder" placeholder="Ex: Sara Correia">
         </div>
         <div class="input-group">
-          <label class="input-label">Género / estilo</label>
-          <input type="text" class="input" id="band-genre" placeholder="Ex: Fado, Jazz, Pop" autocomplete="off">
+          <label class="input-label" data-i18n="ob.form.genre.label">Género / estilo</label>
+          <input type="text" class="input" id="band-genre" data-i18n-ph="ob.form.genre.placeholder" placeholder="Ex: Fado, Jazz, Pop" autocomplete="off">
         </div>
         <div class="input-group">
-          <label class="input-label">Cor da banda</label>
+          <label class="input-label" data-i18n="ob.form.color.label">Cor da banda</label>
           <div class="swatch-row" id="swatch-row">
             <!-- swatches injected by JS -->
           </div>
@@ -166,12 +171,15 @@
   <!-- Action buttons (outside scrollable area) -->
   <div class="ob-action">
     <div class="auth-error" id="ob-error" style="margin-bottom:4px;"></div>
-    <button class="btn btn-primary" id="ob-next-btn" onclick="nextStep()">Continuar</button>
-    <button class="btn btn-ghost" id="ob-skip-btn" onclick="skipBand()" style="display:none;">Fazer isso mais tarde</button>
+    <button class="btn btn-primary" id="ob-next-btn" onclick="nextStep()" data-i18n="ob.btn.continue">Continuar</button>
+    <button class="btn btn-ghost" id="ob-skip-btn" onclick="skipBand()" style="display:none;" data-i18n="ob.btn.skip">Fazer isso mais tarde</button>
   </div>
 
   <script type="module">
     import { supabase, requireAuth } from './js/config.js';
+    import { t, toggleLang, applyTranslations } from './js/i18n.js';
+
+    window._toggleLang = () => { toggleLang(); location.reload(); };
 
     /* ── Band colors ── */
     const COLORS = ['#2259e0','#fe6977','#3dba6e','#f5a623','#9b59b6','#1abc9c','#e74c3c','#e67e22'];
@@ -246,10 +254,12 @@
         // Update step 1 labels for TM
         if (accountType === 'independent') {
           document.getElementById('step1-icon').textContent = '🎸';
-          document.getElementById('step1-title').textContent = 'O TEU NOME\nDE TRABALHO';
-          document.getElementById('step1-title').style.whiteSpace = 'pre-line';
-          document.getElementById('step1-sub').textContent = 'Usa o teu nome ou o nome com que queres aparecer.';
-          document.getElementById('account-name').placeholder = 'Ex: Bruna Duarte';
+          document.getElementById('step1-title').textContent = t('ob.step1.title.indie');
+          document.getElementById('step1-title').removeAttribute('data-i18n');
+          document.getElementById('step1-sub').textContent = t('ob.step1.sub.indie');
+          document.getElementById('step1-sub').removeAttribute('data-i18n');
+          document.getElementById('account-name').placeholder = t('ob.step1.placeholder.indie');
+          document.getElementById('account-name').removeAttribute('data-i18n-ph');
         }
         goToStep(1);
         return;
@@ -257,7 +267,7 @@
 
       if (currentStep === 1) {
         const name = document.getElementById('account-name').value.trim();
-        if (!name) { showError('Introduz um nome para continuar.'); return; }
+        if (!name) { showError(t('ob.step1.label') + ' ' + t('common.error').toLowerCase()); return; }
         goToStep(2);
         return;
       }
@@ -277,7 +287,7 @@
       const bandName    = document.getElementById('band-name').value.trim();
       const bandGenre   = document.getElementById('band-genre').value.trim();
 
-      if (!bandName) { showError('Introduz o nome da banda para continuar.'); return; }
+      if (!bandName) { showError(t('ob.form.band.name.label') + ' obrigatório.'); return; }
 
       setBtnLoading(true);
 
@@ -312,13 +322,13 @@
         window.location.href = '/app.html';
       } catch (err) {
         setBtnLoading(false);
-        showError('Erro ao criar conta: ' + (err.message || err));
+        showError(t('common.error') + ' ' + (err.message || err));
       }
     }
 
     async function createAccountOnly() {
       const accountName = document.getElementById('account-name').value.trim();
-      if (!accountName) { showError('Introduz um nome para continuar.'); return; }
+      if (!accountName) { showError(t('ob.step1.label') + ' obrigatório.'); return; }
       setBtnLoading(true);
       try {
         const { data: acct, error } = await supabase
@@ -330,7 +340,7 @@
         window.location.href = '/app.html';
       } catch (err) {
         setBtnLoading(false);
-        showError('Erro: ' + (err.message || err));
+        showError(t('common.error') + ' ' + (err.message || err));
       }
     }
 
@@ -339,7 +349,7 @@
       btn.disabled = loading;
       btn.innerHTML = loading
         ? '<div class="spinner" style="width:18px;height:18px;border-color:#ffffff55;border-top-color:#fff"></div>'
-        : 'Continuar';
+        : t('ob.btn.continue');
     }
   </script>
 </body>

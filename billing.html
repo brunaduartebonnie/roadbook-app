@@ -34,7 +34,7 @@
       display: flex; align-items: center; justify-content: center;
       cursor: pointer; font-size: 16px; flex-shrink: 0; text-decoration: none; color: var(--text);
     }
-    .bill-topbar-title { font-size: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .bill-topbar-title { font-size: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; flex: 1; }
 
     /* ── Scroll area ── */
     main { flex: 1; overflow-y: auto; padding: 20px 16px 48px; display: flex; flex-direction: column; gap: 16px; max-width: 480px; margin: 0 auto; width: 100%; }
@@ -121,13 +121,14 @@
   <!-- Topbar -->
   <div class="bill-topbar">
     <a href="/app" class="back-btn">←</a>
-    <div class="bill-topbar-title">Plano &amp; Faturação</div>
+    <div class="bill-topbar-title" data-i18n="bill.topbar">Plano &amp; Faturação</div>
+    <button class="rb-lang-toggle" onclick="window._toggleLang()">PT</button>
   </div>
 
   <main id="bill-main" style="display:none;">
 
     <!-- Success toast (after Stripe redirect) -->
-    <div class="success-toast" id="success-toast">
+    <div class="success-toast" id="success-toast" data-i18n="bill.success">
       🎉 Subscrição ativa! O teu plano Pro está ativo. Bem-vindo ao RoadBook Pro.
     </div>
 
@@ -135,7 +136,7 @@
     <div class="plan-card">
       <div class="plan-card-accent" id="plan-accent"></div>
       <div class="plan-card-body">
-        <div class="plan-label">Plano atual</div>
+        <div class="plan-label" data-i18n="bill.plan.label">Plano atual</div>
         <div class="plan-name" id="plan-name">—</div>
         <div class="plan-desc" id="plan-desc"></div>
         <div class="plan-meta" id="plan-meta"></div>
@@ -145,20 +146,20 @@
 
     <!-- Pro plan card (shown when not yet Pro) -->
     <div class="upgrade-card" id="upgrade-card" style="display:none;">
-      <div class="upgrade-title">RoadBook Pro</div>
-      <div class="upgrade-price">€29 <span>/ mês</span></div>
-      <div class="upgrade-sub">Cancela quando quiseres. Sem compromissos.</div>
+      <div class="upgrade-title" data-i18n="bill.upgrade.title">RoadBook Pro</div>
+      <div class="upgrade-price">€29 <span data-i18n="bill.upgrade.price.suffix">/ mês</span></div>
+      <div class="upgrade-sub" data-i18n="bill.upgrade.sub">Cancela quando quiseres. Sem compromissos.</div>
 
       <div class="features">
-        <div class="feature-row"><span class="feature-check">✓</span> Bandas e membros ilimitados</div>
-        <div class="feature-row"><span class="feature-check">✓</span> Gestão de eventos completa</div>
-        <div class="feature-row"><span class="feature-check">✓</span> Convites por email automáticos</div>
-        <div class="feature-row"><span class="feature-check">✓</span> Merch tracking</div>
-        <div class="feature-row"><span class="feature-check">✓</span> Acesso a todas as futuras funcionalidades</div>
-        <div class="feature-row"><span class="feature-check">✓</span> Suporte prioritário</div>
+        <div class="feature-row"><span class="feature-check">✓</span> <span data-i18n="bill.feature.1">Bandas e membros ilimitados</span></div>
+        <div class="feature-row"><span class="feature-check">✓</span> <span data-i18n="bill.feature.2">Gestão de eventos completa</span></div>
+        <div class="feature-row"><span class="feature-check">✓</span> <span data-i18n="bill.feature.3">Convites por email automáticos</span></div>
+        <div class="feature-row"><span class="feature-check">✓</span> <span data-i18n="bill.feature.4">Merch tracking</span></div>
+        <div class="feature-row"><span class="feature-check">✓</span> <span data-i18n="bill.feature.5">Acesso a todas as futuras funcionalidades</span></div>
+        <div class="feature-row"><span class="feature-check">✓</span> <span data-i18n="bill.feature.6">Suporte prioritário</span></div>
       </div>
 
-      <button class="btn-coral-lg" id="btn-subscribe" onclick="startCheckout()">
+      <button class="btn-coral-lg" id="btn-subscribe" onclick="startCheckout()" data-i18n="bill.btn.subscribe">
         SUBSCREVER
       </button>
     </div>
@@ -167,15 +168,15 @@
     <div style="display:flex;flex-direction:column;gap:10px;padding:4px 0;">
       <div class="info-row">
         <span class="info-icon">🔒</span>
-        Pagamento seguro via Stripe. Não guardamos dados de cartão.
+        <span data-i18n="bill.info.secure">Pagamento seguro via Stripe. Não guardamos dados de cartão.</span>
       </div>
       <div class="info-row">
         <span class="info-icon">↩️</span>
-        Podes cancelar a qualquer momento sem penalizações.
+        <span data-i18n="bill.info.cancel">Podes cancelar a qualquer momento sem penalizações.</span>
       </div>
       <div class="info-row" id="trial-info" style="display:none;">
         <span class="info-icon">🎁</span>
-        O trial é grátis — subscreve antes que expire para não perder acesso.
+        <span data-i18n="bill.info.trial">O trial é grátis — subscreve antes que expire para não perder acesso.</span>
       </div>
     </div>
 
@@ -183,6 +184,9 @@
 
   <script type="module">
     import { supabase, requireAuth, getProfile } from './js/config.js';
+    import { t, toggleLang } from './js/i18n.js';
+
+    window._toggleLang = () => { toggleLang(); location.reload(); };
 
     let account = null;
     const params = new URLSearchParams(window.location.search);
@@ -214,7 +218,7 @@
     });
 
     function renderPlan() {
-      const plan = account?.plan ?? 'trial';
+      const plan   = account?.plan ?? 'trial';
       const accent = document.getElementById('plan-accent');
       const name   = document.getElementById('plan-name');
       const desc   = document.getElementById('plan-desc');
@@ -223,16 +227,16 @@
 
       if (plan === 'pro') {
         accent.style.background = 'var(--blue)';
-        name.textContent = 'PRO';
-        desc.textContent = 'Tens acesso a todas as funcionalidades do RoadBook.';
+        name.textContent = t('bill.plan.pro');
+        desc.textContent = t('bill.plan.pro.desc');
 
         const end = account.current_period_end
-          ? new Date(account.current_period_end).toLocaleDateString('pt-PT', { day:'numeric', month:'long', year:'numeric' })
+          ? new Date(account.current_period_end).toLocaleDateString(undefined, { day:'numeric', month:'long', year:'numeric' })
           : null;
 
-        meta.innerHTML = `<span class="plan-chip chip-pro">Ativo</span>${end ? `<span class="plan-chip chip-date">Renova a ${end}</span>` : ''}`;
+        meta.innerHTML = `<span class="plan-chip chip-pro">${t('bill.chip.active')}</span>${end ? `<span class="plan-chip chip-date">${t('bill.chip.renews')} ${end}</span>` : ''}`;
 
-        action.innerHTML = `<button class="btn-manage" onclick="openPortal()">Gerir subscrição</button>`;
+        action.innerHTML = `<button class="btn-manage" onclick="openPortal()">${t('bill.btn.manage')}</button>`;
         document.getElementById('upgrade-card').style.display = 'none';
 
       } else if (plan === 'trial') {
@@ -241,13 +245,13 @@
         const expired  = daysLeft === 0;
 
         accent.style.background = expired ? 'var(--danger)' : 'var(--coral)';
-        name.textContent = expired ? 'TRIAL EXPIRADO' : 'TRIAL';
+        name.textContent = expired ? t('bill.plan.expired') : t('bill.plan.trial');
         desc.textContent = expired
-          ? 'O teu período de teste terminou. Subscreve para continuar a usar o RoadBook.'
-          : `Tens ${daysLeft} dia${daysLeft === 1 ? '' : 's'} grátis restante${daysLeft === 1 ? '' : 's'}.`;
+          ? t('bill.plan.trial.exp.desc')
+          : t('bill.plan.trial.desc', { n: daysLeft, s: daysLeft === 1 ? '' : 's' });
 
         const chipClass = expired ? 'chip-expired' : 'chip-trial';
-        const chipLabel = expired ? 'Expirado' : `${daysLeft}d restantes`;
+        const chipLabel = expired ? t('bill.chip.expired') : `${daysLeft}d`;
         meta.innerHTML = `<span class="plan-chip ${chipClass}">${chipLabel}</span>`;
 
         document.getElementById('upgrade-card').style.display = 'block';
@@ -255,17 +259,17 @@
 
       } else if (plan === 'past_due') {
         accent.style.background = '#f5a623';
-        name.textContent = 'PAGAMENTO PENDENTE';
-        desc.textContent = 'Houve um problema com o teu pagamento. Atualiza os dados de pagamento para continuar.';
-        meta.innerHTML = `<span class="plan-chip chip-pastdue">Pagamento em falta</span>`;
-        action.innerHTML = `<button class="btn-manage" onclick="openPortal()">Atualizar pagamento</button>`;
+        name.textContent = t('bill.plan.pastdue');
+        desc.textContent = t('bill.plan.pastdue.desc');
+        meta.innerHTML = `<span class="plan-chip chip-pastdue">${t('bill.chip.pastdue')}</span>`;
+        action.innerHTML = `<button class="btn-manage" onclick="openPortal()">${t('bill.btn.update.payment')}</button>`;
 
       } else {
         // cancelled / unknown
         accent.style.background = 'var(--border)';
-        name.textContent = 'CANCELADO';
-        desc.textContent = 'A tua subscrição foi cancelada. Podes reativar a qualquer momento.';
-        meta.innerHTML = `<span class="plan-chip chip-expired">Cancelado</span>`;
+        name.textContent = t('bill.plan.cancelled');
+        desc.textContent = t('bill.plan.cancelled.desc');
+        meta.innerHTML = `<span class="plan-chip chip-expired">${t('bill.chip.cancelled')}</span>`;
         document.getElementById('upgrade-card').style.display = 'block';
       }
     }
@@ -282,8 +286,8 @@
 
       if (error || !data?.url) {
         btn.disabled = false;
-        btn.textContent = 'SUBSCREVER';
-        alert('Erro ao iniciar pagamento. Tenta de novo.');
+        btn.textContent = t('bill.btn.subscribe');
+        alert(t('common.error'));
         return;
       }
 
@@ -294,7 +298,7 @@
     window.openPortal = async function() {
       const btn = event.currentTarget;
       btn.disabled = true;
-      btn.textContent = 'A abrir...';
+      btn.textContent = t('common.loading');
 
       const { data, error } = await supabase.functions.invoke('create-portal', {
         body: { return_url: window.location.origin + '/billing' },
@@ -302,8 +306,8 @@
 
       if (error || !data?.url) {
         btn.disabled = false;
-        btn.textContent = 'Gerir subscrição';
-        alert('Erro ao abrir portal. Tenta de novo.');
+        btn.textContent = t('bill.btn.manage');
+        alert(t('common.error'));
         return;
       }
 

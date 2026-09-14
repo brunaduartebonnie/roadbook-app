@@ -1,0 +1,715 @@
+/* ═══════════════════════════════════════
+   ROADBOOK — i18n (PT / EN)
+═══════════════════════════════════════ */
+
+const TRANSLATIONS = {
+
+  /* ─────────────────── PORTUGUÊS ─────────────────── */
+  pt: {
+    /* Logo */
+    'logo.sub': 'Tour Management & Produção',
+
+    /* Auth — index.html */
+    'auth.tab.login':         'Entrar',
+    'auth.tab.signup':        'Criar conta',
+    'auth.label.email':       'Email',
+    'auth.label.password':    'Password',
+    'auth.label.name':        'Nome',
+    'auth.label.name.full':   'Nome completo',
+    'auth.placeholder.email': 'nome@email.com',
+    'auth.placeholder.pw':    '••••••••',
+    'auth.placeholder.name':  'O teu nome',
+    'auth.forgot':            'Esqueceste a password?',
+    'auth.btn.login':         'ENTRAR',
+    'auth.btn.signup':        'CRIAR CONTA',
+    'auth.or':                'OU',
+    'auth.btn.google':        'Entrar com Google',
+    'auth.switch.to.signup':  'Não tens conta? <span onclick="switchTab(\'signup\')">Cria uma</span>',
+    'auth.switch.to.login':   'Já tens conta? <span onclick="switchTab(\'login\')">Entra</span>',
+
+    /* Forgot / Reset */
+    'auth.forgot.title':       'RECUPERAR\nACCESS',
+    'auth.forgot.desc':        'Envia-nos o teu email e enviamos um link para recuperares a password.',
+    'auth.forgot.btn':         'ENVIAR LINK',
+    'auth.forgot.back':        '← Voltar ao login',
+    'auth.reset.title':        'NOVA\nPASSWORD',
+    'auth.reset.desc':         'Escolhe uma nova password para a tua conta.',
+    'auth.label.newpw':        'Nova password',
+    'auth.label.confirmpw':    'Confirmar password',
+    'auth.placeholder.newpw':  'Mínimo 8 caracteres',
+    'auth.placeholder.confirmpw': 'Repete a password',
+    'auth.reset.btn':          'GUARDAR PASSWORD',
+
+    /* App — main dashboard */
+    'app.nav.home':    'Início',
+    'app.nav.events':  'Eventos',
+    'app.nav.team':    'Equipa',
+    'app.nav.account': 'Conta',
+    'app.section.bands': 'Bandas',
+    'app.next.show':     'PRÓXIMO SHOW',
+    'app.empty.bands.title': 'Nenhuma banda ainda',
+    'app.empty.bands.sub':   'Cria a tua primeira banda e começa a gerir os teus concertos.',
+    'app.modal.newband':  'NOVA BANDA',
+    'app.form.band.name.label':       'Nome da banda',
+    'app.form.band.name.placeholder': 'Ex: Danni Gato',
+    'app.form.genre.label':           'Género / estilo',
+    'app.form.genre.placeholder':     'Ex: Afrohouse, Pop',
+    'app.form.color.label': 'Cor',
+    'app.btn.create.band':  'Criar banda',
+    'app.profile.invite':   'Convidar membro',
+    'app.profile.billing':  'Plano e faturação',
+    'app.profile.signout':  'Terminar sessão',
+    'app.band.events':      '{n} eventos',
+    'app.band.members':     '{n} membros',
+
+    /* Band */
+    'band.tab.events':  'Eventos',
+    'band.tab.team':    'Equipa',
+    'band.tab.merch':   'Merch',
+    'band.section.upcoming': 'Próximos',
+    'band.section.past':     'Passados',
+    'band.empty.events.title': 'Sem eventos',
+    'band.empty.events.sub':   'Toca no + para adicionar o primeiro concerto.',
+    'band.empty.team':         'A carregar equipa...',
+    'band.modal.event':  'NOVO EVENTO',
+    'band.form.date':    'Data',
+    'band.form.venue':   'Venue / Local',
+    'band.form.city':    'Cidade',
+    'band.form.country': 'País',
+    'band.form.promoter':'Promotor',
+    'band.form.fee':     'Fee (€)',
+    'band.form.status':  'Estado',
+    'band.form.notes':   'Notas',
+    'band.form.venue.ph':    'Ex: Coliseu do Porto',
+    'band.form.city.ph':     'Ex: Porto, Portugal',
+    'band.form.country.ph':  'Ex: Portugal',
+    'band.form.promoter.ph': 'Ex: Everything is New',
+    'band.form.notes.ph':    'Informação adicional...',
+    'band.btn.create.event': 'Criar evento',
+    'band.modal.invite':     'CONVIDAR\nMEMBRO',
+    'band.form.email':       'Email',
+    'band.form.role':        'Função na equipa',
+    'band.invite.success':   '✉️ Email enviado! O link abaixo serve de backup caso o email não chegue.',
+    'band.invite.copy':      'Toca no link para copiar',
+    'band.btn.invite':       'Enviar convite',
+    'band.invite.strip.title': 'Convidar membro',
+    'band.invite.strip.sub':   'Envia um link de convite por email',
+    'band.settings.title':  'BANDA',
+    'band.settings.edit':   'Editar banda',
+    'band.settings.invite': 'Convidar membro',
+    'band.settings.delete': 'Apagar banda',
+    'band.edit.title':      'EDITAR BANDA',
+    'band.btn.save':        'Guardar',
+    'band.btn.cancel':      'Cancelar',
+    'band.btn.close':       'Fechar',
+    'band.merch.empty.title': 'Sem produtos',
+    'band.merch.empty.sub':   'Adiciona produtos de merch para controlar o stock.',
+
+    /* Event */
+    'ev.tab.info':      'Info',
+    'ev.tab.horarios':  'Horários',
+    'ev.tab.checklist': 'Checklist',
+    'ev.tab.notas':     'Notas',
+    'ev.section.venue':     'Local',
+    'ev.label.venue':       'Venue',
+    'ev.label.address':     'Morada',
+    'ev.label.city':        'Cidade',
+    'ev.label.country':     'País',
+    'ev.label.capacity':    'Capacidade',
+    'ev.section.promoter':  'Promotor',
+    'ev.label.name':        'Nome',
+    'ev.label.email':       'Email',
+    'ev.label.phone':       'Telefone',
+    'ev.section.financial': 'Financeiro',
+    'ev.label.fee':         'Fee',
+    'ev.label.status':      'Estado',
+    'ev.label.age':         'Restrição',
+    'ev.btn.edit.info':     '✏️ Editar informações',
+    'ev.btn.save.schedule': 'Guardar horários',
+    'ev.notes.placeholder': 'Notas sobre este evento — rider, instruções, contactos, tudo o que precisas...',
+    'ev.notes.saved':       'Guardado',
+    'ev.add.item.placeholder': 'Adicionar item...',
+    'ev.modal.edit.title':  'EDITAR\nEVENTO',
+    'ev.form.date':         'Data',
+    'ev.form.status':       'Estado',
+    'ev.form.venue':        'Venue / Local',
+    'ev.form.address':      'Morada',
+    'ev.form.city':         'Cidade',
+    'ev.form.country':      'País',
+    'ev.form.capacity':     'Capacidade',
+    'ev.form.age':          'Restrição de idade',
+    'ev.form.promoter':     'Promotor',
+    'ev.form.promoter.email': 'Email do promotor',
+    'ev.form.promoter.phone': 'Telefone do promotor',
+    'ev.form.fee':          'Fee',
+    'ev.form.currency':     'Moeda',
+    'ev.form.address.ph':   'Ex: Rua de Passos Manuel 137',
+    'ev.form.city.ph':      'Porto',
+    'ev.form.country.ph':   'Portugal',
+    'ev.form.capacity.ph':  'Ex: 3500',
+    'ev.form.age.ph':       'Ex: M/6, M/16, Todas as idades',
+    'ev.form.promoter.ph':  'Nome do promotor',
+    'ev.form.promoter.email.ph': 'promotor@email.com',
+    'ev.form.promoter.phone.ph': '+351 912 345 678',
+    'ev.btn.save':          'Guardar',
+    'ev.btn.cancel':        'Cancelar',
+    'ev.btn.delete':        'Apagar evento',
+    'ev.empty.info':        'Sem informação',
+
+    /* Schedule items */
+    'schedule.soundcheck':  'Soundcheck',
+    'schedule.doors':       'Abertura de portas',
+    'schedule.support':     'Abertura',
+    'schedule.show':        'Show',
+    'schedule.curfew':      'Curfew',
+
+    /* Checklist categories */
+    'checklist.cat.pre':    'Pré-show',
+    'checklist.cat.day':    'Dia do show',
+    'checklist.cat.post':   'Pós-show',
+    'checklist.default.1':  'Confirmar rider técnico',
+    'checklist.default.2':  'Confirmar transporte',
+    'checklist.default.3':  'Confirmar alojamento',
+    'checklist.default.4':  'Confirmar fee e contrato',
+    'checklist.default.5':  'Verificar equipamento',
+    'checklist.default.6':  'Soundcheck',
+    'checklist.default.7':  'Confirmar hora do show',
+    'checklist.default.8':  'Recolher pagamento',
+    'checklist.default.9':  'Recolher merch',
+    'checklist.default.10': 'Relatório pós-show',
+
+    /* Status */
+    'status.confirmed': 'Confirmado',
+    'status.hold':      'Hold',
+    'status.cancelled': 'Cancelado',
+    'status.pendente':  'Pendente',
+
+    /* Roles */
+    'role.tour_manager': 'Tour Manager',
+    'role.artist':       'Artista',
+    'role.crew':         'Crew',
+    'role.backline':     'Backline',
+    'role.production':   'Produção',
+    'role.admin':        'Admin',
+
+    /* Months (short) */
+    'month.0': 'Jan', 'month.1': 'Fev', 'month.2': 'Mar',
+    'month.3': 'Abr', 'month.4': 'Mai', 'month.5': 'Jun',
+    'month.6': 'Jul', 'month.7': 'Ago', 'month.8': 'Set',
+    'month.9': 'Out', 'month.10': 'Nov', 'month.11': 'Dez',
+
+    /* Months (full) */
+    'month.full.0': 'Janeiro',   'month.full.1': 'Fevereiro', 'month.full.2': 'Março',
+    'month.full.3': 'Abril',     'month.full.4': 'Maio',      'month.full.5': 'Junho',
+    'month.full.6': 'Julho',     'month.full.7': 'Agosto',    'month.full.8': 'Setembro',
+    'month.full.9': 'Outubro',   'month.full.10': 'Novembro', 'month.full.11': 'Dezembro',
+
+    /* Weekdays */
+    'day.0': 'Domingo', 'day.1': 'Segunda-feira', 'day.2': 'Terça-feira',
+    'day.3': 'Quarta-feira', 'day.4': 'Quinta-feira', 'day.5': 'Sexta-feira',
+    'day.6': 'Sábado',
+
+    /* Schedule extras */
+    'schedule.load_in':  'Load In',
+    'schedule.showtime': 'Show',
+
+    /* Checklist categories */
+    'checklist.cat.tech':        'Técnico',
+    'checklist.cat.hospitality': 'Hospitalidade',
+    'checklist.cat.logistics':   'Logística',
+    'checklist.cat.other':       'Outros',
+
+    /* Checklist default items */
+    'checklist.tech.1': 'Rider técnico enviado',
+    'checklist.tech.2': 'PA confirmado',
+    'checklist.tech.3': 'Stage plot enviado',
+    'checklist.tech.4': 'Backline confirmado',
+    'checklist.tech.5': 'Soundcheck agendado',
+    'checklist.hosp.1': 'Rider de catering enviado',
+    'checklist.hosp.2': 'Hotel reservado',
+    'checklist.hosp.3': 'Transfer organizado',
+    'checklist.hosp.4': 'Acreditações pedidas',
+    'checklist.log.1':  'Contrato assinado',
+    'checklist.log.2':  'Adiantamento recebido',
+    'checklist.log.3':  'Saldo a receber',
+    'checklist.log.4':  'Seguro em dia',
+
+    /* Band extras */
+    'band.pending.invites':  'Convites pendentes',
+    'band.invite.expires':   'Convite enviado · expira {date}',
+    'band.merch.soon.title': 'Merch em breve',
+    'band.merch.soon.sub':   'A gestão de merch está em desenvolvimento.',
+
+    /* Event extras */
+    'ev.saving':          'A guardar...',
+    'ev.saved':           '✓ Guardado',
+    'ev.venue.tbc':       'Local a confirmar',
+    'ev.options.share':   'Partilhar evento',
+    'ev.options.edit':    'Editar evento',
+    'ev.options.delete':  'Apagar evento',
+    'ev.share.copied':    'Copiado para o clipboard',
+    'ev.schedule.saved':  'Horários guardados',
+    'ev.updated':         'Evento actualizado',
+
+    /* Onboarding */
+    'ob.welcome.title': 'BEM-VINDO',
+    'ob.welcome.sub':   'Como vais usar o RoadBook?',
+    'ob.type.agency.title': 'Agência / Promotora',
+    'ob.type.agency.desc':  'Geres vários artistas e equipas. A agência é a entidade de faturação.',
+    'ob.type.indie.title':  'Tour Manager / Freelancer',
+    'ob.type.indie.desc':   'Trabalhas para uma ou várias bandas de forma independente. Pagas por banda.',
+    'ob.step1.title.agency':    'NOME DA\nAGÊNCIA',
+    'ob.step1.title.indie':     'O TEU NOME\nDE TRABALHO',
+    'ob.step1.sub.agency':      'Como se chama a tua agência ou empresa?',
+    'ob.step1.sub.indie':       'Usa o teu nome ou o nome com que queres aparecer.',
+    'ob.step1.label':           'Nome',
+    'ob.step1.placeholder.agency': 'Ex: Realize Concerts',
+    'ob.step1.placeholder.indie':  'Ex: Bruna Duarte',
+    'ob.step2.badge':   '🎉 14 dias grátis',
+    'ob.step2.title':   'PRIMEIRA\nBANDA',
+    'ob.step2.sub':     'Cria a tua primeira banda. Podes adicionar mais depois.',
+    'ob.form.band.name.label':       'Nome da banda',
+    'ob.form.band.name.placeholder': 'Ex: Sara Correia',
+    'ob.form.genre.label':           'Género / estilo',
+    'ob.form.genre.placeholder':     'Ex: Fado, Jazz, Pop',
+    'ob.form.color.label': 'Cor da banda',
+    'ob.btn.continue':  'Continuar',
+    'ob.btn.skip':      'Fazer isso mais tarde',
+
+    /* Invite */
+    'inv.loading':       'A verificar convite...',
+    'inv.invalid.title': 'CONVITE\nINVÁLIDO',
+    'inv.invalid.sub':   'Este convite não é válido ou já expirou. Pede ao administrador um novo link.',
+    'inv.heading':       'FOSTE\nCONVIDADO',
+    'inv.noauth.desc':   'Para aceitar o convite precisas de ter uma conta RoadBook.',
+    'inv.btn.login':     'Entrar e aceitar',
+    'inv.btn.signup':    'Criar conta',
+    'inv.btn.accept':    'Aceitar convite',
+    'inv.success.title': 'BEM-VINDO\nÀ EQUIPA',
+    'inv.success.default': 'Já fazes parte da banda. Abre a app para começar.',
+    'inv.btn.app':       'Ir para a app',
+    'inv.valid.until':   'Tens até {date} para aceitar.',
+
+    /* Billing */
+    'bill.topbar':       'Plano & Faturação',
+    'bill.success':      '🎉 Subscrição ativa! O teu plano Pro está ativo. Bem-vindo ao RoadBook Pro.',
+    'bill.plan.label':   'Plano atual',
+    'bill.chip.active':  'Ativo',
+    'bill.chip.renews':  'Renova a',
+    'bill.chip.expired': 'Expirado',
+    'bill.chip.pastdue': 'Pagamento em falta',
+    'bill.chip.cancelled': 'Cancelado',
+    'bill.plan.trial':        'TRIAL',
+    'bill.plan.pro':          'PRO',
+    'bill.plan.expired':      'TRIAL EXPIRADO',
+    'bill.plan.pastdue':      'PAGAMENTO PENDENTE',
+    'bill.plan.cancelled':    'CANCELADO',
+    'bill.plan.trial.desc':   'Tens {n} dia{s} grátis restante{s}.',
+    'bill.plan.trial.exp.desc': 'O teu período de teste terminou. Subscreve para continuar a usar o RoadBook.',
+    'bill.plan.pro.desc':     'Tens acesso a todas as funcionalidades do RoadBook.',
+    'bill.plan.pastdue.desc': 'Houve um problema com o teu pagamento. Atualiza os dados de pagamento para continuar.',
+    'bill.plan.cancelled.desc': 'A tua subscrição foi cancelada. Podes reativar a qualquer momento.',
+    'bill.btn.manage':        'Gerir subscrição',
+    'bill.btn.update.payment':'Atualizar pagamento',
+    'bill.upgrade.title':     'RoadBook Pro',
+    'bill.upgrade.price.suffix': '/ mês',
+    'bill.upgrade.sub':       'Cancela quando quiseres. Sem compromissos.',
+    'bill.feature.1': 'Bandas e membros ilimitados',
+    'bill.feature.2': 'Gestão de eventos completa',
+    'bill.feature.3': 'Convites por email automáticos',
+    'bill.feature.4': 'Merch tracking',
+    'bill.feature.5': 'Acesso a todas as futuras funcionalidades',
+    'bill.feature.6': 'Suporte prioritário',
+    'bill.btn.subscribe':  'SUBSCREVER',
+    'bill.info.secure':    'Pagamento seguro via Stripe. Não guardamos dados de cartão.',
+    'bill.info.cancel':    'Podes cancelar a qualquer momento sem penalizações.',
+    'bill.info.trial':     'O trial é grátis — subscreve antes que expire para não perder acesso.',
+
+    /* Common */
+    'common.cancel':  'Cancelar',
+    'common.save':    'Guardar',
+    'common.close':   'Fechar',
+    'common.error':   'Ocorreu um erro. Tenta de novo.',
+    'common.loading': 'A carregar...',
+    'common.empty':   '—',
+  },
+
+  /* ─────────────────── ENGLISH ─────────────────── */
+  en: {
+    /* Logo */
+    'logo.sub': 'Tour Management & Production',
+
+    /* Auth */
+    'auth.tab.login':         'Sign in',
+    'auth.tab.signup':        'Create account',
+    'auth.label.email':       'Email',
+    'auth.label.password':    'Password',
+    'auth.label.name':        'Name',
+    'auth.label.name.full':   'Full name',
+    'auth.placeholder.email': 'name@email.com',
+    'auth.placeholder.pw':    '••••••••',
+    'auth.placeholder.name':  'Your name',
+    'auth.forgot':            'Forgot your password?',
+    'auth.btn.login':         'SIGN IN',
+    'auth.btn.signup':        'CREATE ACCOUNT',
+    'auth.or':                'OR',
+    'auth.btn.google':        'Continue with Google',
+    'auth.switch.to.signup':  'No account? <span onclick="switchTab(\'signup\')">Create one</span>',
+    'auth.switch.to.login':   'Already have an account? <span onclick="switchTab(\'login\')">Sign in</span>',
+
+    'auth.forgot.title':       'RECOVER\nACCESS',
+    'auth.forgot.desc':        'Enter your email and we\'ll send you a link to reset your password.',
+    'auth.forgot.btn':         'SEND LINK',
+    'auth.forgot.back':        '← Back to sign in',
+    'auth.reset.title':        'NEW\nPASSWORD',
+    'auth.reset.desc':         'Choose a new password for your account.',
+    'auth.label.newpw':        'New password',
+    'auth.label.confirmpw':    'Confirm password',
+    'auth.placeholder.newpw':  'Minimum 8 characters',
+    'auth.placeholder.confirmpw': 'Repeat password',
+    'auth.reset.btn':          'SAVE PASSWORD',
+
+    /* App */
+    'app.nav.home':    'Home',
+    'app.nav.events':  'Events',
+    'app.nav.team':    'Team',
+    'app.nav.account': 'Account',
+    'app.section.bands': 'Bands',
+    'app.next.show':     'NEXT SHOW',
+    'app.empty.bands.title': 'No bands yet',
+    'app.empty.bands.sub':   'Create your first band and start managing your shows.',
+    'app.modal.newband':  'NEW BAND',
+    'app.form.band.name.label':       'Band name',
+    'app.form.band.name.placeholder': 'Ex: The Black Mamba',
+    'app.form.genre.label':           'Genre / style',
+    'app.form.genre.placeholder':     'Ex: Afrohouse, Pop',
+    'app.form.color.label': 'Colour',
+    'app.btn.create.band':  'Create band',
+    'app.profile.invite':   'Invite member',
+    'app.profile.billing':  'Plan & billing',
+    'app.profile.signout':  'Sign out',
+    'app.band.events':      '{n} events',
+    'app.band.members':     '{n} members',
+
+    /* Band */
+    'band.tab.events':  'Events',
+    'band.tab.team':    'Team',
+    'band.tab.merch':   'Merch',
+    'band.section.upcoming': 'Upcoming',
+    'band.section.past':     'Past',
+    'band.empty.events.title': 'No events',
+    'band.empty.events.sub':   'Tap + to add the first show.',
+    'band.empty.team':         'Loading team...',
+    'band.modal.event':  'NEW EVENT',
+    'band.form.date':    'Date',
+    'band.form.venue':   'Venue',
+    'band.form.city':    'City',
+    'band.form.country': 'Country',
+    'band.form.promoter':'Promoter',
+    'band.form.fee':     'Fee (€)',
+    'band.form.status':  'Status',
+    'band.form.notes':   'Notes',
+    'band.form.venue.ph':    'Ex: O2 Arena',
+    'band.form.city.ph':     'Ex: London, UK',
+    'band.form.country.ph':  'Ex: United Kingdom',
+    'band.form.promoter.ph': 'Ex: Live Nation',
+    'band.form.notes.ph':    'Additional information...',
+    'band.btn.create.event': 'Create event',
+    'band.modal.invite':     'INVITE\nMEMBER',
+    'band.form.email':       'Email',
+    'band.form.role':        'Role',
+    'band.invite.success':   '✉️ Email sent! The link below is a backup in case the email doesn\'t arrive.',
+    'band.invite.copy':      'Tap to copy link',
+    'band.btn.invite':       'Send invite',
+    'band.invite.strip.title': 'Invite member',
+    'band.invite.strip.sub':   'Send an invite link by email',
+    'band.settings.title':  'BAND',
+    'band.settings.edit':   'Edit band',
+    'band.settings.invite': 'Invite member',
+    'band.settings.delete': 'Delete band',
+    'band.edit.title':      'EDIT BAND',
+    'band.btn.save':        'Save',
+    'band.btn.cancel':      'Cancel',
+    'band.btn.close':       'Close',
+    'band.merch.empty.title': 'No products',
+    'band.merch.empty.sub':   'Add merch items to track your stock.',
+
+    /* Event */
+    'ev.tab.info':      'Info',
+    'ev.tab.horarios':  'Schedule',
+    'ev.tab.checklist': 'Checklist',
+    'ev.tab.notas':     'Notes',
+    'ev.section.venue':     'Venue',
+    'ev.label.venue':       'Venue',
+    'ev.label.address':     'Address',
+    'ev.label.city':        'City',
+    'ev.label.country':     'Country',
+    'ev.label.capacity':    'Capacity',
+    'ev.section.promoter':  'Promoter',
+    'ev.label.name':        'Name',
+    'ev.label.email':       'Email',
+    'ev.label.phone':       'Phone',
+    'ev.section.financial': 'Financial',
+    'ev.label.fee':         'Fee',
+    'ev.label.status':      'Status',
+    'ev.label.age':         'Age restriction',
+    'ev.btn.edit.info':     '✏️ Edit info',
+    'ev.btn.save.schedule': 'Save schedule',
+    'ev.notes.placeholder': 'Notes about this event — rider, instructions, contacts, everything you need...',
+    'ev.notes.saved':       'Saved',
+    'ev.add.item.placeholder': 'Add item...',
+    'ev.modal.edit.title':  'EDIT\nEVENT',
+    'ev.form.date':         'Date',
+    'ev.form.status':       'Status',
+    'ev.form.venue':        'Venue',
+    'ev.form.address':      'Address',
+    'ev.form.city':         'City',
+    'ev.form.country':      'Country',
+    'ev.form.capacity':     'Capacity',
+    'ev.form.age':          'Age restriction',
+    'ev.form.promoter':     'Promoter',
+    'ev.form.promoter.email': 'Promoter email',
+    'ev.form.promoter.phone': 'Promoter phone',
+    'ev.form.fee':          'Fee',
+    'ev.form.currency':     'Currency',
+    'ev.form.address.ph':   'Ex: 60 Great Queen St',
+    'ev.form.city.ph':      'London',
+    'ev.form.country.ph':   'United Kingdom',
+    'ev.form.capacity.ph':  'Ex: 3500',
+    'ev.form.age.ph':       'Ex: 16+, All ages',
+    'ev.form.promoter.ph':  'Promoter name',
+    'ev.form.promoter.email.ph': 'promoter@email.com',
+    'ev.form.promoter.phone.ph': '+44 7700 900000',
+    'ev.btn.save':          'Save',
+    'ev.btn.cancel':        'Cancel',
+    'ev.btn.delete':        'Delete event',
+    'ev.empty.info':        'No information',
+
+    /* Schedule */
+    'schedule.soundcheck':  'Soundcheck',
+    'schedule.doors':       'Doors open',
+    'schedule.support':     'Support act',
+    'schedule.show':        'Show',
+    'schedule.curfew':      'Curfew',
+
+    /* Checklist */
+    'checklist.cat.pre':    'Pre-show',
+    'checklist.cat.day':    'Show day',
+    'checklist.cat.post':   'Post-show',
+    'checklist.default.1':  'Confirm technical rider',
+    'checklist.default.2':  'Confirm transport',
+    'checklist.default.3':  'Confirm accommodation',
+    'checklist.default.4':  'Confirm fee and contract',
+    'checklist.default.5':  'Check equipment',
+    'checklist.default.6':  'Soundcheck',
+    'checklist.default.7':  'Confirm show time',
+    'checklist.default.8':  'Collect payment',
+    'checklist.default.9':  'Collect merch',
+    'checklist.default.10': 'Post-show report',
+
+    /* Status */
+    'status.confirmed': 'Confirmed',
+    'status.hold':      'Hold',
+    'status.cancelled': 'Cancelled',
+    'status.pendente':  'Pending',
+
+    /* Roles */
+    'role.tour_manager': 'Tour Manager',
+    'role.artist':       'Artist',
+    'role.crew':         'Crew',
+    'role.backline':     'Backline',
+    'role.production':   'Production',
+    'role.admin':        'Admin',
+
+    /* Months (short) */
+    'month.0': 'Jan', 'month.1': 'Feb', 'month.2': 'Mar',
+    'month.3': 'Apr', 'month.4': 'May', 'month.5': 'Jun',
+    'month.6': 'Jul', 'month.7': 'Aug', 'month.8': 'Sep',
+    'month.9': 'Oct', 'month.10': 'Nov', 'month.11': 'Dec',
+
+    /* Months (full) */
+    'month.full.0': 'January',   'month.full.1': 'February',  'month.full.2': 'March',
+    'month.full.3': 'April',     'month.full.4': 'May',        'month.full.5': 'June',
+    'month.full.6': 'July',      'month.full.7': 'August',     'month.full.8': 'September',
+    'month.full.9': 'October',   'month.full.10': 'November',  'month.full.11': 'December',
+
+    /* Weekdays */
+    'day.0': 'Sunday', 'day.1': 'Monday', 'day.2': 'Tuesday',
+    'day.3': 'Wednesday', 'day.4': 'Thursday', 'day.5': 'Friday',
+    'day.6': 'Saturday',
+
+    /* Schedule extras */
+    'schedule.load_in':  'Load In',
+    'schedule.showtime': 'Show',
+
+    /* Checklist categories */
+    'checklist.cat.tech':        'Technical',
+    'checklist.cat.hospitality': 'Hospitality',
+    'checklist.cat.logistics':   'Logistics',
+    'checklist.cat.other':       'Other',
+
+    /* Checklist default items */
+    'checklist.tech.1': 'Technical rider sent',
+    'checklist.tech.2': 'PA confirmed',
+    'checklist.tech.3': 'Stage plot sent',
+    'checklist.tech.4': 'Backline confirmed',
+    'checklist.tech.5': 'Soundcheck scheduled',
+    'checklist.hosp.1': 'Catering rider sent',
+    'checklist.hosp.2': 'Hotel booked',
+    'checklist.hosp.3': 'Transfer arranged',
+    'checklist.hosp.4': 'Credentials requested',
+    'checklist.log.1':  'Contract signed',
+    'checklist.log.2':  'Advance received',
+    'checklist.log.3':  'Balance to collect',
+    'checklist.log.4':  'Insurance up to date',
+
+    /* Band extras */
+    'band.pending.invites':  'Pending invites',
+    'band.invite.expires':   'Invite sent · expires {date}',
+    'band.merch.soon.title': 'Merch coming soon',
+    'band.merch.soon.sub':   'Merch management is coming soon.',
+
+    /* Event extras */
+    'ev.saving':          'Saving...',
+    'ev.saved':           '✓ Saved',
+    'ev.venue.tbc':       'Venue TBC',
+    'ev.options.share':   'Share event',
+    'ev.options.edit':    'Edit event',
+    'ev.options.delete':  'Delete event',
+    'ev.share.copied':    'Copied to clipboard',
+    'ev.schedule.saved':  'Schedule saved',
+    'ev.updated':         'Event updated',
+
+    /* Onboarding */
+    'ob.welcome.title': 'WELCOME',
+    'ob.welcome.sub':   'How will you use RoadBook?',
+    'ob.type.agency.title': 'Agency / Promoter',
+    'ob.type.agency.desc':  'Manage multiple artists and teams. The agency is the billing entity.',
+    'ob.type.indie.title':  'Tour Manager / Freelancer',
+    'ob.type.indie.desc':   'Work for one or multiple bands independently. Pay per band.',
+    'ob.step1.title.agency':    'AGENCY\nNAME',
+    'ob.step1.title.indie':     'YOUR WORKING\nNAME',
+    'ob.step1.sub.agency':      'What is your agency or company called?',
+    'ob.step1.sub.indie':       'Use your name or the name you want to appear as.',
+    'ob.step1.label':           'Name',
+    'ob.step1.placeholder.agency': 'Ex: Realize Concerts',
+    'ob.step1.placeholder.indie':  'Ex: Bruna Duarte',
+    'ob.step2.badge':   '🎉 14 days free',
+    'ob.step2.title':   'FIRST\nBAND',
+    'ob.step2.sub':     'Create your first band. You can add more later.',
+    'ob.form.band.name.label':       'Band name',
+    'ob.form.band.name.placeholder': 'Ex: Sara Correia',
+    'ob.form.genre.label':           'Genre / style',
+    'ob.form.genre.placeholder':     'Ex: Fado, Jazz, Pop',
+    'ob.form.color.label': 'Band colour',
+    'ob.btn.continue':  'Continue',
+    'ob.btn.skip':      'Do this later',
+
+    /* Invite */
+    'inv.loading':       'Checking invite...',
+    'inv.invalid.title': 'INVALID\nINVITE',
+    'inv.invalid.sub':   'This invite is not valid or has expired. Ask the admin for a new link.',
+    'inv.heading':       'YOU\'VE BEEN\nINVITED',
+    'inv.noauth.desc':   'To accept the invite you need a RoadBook account.',
+    'inv.btn.login':     'Sign in and accept',
+    'inv.btn.signup':    'Create account',
+    'inv.btn.accept':    'Accept invite',
+    'inv.success.title': 'WELCOME\nTO THE TEAM',
+    'inv.success.default': 'You\'re now part of the band. Open the app to get started.',
+    'inv.btn.app':       'Go to app',
+    'inv.valid.until':   'You have until {date} to accept.',
+
+    /* Billing */
+    'bill.topbar':       'Plan & Billing',
+    'bill.success':      '🎉 Subscription active! Your Pro plan is live. Welcome to RoadBook Pro.',
+    'bill.plan.label':   'Current plan',
+    'bill.chip.active':  'Active',
+    'bill.chip.renews':  'Renews on',
+    'bill.chip.expired': 'Expired',
+    'bill.chip.pastdue': 'Payment overdue',
+    'bill.chip.cancelled': 'Cancelled',
+    'bill.plan.trial':        'TRIAL',
+    'bill.plan.pro':          'PRO',
+    'bill.plan.expired':      'TRIAL EXPIRED',
+    'bill.plan.pastdue':      'PAYMENT OVERDUE',
+    'bill.plan.cancelled':    'CANCELLED',
+    'bill.plan.trial.desc':   'You have {n} free day{s} left.',
+    'bill.plan.trial.exp.desc': 'Your trial has ended. Subscribe to keep using RoadBook.',
+    'bill.plan.pro.desc':     'You have access to all RoadBook features.',
+    'bill.plan.pastdue.desc': 'There was a problem with your payment. Update your payment details to continue.',
+    'bill.plan.cancelled.desc': 'Your subscription was cancelled. You can reactivate anytime.',
+    'bill.btn.manage':        'Manage subscription',
+    'bill.btn.update.payment':'Update payment',
+    'bill.upgrade.title':     'RoadBook Pro',
+    'bill.upgrade.price.suffix': '/ month',
+    'bill.upgrade.sub':       'Cancel anytime. No commitments.',
+    'bill.feature.1': 'Unlimited bands and members',
+    'bill.feature.2': 'Full event management',
+    'bill.feature.3': 'Automatic email invites',
+    'bill.feature.4': 'Merch tracking',
+    'bill.feature.5': 'Access to all future features',
+    'bill.feature.6': 'Priority support',
+    'bill.btn.subscribe':  'SUBSCRIBE',
+    'bill.info.secure':    'Secure payment via Stripe. We don\'t store card details.',
+    'bill.info.cancel':    'Cancel anytime with no penalties.',
+    'bill.info.trial':     'The trial is free — subscribe before it expires to keep access.',
+
+    /* Common */
+    'common.cancel':  'Cancel',
+    'common.save':    'Save',
+    'common.close':   'Close',
+    'common.error':   'An error occurred. Please try again.',
+    'common.loading': 'Loading...',
+    'common.empty':   '—',
+  },
+};
+
+/* ── Engine ── */
+let _lang = localStorage.getItem('rb_lang') || navigator.language?.startsWith('en') ? 'en' : 'pt';
+// Overwrite: if explicitly set, use that
+const _stored = localStorage.getItem('rb_lang');
+if (_stored) _lang = _stored;
+
+export function t(key, vars = {}) {
+  const dict = TRANSLATIONS[_lang] ?? TRANSLATIONS.pt;
+  let str = dict[key] ?? TRANSLATIONS.pt[key] ?? key;
+  for (const [k, v] of Object.entries(vars)) {
+    str = str.replaceAll(`{${k}}`, String(v));
+  }
+  return str;
+}
+
+export function getLang() { return _lang; }
+
+export function setLang(lang) {
+  _lang = lang;
+  localStorage.setItem('rb_lang', lang);
+  applyTranslations();
+  document.documentElement.lang = lang;
+}
+
+export function toggleLang() {
+  setLang(_lang === 'pt' ? 'en' : 'pt');
+}
+
+export function applyTranslations() {
+  /* Static HTML elements */
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    el.textContent = t(key);
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    el.innerHTML = t(el.dataset.i18nHtml);
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    el.placeholder = t(el.dataset.i18nPh);
+  });
+  /* Language toggle button */
+  document.querySelectorAll('.rb-lang-toggle').forEach(btn => {
+    btn.textContent = _lang === 'pt' ? 'EN' : 'PT';
+  });
+  document.documentElement.lang = _lang;
+}
+
+/* Auto-apply on import */
+document.addEventListener('DOMContentLoaded', applyTranslations);

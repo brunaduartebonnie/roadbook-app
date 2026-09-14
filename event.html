@@ -115,9 +115,6 @@
     }
     .info-value { font-size: 14px; color: var(--text); flex: 1; line-height: 1.5; }
     .info-value.empty { color: var(--muted2); font-style: italic; }
-    .info-edit-btn {
-      font-size: 11px; font-weight: 700; color: var(--blue); cursor: pointer; flex-shrink: 0;
-    }
 
     /* ── Schedule panel ── */
     .schedule-grid { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
@@ -252,6 +249,7 @@
         <div class="ev-band-dot" id="band-dot"></div>
         <div class="ev-band-name" id="band-name-label">—</div>
       </div>
+      <button class="rb-lang-toggle" onclick="window._toggleLang()" style="margin-right:4px;">PT</button>
       <div class="ev-options" onclick="openModal('ev-options-modal')">⋯</div>
     </div>
     <div class="ev-hero-body">
@@ -268,73 +266,73 @@
 
   <!-- Tabs -->
   <div class="tabs-row">
-    <div class="tab-item active" id="tab-info"      onclick="switchTab('info')">Info</div>
-    <div class="tab-item"        id="tab-horarios"  onclick="switchTab('horarios')">Horários</div>
-    <div class="tab-item"        id="tab-checklist" onclick="switchTab('checklist')">Checklist</div>
-    <div class="tab-item"        id="tab-notas"     onclick="switchTab('notas')">Notas</div>
+    <div class="tab-item active" id="tab-info"      onclick="switchTab('info')"      data-i18n="ev.tab.info">Info</div>
+    <div class="tab-item"        id="tab-horarios"  onclick="switchTab('horarios')"  data-i18n="ev.tab.horarios">Horários</div>
+    <div class="tab-item"        id="tab-checklist" onclick="switchTab('checklist')" data-i18n="ev.tab.checklist">Checklist</div>
+    <div class="tab-item"        id="tab-notas"     onclick="switchTab('notas')"     data-i18n="ev.tab.notas">Notas</div>
   </div>
 
   <!-- INFO panel -->
   <div class="panel active" id="panel-info">
 
     <div class="info-section">
-      <div class="info-section-title">Local</div>
+      <div class="info-section-title" data-i18n="ev.section.venue">Local</div>
       <div class="info-row">
-        <div class="info-label">Venue</div>
+        <div class="info-label" data-i18n="ev.label.venue">Venue</div>
         <div class="info-value" id="info-venue">—</div>
       </div>
       <div class="info-row">
-        <div class="info-label">Morada</div>
+        <div class="info-label" data-i18n="ev.label.address">Morada</div>
         <div class="info-value" id="info-address"></div>
       </div>
       <div class="info-row">
-        <div class="info-label">Cidade</div>
+        <div class="info-label" data-i18n="ev.label.city">Cidade</div>
         <div class="info-value" id="info-city">—</div>
       </div>
       <div class="info-row">
-        <div class="info-label">País</div>
+        <div class="info-label" data-i18n="ev.label.country">País</div>
         <div class="info-value" id="info-country">—</div>
       </div>
       <div class="info-row">
-        <div class="info-label">Capacidade</div>
+        <div class="info-label" data-i18n="ev.label.capacity">Capacidade</div>
         <div class="info-value" id="info-capacity"></div>
       </div>
     </div>
 
     <div class="info-section">
-      <div class="info-section-title">Promotor</div>
+      <div class="info-section-title" data-i18n="ev.section.promoter">Promotor</div>
       <div class="info-row">
-        <div class="info-label">Nome</div>
+        <div class="info-label" data-i18n="ev.label.name">Nome</div>
         <div class="info-value" id="info-promoter">—</div>
       </div>
       <div class="info-row">
-        <div class="info-label">Email</div>
+        <div class="info-label" data-i18n="ev.label.email">Email</div>
         <div class="info-value" id="info-promoter-email"></div>
       </div>
       <div class="info-row">
-        <div class="info-label">Telefone</div>
+        <div class="info-label" data-i18n="ev.label.phone">Telefone</div>
         <div class="info-value" id="info-promoter-phone"></div>
       </div>
     </div>
 
     <div class="info-section">
-      <div class="info-section-title">Financeiro</div>
+      <div class="info-section-title" data-i18n="ev.section.financial">Financeiro</div>
       <div class="info-row">
-        <div class="info-label">Fee</div>
+        <div class="info-label" data-i18n="ev.label.fee">Fee</div>
         <div class="info-value" id="info-fee">—</div>
       </div>
       <div class="info-row">
-        <div class="info-label">Estado</div>
+        <div class="info-label" data-i18n="ev.label.status">Estado</div>
         <div class="info-value" id="info-status">—</div>
       </div>
       <div class="info-row">
-        <div class="info-label">Restrição</div>
+        <div class="info-label" data-i18n="ev.label.age">Restrição</div>
         <div class="info-value" id="info-age"></div>
       </div>
     </div>
 
     <div style="padding:16px;">
-      <button class="btn btn-outline" onclick="openModal('edit-info-modal')">✏️ Editar informações</button>
+      <button class="btn btn-outline" onclick="openModal('edit-info-modal')" data-i18n="ev.btn.edit.info">✏️ Editar informações</button>
     </div>
   </div>
 
@@ -344,7 +342,7 @@
       <!-- injected by JS -->
     </div>
     <div style="padding:0 16px 16px;">
-      <button class="btn btn-primary" id="save-schedule-btn" onclick="saveSchedule()" style="display:none;">Guardar horários</button>
+      <button class="btn btn-primary" id="save-schedule-btn" onclick="saveSchedule()" style="display:none;" data-i18n="ev.btn.save.schedule">Guardar horários</button>
     </div>
   </div>
 
@@ -359,7 +357,7 @@
       <!-- injected by JS -->
     </div>
     <div class="add-item-row">
-      <input type="text" class="add-item-input" id="new-item-input" placeholder="Adicionar item..." onkeydown="if(event.key==='Enter')addItem()">
+      <input type="text" class="add-item-input" id="new-item-input" data-i18n-ph="ev.add.item.placeholder" placeholder="Adicionar item..." onkeydown="if(event.key==='Enter')addItem()">
       <button class="add-item-btn" onclick="addItem()">＋</button>
     </div>
   </div>
@@ -367,7 +365,7 @@
   <!-- NOTAS panel -->
   <div class="panel" id="panel-notas">
     <div class="notes-wrap">
-      <textarea class="notes-textarea" id="notes-area" placeholder="Notas sobre este evento — rider, instruções, contactos, tudo o que precisas..." oninput="scheduleNotesSave()"></textarea>
+      <textarea class="notes-textarea" id="notes-area" data-i18n-ph="ev.notes.placeholder" placeholder="Notas sobre este evento..." oninput="scheduleNotesSave()"></textarea>
       <div class="notes-saved" id="notes-saved"></div>
     </div>
   </div>
@@ -378,71 +376,72 @@
   <div class="modal-backdrop" id="edit-info-modal" onclick="closeOnBackdrop(event,'edit-info-modal')">
     <div class="modal-sheet">
       <div class="modal-handle"></div>
-      <div class="modal-title">EDITAR<br>EVENTO</div>
+      <div class="modal-title" data-i18n="ev.modal.edit.title" style="white-space:pre-line;">EDITAR
+EVENTO</div>
       <div style="display:flex;flex-direction:column;gap:13px;">
 
         <div class="input-group">
-          <label class="input-label">Data</label>
+          <label class="input-label" data-i18n="ev.form.date">Data</label>
           <input type="date" class="input" id="edit-date">
         </div>
         <div class="input-group">
-          <label class="input-label">Estado</label>
+          <label class="input-label" data-i18n="ev.form.status">Estado</label>
           <div class="status-grid">
-            <div class="status-opt" data-status="confirmed" onclick="selectStatus('confirmed')">Confirmado</div>
-            <div class="status-opt" data-status="hold"      onclick="selectStatus('hold')">Hold</div>
-            <div class="status-opt" data-status="pendente"  onclick="selectStatus('pendente')">Pendente</div>
-            <div class="status-opt" data-status="cancelled" onclick="selectStatus('cancelled')">Cancelado</div>
+            <div class="status-opt" data-status="confirmed" onclick="selectStatus('confirmed')" data-i18n="status.confirmed">Confirmado</div>
+            <div class="status-opt" data-status="hold"      onclick="selectStatus('hold')"      data-i18n="status.hold">Hold</div>
+            <div class="status-opt" data-status="pendente"  onclick="selectStatus('pendente')"  data-i18n="status.pendente">Pendente</div>
+            <div class="status-opt" data-status="cancelled" onclick="selectStatus('cancelled')" data-i18n="status.cancelled">Cancelado</div>
           </div>
         </div>
         <div class="input-group">
-          <label class="input-label">Venue / Local</label>
-          <input type="text" class="input" id="edit-venue" placeholder="Ex: Coliseu do Porto">
+          <label class="input-label" data-i18n="ev.form.venue">Venue / Local</label>
+          <input type="text" class="input" id="edit-venue" data-i18n-ph="ev.form.venue" placeholder="Ex: Coliseu do Porto">
         </div>
         <div class="input-group">
-          <label class="input-label">Morada</label>
-          <input type="text" class="input" id="edit-address" placeholder="Ex: Rua de Passos Manuel 137">
+          <label class="input-label" data-i18n="ev.form.address">Morada</label>
+          <input type="text" class="input" id="edit-address" data-i18n-ph="ev.form.address.ph" placeholder="Ex: Rua de Passos Manuel 137">
         </div>
         <div class="input-group">
-          <label class="input-label">Cidade</label>
-          <input type="text" class="input" id="edit-city" placeholder="Porto">
+          <label class="input-label" data-i18n="ev.form.city">Cidade</label>
+          <input type="text" class="input" id="edit-city" data-i18n-ph="ev.form.city.ph" placeholder="Porto">
         </div>
         <div class="input-group">
-          <label class="input-label">País</label>
-          <input type="text" class="input" id="edit-country" placeholder="Portugal">
+          <label class="input-label" data-i18n="ev.form.country">País</label>
+          <input type="text" class="input" id="edit-country" data-i18n-ph="ev.form.country.ph" placeholder="Portugal">
         </div>
         <div class="input-group">
-          <label class="input-label">Capacidade</label>
-          <input type="number" class="input" id="edit-capacity" placeholder="Ex: 3500" min="0">
+          <label class="input-label" data-i18n="ev.form.capacity">Capacidade</label>
+          <input type="number" class="input" id="edit-capacity" data-i18n-ph="ev.form.capacity.ph" placeholder="Ex: 3500" min="0">
         </div>
         <div class="input-group">
-          <label class="input-label">Restrição de idade</label>
-          <input type="text" class="input" id="edit-age" placeholder="Ex: M/6, M/16, Todas as idades">
+          <label class="input-label" data-i18n="ev.form.age">Restrição de idade</label>
+          <input type="text" class="input" id="edit-age" data-i18n-ph="ev.form.age.ph" placeholder="Ex: M/6, M/16, Todas as idades">
         </div>
 
         <div style="height:1px;background:var(--border);margin:4px 0;"></div>
 
         <div class="input-group">
-          <label class="input-label">Promotor</label>
-          <input type="text" class="input" id="edit-promoter" placeholder="Nome do promotor">
+          <label class="input-label" data-i18n="ev.form.promoter">Promotor</label>
+          <input type="text" class="input" id="edit-promoter" data-i18n-ph="ev.form.promoter.ph" placeholder="Nome do promotor">
         </div>
         <div class="input-group">
-          <label class="input-label">Email do promotor</label>
-          <input type="email" class="input" id="edit-promoter-email" placeholder="promotor@email.com">
+          <label class="input-label" data-i18n="ev.form.promoter.email">Email do promotor</label>
+          <input type="email" class="input" id="edit-promoter-email" data-i18n-ph="ev.form.promoter.email.ph" placeholder="promotor@email.com">
         </div>
         <div class="input-group">
-          <label class="input-label">Telefone do promotor</label>
-          <input type="tel" class="input" id="edit-promoter-phone" placeholder="+351 912 345 678">
+          <label class="input-label" data-i18n="ev.form.promoter.phone">Telefone do promotor</label>
+          <input type="tel" class="input" id="edit-promoter-phone" data-i18n-ph="ev.form.promoter.phone.ph" placeholder="+351 912 345 678">
         </div>
 
         <div style="height:1px;background:var(--border);margin:4px 0;"></div>
 
         <div style="display:flex;gap:10px;">
           <div class="input-group" style="flex:2;">
-            <label class="input-label">Fee</label>
+            <label class="input-label" data-i18n="ev.form.fee">Fee</label>
             <input type="number" class="input" id="edit-fee" placeholder="0" min="0">
           </div>
           <div class="input-group" style="flex:1;">
-            <label class="input-label">Moeda</label>
+            <label class="input-label" data-i18n="ev.form.currency">Moeda</label>
             <select class="input" id="edit-currency" style="cursor:pointer;">
               <option value="EUR">EUR €</option>
               <option value="GBP">GBP £</option>
@@ -452,8 +451,8 @@
         </div>
 
         <div class="auth-error" id="edit-ev-error" style="display:none;"></div>
-        <button class="btn btn-primary" onclick="saveInfo()">Guardar</button>
-        <button class="btn btn-ghost" onclick="closeModal('edit-info-modal')">Cancelar</button>
+        <button class="btn btn-primary" onclick="saveInfo()" data-i18n="ev.btn.save">Guardar</button>
+        <button class="btn btn-ghost" onclick="closeModal('edit-info-modal')" data-i18n="ev.btn.cancel">Cancelar</button>
       </div>
     </div>
   </div>
@@ -464,18 +463,22 @@
   <div class="modal-backdrop" id="ev-options-modal" onclick="closeOnBackdrop(event,'ev-options-modal')">
     <div class="modal-sheet">
       <div class="modal-handle"></div>
-      <div class="modal-title">OPÇÕES</div>
+      <div class="modal-title">OPTIONS</div>
       <div style="display:flex;flex-direction:column;gap:10px;">
-        <button class="btn btn-surface" onclick="shareEvent()">Partilhar evento</button>
-        <button class="btn btn-surface" onclick="closeModal('ev-options-modal');openModal('edit-info-modal')">Editar evento</button>
-        <button class="btn btn-danger"  onclick="confirmDeleteEvent()">Apagar evento</button>
-        <button class="btn btn-ghost"   onclick="closeModal('ev-options-modal')">Cancelar</button>
+        <button class="btn btn-surface" onclick="shareEvent()" data-i18n="ev.options.share">Partilhar evento</button>
+        <button class="btn btn-surface" onclick="closeModal('ev-options-modal');openModal('edit-info-modal')" data-i18n="ev.options.edit">Editar evento</button>
+        <button class="btn btn-danger"  onclick="confirmDeleteEvent()" data-i18n="ev.options.delete">Apagar evento</button>
+        <button class="btn btn-ghost"   onclick="closeModal('ev-options-modal')" data-i18n="common.cancel">Cancelar</button>
       </div>
     </div>
   </div>
 
   <script type="module">
     import { supabase, requireAuth } from './js/config.js';
+    import { t, toggleLang, applyTranslations } from './js/i18n.js';
+
+    /* Reload on language toggle so all JS-rendered content updates */
+    window._toggleLang = () => { toggleLang(); location.reload(); };
 
     /* ── State ── */
     const evId = new URLSearchParams(window.location.search).get('id');
@@ -487,20 +490,28 @@
     let notesTimer  = null;
     let activeTab   = 'info';
 
-    const MONTHS_PT  = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-    const WEEKS_PT   = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
-
-    const SCHEDULE_SLOTS = [
-      { key: 'load_in',    label: 'Load In',    icon: '🚛' },
-      { key: 'soundcheck', label: 'Soundcheck', icon: '🎚️' },
-      { key: 'doors',      label: 'Portas',     icon: '🚪' },
-      { key: 'showtime',   label: 'Showtime',   icon: '🎤' },
+    /* Dynamic schedule slots with i18n labels */
+    const SCHEDULE_SLOTS = () => [
+      { key: 'load_in',    label: t('schedule.load_in'),    icon: '🚛' },
+      { key: 'soundcheck', label: t('schedule.soundcheck'), icon: '🎚️' },
+      { key: 'doors',      label: t('schedule.doors'),      icon: '🚪' },
+      { key: 'showtime',   label: t('schedule.showtime'),   icon: '🎤' },
     ];
 
-    const DEFAULT_CHECKLIST = [
-      { cat: 'Técnico',       items: ['Rider técnico enviado','PA confirmado','Stage plot enviado','Backline confirmado','Soundcheck agendado'] },
-      { cat: 'Hospitalidade', items: ['Rider de catering enviado','Hotel reservado','Transfer organizado','Acreditações pedidas'] },
-      { cat: 'Logística',     items: ['Contrato assinado','Adiantamento recebido','Saldo a receber','Seguro em dia'] },
+    /* Dynamic default checklist with i18n */
+    const DEFAULT_CHECKLIST = () => [
+      { cat: t('checklist.cat.tech'), items: [
+        t('checklist.tech.1'), t('checklist.tech.2'), t('checklist.tech.3'),
+        t('checklist.tech.4'), t('checklist.tech.5'),
+      ]},
+      { cat: t('checklist.cat.hospitality'), items: [
+        t('checklist.hosp.1'), t('checklist.hosp.2'),
+        t('checklist.hosp.3'), t('checklist.hosp.4'),
+      ]},
+      { cat: t('checklist.cat.logistics'), items: [
+        t('checklist.log.1'), t('checklist.log.2'),
+        t('checklist.log.3'), t('checklist.log.4'),
+      ]},
     ];
 
     /* ── Init ── */
@@ -521,9 +532,9 @@
         .single();
 
       if (error || !data) { window.location.href = '/app.html'; return; }
-      ev       = data;
-      band     = data.artists;
-      schedule = data.schedule || {};
+      ev        = data;
+      band      = data.artists;
+      schedule  = data.schedule || {};
       checklist = data.checklist?.length ? data.checklist : buildDefaultChecklist();
 
       renderHero();
@@ -542,19 +553,20 @@
       document.getElementById('band-dot').style.background  = color;
       document.getElementById('band-name-label').textContent = band?.name || '—';
 
-      document.getElementById('ev-date-big').textContent  = `${d.getDate()} ${MONTHS_PT[d.getMonth()].toUpperCase()} ${d.getFullYear()}`;
-      document.getElementById('ev-weekday').textContent   = WEEKS_PT[d.getDay()];
-      document.getElementById('ev-venue-label').textContent = ev.venue || 'Local a confirmar';
+      const month = t('month.full.' + d.getMonth()).toUpperCase();
+      document.getElementById('ev-date-big').textContent  = `${d.getDate()} ${month} ${d.getFullYear()}`;
+      document.getElementById('ev-weekday').textContent   = t('day.' + d.getDay());
+      document.getElementById('ev-venue-label').textContent = ev.venue || t('ev.venue.tbc');
       document.getElementById('ev-city-label').textContent  = [ev.city, ev.country].filter(Boolean).join(' · ');
       document.title = `RoadBook — ${ev.venue || ev.date}`;
 
       // Status chip
       const chip = document.getElementById('status-chip');
       const statusMap = {
-        confirmed: { label: '● Confirmado', cls: 'chip-confirmed' },
-        hold:      { label: '◐ Hold',       cls: 'chip-hold' },
-        cancelled: { label: '✕ Cancelado',  cls: 'chip-cancelled' },
-        pendente:  { label: '○ Pendente',   cls: 'chip-pendente' },
+        confirmed: { label: `● ${t('status.confirmed')}`, cls: 'chip-confirmed' },
+        hold:      { label: `◐ ${t('status.hold')}`,      cls: 'chip-hold' },
+        cancelled: { label: `✕ ${t('status.cancelled')}`, cls: 'chip-cancelled' },
+        pendente:  { label: `○ ${t('status.pendente')}`,  cls: 'chip-pendente' },
       };
       const s = statusMap[ev.status] || statusMap.pendente;
       chip.textContent = s.label;
@@ -564,7 +576,7 @@
       const feePill = document.getElementById('ev-fee-pill');
       if (ev.fee) {
         const sym = { EUR: '€', GBP: '£', USD: '$' }[ev.fee_currency || 'EUR'] || '€';
-        feePill.textContent = sym + Number(ev.fee).toLocaleString('pt-PT');
+        feePill.textContent = sym + Number(ev.fee).toLocaleString();
         feePill.style.display = 'inline-flex';
       } else {
         feePill.style.display = 'none';
@@ -581,25 +593,24 @@
         el.className     = 'info-value' + (!v ? ' empty' : '');
       };
       const sym = { EUR: '€', GBP: '£', USD: '$' }[ev.fee_currency || 'EUR'] || '€';
-      const statusLabels = { confirmed:'Confirmado', hold:'Hold', cancelled:'Cancelado', pendente:'Pendente' };
 
       set('info-venue',          ev.venue);
       set('info-address',        ev.venue_address, '—');
       set('info-city',           ev.city);
       set('info-country',        ev.country);
-      set('info-capacity',       ev.capacity ? ev.capacity.toLocaleString('pt-PT') + ' pessoas' : null, '—');
+      set('info-capacity',       ev.capacity ? ev.capacity.toLocaleString() + ' pessoas' : null, '—');
       set('info-promoter',       ev.promoter);
       set('info-promoter-email', ev.promoter_email, '—');
       set('info-promoter-phone', ev.promoter_phone, '—');
-      set('info-fee',            ev.fee ? sym + Number(ev.fee).toLocaleString('pt-PT') : null, '—');
-      set('info-status',         statusLabels[ev.status] || ev.status);
+      set('info-fee',            ev.fee ? sym + Number(ev.fee).toLocaleString() : null, '—');
+      set('info-status',         t('status.' + ev.status) || ev.status);
       set('info-age',            ev.age_restriction, '—');
     }
 
     /* ── Schedule ── */
     function renderSchedulePanel() {
       const grid = document.getElementById('schedule-grid');
-      grid.innerHTML = SCHEDULE_SLOTS.map(slot => {
+      grid.innerHTML = SCHEDULE_SLOTS().map(slot => {
         const val = schedule[slot.key] || '';
         return `<div class="schedule-card">
           <div class="schedule-icon">${slot.icon}</div>
@@ -624,13 +635,13 @@
       const { error } = await supabase.from('events').update({ schedule }).eq('id', evId);
       if (!error) {
         document.getElementById('save-schedule-btn').style.display = 'none';
-        showToast('Horários guardados');
+        showToast(t('ev.schedule.saved'));
       }
     };
 
     /* ── Checklist ── */
     function buildDefaultChecklist() {
-      return DEFAULT_CHECKLIST.flatMap(c =>
+      return DEFAULT_CHECKLIST().flatMap(c =>
         c.items.map(text => ({ id: crypto.randomUUID(), cat: c.cat, text, done: false }))
       );
     }
@@ -675,7 +686,7 @@
       const input = document.getElementById('new-item-input');
       const text  = input.value.trim();
       if (!text) return;
-      checklist.push({ id: crypto.randomUUID(), cat: 'Outros', text, done: false });
+      checklist.push({ id: crypto.randomUUID(), cat: t('checklist.cat.other'), text, done: false });
       input.value = '';
       renderChecklist(); saveChecklist();
     };
@@ -687,21 +698,19 @@
     /* ── Notes auto-save ── */
     window.scheduleNotesSave = function() {
       clearTimeout(notesTimer);
-      document.getElementById('notes-saved').textContent = 'A guardar...';
+      document.getElementById('notes-saved').textContent = t('ev.saving');
       document.getElementById('notes-saved').style.opacity = '1';
       notesTimer = setTimeout(async () => {
         const notes = document.getElementById('notes-area').value;
         const { error } = await supabase.from('events').update({ notes }).eq('id', evId);
         if (!error) {
-          document.getElementById('notes-saved').textContent = '✓ Guardado';
+          document.getElementById('notes-saved').textContent = t('ev.saved');
           setTimeout(() => { document.getElementById('notes-saved').style.opacity = '0'; }, 2000);
         }
       }, 1200);
     };
 
     /* ── Edit info modal ── */
-    document.addEventListener('DOMContentLoaded', () => {});
-
     function populateEditModal() {
       document.getElementById('edit-date').value           = ev.date || '';
       document.getElementById('edit-venue').value          = ev.venue || '';
@@ -724,6 +733,7 @@
       document.querySelectorAll('.status-opt').forEach(el => {
         el.className = 'status-opt' + (el.dataset.status === s ? ` sel-${s}` : '');
       });
+      applyTranslations();
     };
 
     window.saveInfo = async function() {
@@ -752,13 +762,13 @@
       renderHero();
       renderInfoPanel();
       closeModal('edit-info-modal');
-      showToast('Evento actualizado');
+      showToast(t('ev.updated'));
     };
 
     /* ── Delete event ── */
     window.confirmDeleteEvent = async function() {
       closeModal('ev-options-modal');
-      if (!confirm(`Apagar este evento? Esta acção é irreversível.`)) return;
+      if (!confirm(t('ev.options.delete') + '?')) return;
       await supabase.from('events').delete().eq('id', evId);
       window.location.href = band ? `/band.html?id=${band.id}` : '/app.html';
     };
@@ -767,11 +777,11 @@
     window.shareEvent = function() {
       closeModal('ev-options-modal');
       const d   = new Date(ev.date + 'T12:00:00');
-      const txt = `${ev.venue || 'Evento'}\n${d.toLocaleDateString('pt-PT')}\n${[ev.city, ev.country].filter(Boolean).join(', ')}`;
+      const txt = `${ev.venue || 'Evento'}\n${d.toLocaleDateString()}\n${[ev.city, ev.country].filter(Boolean).join(', ')}`;
       if (navigator.share) {
         navigator.share({ title: band?.name, text: txt });
       } else {
-        navigator.clipboard.writeText(txt).then(() => showToast('Copiado para o clipboard'));
+        navigator.clipboard.writeText(txt).then(() => showToast(t('ev.share.copied')));
       }
     };
 
@@ -798,7 +808,7 @@
       if (!editPopulated && ev) { populateEditModal(); editPopulated = true; }
     }
 
-    /* ── Open modal (also populate edit) ── */
+    /* ── Open modal ── */
     window.openModal = function(id) {
       if (id === 'edit-info-modal' && ev) { populateEditModal(); editPopulated = true; }
       document.getElementById(id).classList.add('show');
@@ -808,10 +818,10 @@
 
     /* ── Toast ── */
     function showToast(msg) {
-      const t = document.createElement('div');
-      t.className = 'toast'; t.textContent = msg;
-      document.body.appendChild(t);
-      setTimeout(() => t.remove(), 2500);
+      const toast = document.createElement('div');
+      toast.className = 'toast'; toast.textContent = msg;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 2500);
     }
 
     function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
