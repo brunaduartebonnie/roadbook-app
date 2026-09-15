@@ -157,11 +157,15 @@ const TRANSLATIONS = {
     'ev.empty.info':        'Sem informação',
 
     /* Schedule items */
+    'schedule.arrival':     'Chegada',
+    'schedule.load_in':     'Load In',
     'schedule.soundcheck':  'Soundcheck',
-    'schedule.doors':       'Abertura de portas',
+    'schedule.catering':    'Catering',
+    'schedule.doors':       'Portas',
     'schedule.support':     'Abertura',
     'schedule.show':        'Show',
     'schedule.curfew':      'Curfew',
+    'schedule.load_out':    'Load Out',
 
     /* Checklist categories */
     'checklist.cat.pre':    'Pré-show',
@@ -208,10 +212,6 @@ const TRANSLATIONS = {
     'day.0': 'Domingo', 'day.1': 'Segunda-feira', 'day.2': 'Terça-feira',
     'day.3': 'Quarta-feira', 'day.4': 'Quinta-feira', 'day.5': 'Sexta-feira',
     'day.6': 'Sábado',
-
-    /* Schedule extras */
-    'schedule.load_in':  'Load In',
-    'schedule.showtime': 'Show',
 
     /* Checklist categories */
     'checklist.cat.tech':        'Técnico',
@@ -485,12 +485,16 @@ const TRANSLATIONS = {
     'ev.btn.delete':        'Delete event',
     'ev.empty.info':        'No information',
 
-    /* Schedule */
+    /* Schedule items */
+    'schedule.arrival':     'Arrival',
+    'schedule.load_in':     'Load In',
     'schedule.soundcheck':  'Soundcheck',
-    'schedule.doors':       'Doors open',
-    'schedule.support':     'Support act',
+    'schedule.catering':    'Catering',
+    'schedule.doors':       'Doors',
+    'schedule.support':     'Support Act',
     'schedule.show':        'Show',
     'schedule.curfew':      'Curfew',
+    'schedule.load_out':    'Load Out',
 
     /* Checklist */
     'checklist.cat.pre':    'Pre-show',
@@ -537,10 +541,6 @@ const TRANSLATIONS = {
     'day.0': 'Sunday', 'day.1': 'Monday', 'day.2': 'Tuesday',
     'day.3': 'Wednesday', 'day.4': 'Thursday', 'day.5': 'Friday',
     'day.6': 'Saturday',
-
-    /* Schedule extras */
-    'schedule.load_in':  'Load In',
-    'schedule.showtime': 'Show',
 
     /* Checklist categories */
     'checklist.cat.tech':        'Technical',
