@@ -251,12 +251,12 @@ html, body {
 /* ── Language toggle ── */
 .rb-lang-toggle {
   font-size: 10px; font-weight: 800; letter-spacing: 1.5px;
-  background: var(--surface2); border: 1px solid var(--border);
-  border-radius: 6px; padding: 4px 9px; cursor: pointer;
-  color: var(--muted); transition: color 0.15s, border-color 0.15s;
+  background: var(--surface); border: 1.5px solid var(--muted2);
+  border-radius: 6px; padding: 5px 10px; cursor: pointer;
+  color: var(--text); transition: color 0.15s, border-color 0.15s, background 0.15s;
   flex-shrink: 0;
 }
-.rb-lang-toggle:hover { color: var(--text); border-color: var(--muted); }
+.rb-lang-toggle:hover { background: var(--surface2); border-color: var(--muted); }
 
 /* ── Utilities ── */
 .p-16   { padding: 16px; }
