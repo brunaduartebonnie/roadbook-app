@@ -372,7 +372,7 @@ const TRANSLATIONS = {
     /* App */
     'app.nav.home':    'Home',
     'app.nav.events':  'Events',
-    'app.nav.team':    'Team',
+    'app.nav.team':    'Crew',
     'app.nav.account': 'Account',
     'app.section.bands': 'Bands',
     'app.next.show':     'NEXT SHOW',
@@ -393,7 +393,7 @@ const TRANSLATIONS = {
 
     /* Band */
     'band.tab.events':  'Events',
-    'band.tab.team':    'Team',
+    'band.tab.team':    'Crew',
     'band.tab.merch':   'Merch',
     'band.section.upcoming': 'Upcoming',
     'band.section.past':     'Past',
@@ -511,7 +511,7 @@ const TRANSLATIONS = {
     'status.confirmed': 'Confirmed',
     'status.hold':      'Hold',
     'status.cancelled': 'Cancelled',
-    'status.pendente':  'Pending',
+    'status.pendente':  'TBC',
 
     /* Roles */
     'role.tour_manager': 'Tour Manager',
