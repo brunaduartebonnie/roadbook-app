@@ -431,7 +431,7 @@
       const { error } = await updatePassword(pw1);
       setBtnLoading('btn-reset', false, 'GUARDAR PASSWORD');
       if (error) { showError(translateError(error.message), 'reset-error'); return; }
-      window.location.href = '/app.html';
+      window.location.href = '/app';
     };
 
     function translateError(msg) {
