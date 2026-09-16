@@ -24,7 +24,7 @@ export async function signInWithGoogle() {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: `${window.location.origin}/onboarding.html`,
+      redirectTo: `${window.location.origin}/onboarding`,
       queryParams: { prompt: 'select_account' }
     }
   });
@@ -48,20 +48,20 @@ export async function updatePassword(newPassword) {
 /* ── Sign out ── */
 export async function signOut() {
   const { error } = await supabase.auth.signOut();
-  if (!error) window.location.href = '/index.html';
+  if (!error) window.location.href = '/';
 }
 
 /* ── Has account? Route to correct page after auth ── */
 export async function routeAfterAuth(user) {
-  if (!user) { window.location.href = '/index.html'; return; }
+  if (!user) { window.location.href = '/'; return; }
   const { data: profile } = await supabase
     .from('profiles')
     .select('account_id')
     .eq('id', user.id)
     .single();
   if (profile?.account_id) {
-    window.location.href = '/app.html';
+    window.location.href = '/app';
   } else {
-    window.location.href = '/onboarding.html';
+    window.location.href = '/onboarding';
   }
 }

@@ -13228,13 +13228,8 @@ async function generateJoinCode(artistId, role, eventId) {
 
 // Check if current user needs the welcome screen
 function needsWelcomeScreen() {
-  if (!currentProfile) return false;
-  if (currentProfile.role === 'superadmin') return false;
-  // Agencies bypass the welcome screen even with 0 artists (they add artists later)
-  if (currentProfile.account_type === 'agency') return false;
-  // Everyone else needs at least one band to skip welcome
-  var artistIds = currentProfile.artistIds || [];
-  return artistIds.length === 0;
+  // Onboarding is handled by /onboarding page — never show old welcome screen
+  return false;
 }
 
 // ── BACKOFFICE ───────────────────────────────────────────────────────────────
