@@ -384,7 +384,7 @@
       if (error) { showError(translateError(error.message)); return; }
       if (data.user && !data.session) {
         const errEl = document.getElementById('auth-error');
-        errEl.textContent = '✉️ Confirma o teu email antes de entrar. Verifica a caixa de entrada.';
+        errEl.textContent = 'Confirma o teu email antes de entrar. Verifica a caixa de entrada.';
         errEl.style.background = 'rgba(34,89,224,0.08)';
         errEl.style.borderColor = 'rgba(34,89,224,0.3)';
         errEl.style.color = 'var(--blue)';

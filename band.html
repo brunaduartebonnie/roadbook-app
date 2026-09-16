@@ -147,7 +147,7 @@
       transition: border-color 0.15s;
     }
     .invite-strip:hover { border-color: var(--blue); }
-    .invite-strip-icon  { font-size: 28px; margin-bottom: 8px; }
+    .invite-strip-icon  { margin-bottom: 8px; display:flex; align-items:center; justify-content:center; color: var(--blue); }
     .invite-strip-title { font-size: 13px; font-weight: 700; }
     .invite-strip-sub   { font-size: 11px; color: var(--muted); margin-top: 3px; }
 
@@ -172,7 +172,7 @@
 
     /* ── Empty state ── */
     .empty-state { text-align: center; padding: 56px 32px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
-    .empty-icon  { font-size: 44px; }
+    .empty-icon  { color: var(--muted2); }
     .empty-title { font-size: 15px; font-weight: 700; }
     .empty-sub   { font-size: 13px; color: var(--muted); line-height: 1.65; }
 
@@ -253,7 +253,7 @@
   <div class="panel active" id="panel-eventos">
     <div id="events-content">
       <div class="empty-state">
-        <div class="empty-icon">📅</div>
+        <div class="empty-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
         <div class="empty-title" data-i18n="band.empty.events.title">Sem eventos</div>
         <div class="empty-sub" data-i18n="band.empty.events.sub">Adiciona o primeiro concerto desta banda.</div>
       </div>
@@ -273,7 +273,7 @@
   <div class="panel" id="panel-merch">
     <div id="merch-content">
       <div class="empty-state">
-        <div class="empty-icon">👕</div>
+        <div class="empty-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z"/></svg></div>
         <div class="empty-title" data-i18n="band.merch.empty.title">Sem merch</div>
         <div class="empty-sub" data-i18n="band.merch.empty.sub">Adiciona produtos para gerir o stock em tour.</div>
       </div>
@@ -365,7 +365,7 @@ MEMBRO</div>
 
         <div class="auth-error" id="inv-error-modal" style="display:none;"></div>
         <div id="inv-success-wrap" style="display:none;background:rgba(61,186,110,0.1);border:1px solid var(--confirm);border-radius:8px;padding:12px;font-size:13px;color:var(--confirm);">
-          <span data-i18n="band.invite.success">✉️ Email enviado! O link abaixo serve de backup caso o email não chegue.</span>
+          <span data-i18n="band.invite.success">✓ Email enviado! O link abaixo serve de backup caso o email não chegue.</span>
           <div id="inv-link-box" style="margin-top:10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px;font-size:12px;word-break:break-all;color:var(--text);cursor:pointer;" onclick="copyInviteLink()"></div>
           <div style="font-size:11px;color:var(--muted);margin-top:6px;text-align:center;" data-i18n="band.invite.copy">Toca no link para copiar</div>
         </div>
@@ -518,7 +518,7 @@ MEMBRO</div>
 
       if (!events.length) {
         el.innerHTML = `<div class="empty-state">
-          <div class="empty-icon">📅</div>
+          <div class="empty-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
           <div class="empty-title">${t('band.empty.events.title')}</div>
           <div class="empty-sub">${t('band.empty.events.sub')}</div>
         </div>`;
@@ -647,7 +647,7 @@ MEMBRO</div>
         html += `<div style="padding:12px 16px 4px;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);">${t('band.pending.invites')}</div>`;
         html += invites.map(inv => `
           <div class="member-row" style="opacity:0.6;">
-            <div class="member-avatar" style="font-size:18px;">📨</div>
+            <div class="member-avatar" style="color:var(--muted);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
             <div class="member-info">
               <div class="member-name">${esc(inv.email || inv.phone || '—')}</div>
               <div class="member-email">${t('band.invite.expires', { date: new Date(inv.expires_at).toLocaleDateString() })}</div>
@@ -657,7 +657,7 @@ MEMBRO</div>
       }
 
       html += `<div class="invite-strip" onclick="openModal('invite-modal')">
-        <div class="invite-strip-icon">➕</div>
+        <div class="invite-strip-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
         <div class="invite-strip-title">${t('band.invite.strip.title')}</div>
         <div class="invite-strip-sub">${t('band.invite.strip.sub')}</div>
       </div>`;
@@ -755,7 +755,7 @@ MEMBRO</div>
 
       if (error) {
         mc.innerHTML = `<div class="empty-state">
-          <div class="empty-icon">👕</div>
+          <div class="empty-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z"/></svg></div>
           <div class="empty-title">${t('band.merch.soon.title')}</div>
           <div class="empty-sub">${t('band.merch.soon.sub')}</div>
         </div>`;
@@ -764,7 +764,7 @@ MEMBRO</div>
 
       if (!data?.length) {
         mc.innerHTML = `<div class="empty-state">
-          <div class="empty-icon">👕</div>
+          <div class="empty-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z"/></svg></div>
           <div class="empty-title">${t('band.merch.empty.title')}</div>
           <div class="empty-sub">${t('band.merch.empty.sub')}</div>
         </div>`;
@@ -775,7 +775,7 @@ MEMBRO</div>
         const stockCls = item.stock > 5 ? 'stock-ok' : item.stock > 0 ? 'stock-low' : 'stock-out';
         const stockTxt = item.stock > 0 ? item.stock + ' un.' : t('status.cancelled'); // reuse or add out-of-stock key
         return `<div class="merch-item">
-          <div class="merch-thumb">${item.emoji || '📦'}</div>
+          <div class="merch-thumb">${item.emoji || '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z"/></svg>'}</div>
           <div class="merch-info">
             <div class="merch-name">${esc(item.name)}</div>
             <div class="merch-price">${item.price ? '€' + item.price.toFixed(2) : '—'}</div>
