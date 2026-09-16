@@ -257,7 +257,7 @@ BANDA</div>
 
       // Check if already has account (shouldn't be here)
       const { data: profile } = await supabase.from('profiles').select('account_id').eq('id', currentUser.id).single();
-      if (profile?.account_id) { window.location.href = '/app.html'; return; }
+      if (profile?.account_id) { window.location.href = '/app'; return; }
 
       document.getElementById('ob-user-email').textContent = currentUser.email;
       document.getElementById('ob-loading').classList.add('hidden');
@@ -405,7 +405,7 @@ BANDA</div>
         // 4. Link profile to account
         await supabase.from('profiles').update({ account_id: acct.id }).eq('id', currentUser.id);
 
-        window.location.href = '/app.html';
+        window.location.href = '/app';
       } catch (err) {
         setBtnLoading(false);
         showError(t('common.error') + ' ' + (err.message || err));
@@ -423,7 +423,7 @@ BANDA</div>
           .select().single();
         if (error) throw error;
         await supabase.from('profiles').update({ account_id: acct.id }).eq('id', currentUser.id);
-        window.location.href = '/app.html';
+        window.location.href = '/app';
       } catch (err) {
         setBtnLoading(false);
         showError(t('common.error') + ' ' + (err.message || err));
