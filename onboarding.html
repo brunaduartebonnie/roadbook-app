@@ -276,6 +276,24 @@ BANDA</div>
         s.onclick = () => { selectedColor = c; renderSwatches(); };
         row.appendChild(s);
       });
+      // Custom color picker swatch
+      const custom = document.createElement('div');
+      const isCustom = !COLORS.includes(selectedColor);
+      custom.className = 'swatch' + (isCustom ? ' active' : '');
+      custom.style.background = isCustom
+        ? selectedColor
+        : 'conic-gradient(red, yellow, lime, cyan, blue, magenta, red)';
+      custom.title = 'Cor personalizada';
+      custom.onclick = () => {
+        const inp = document.createElement('input');
+        inp.type = 'color';
+        inp.value = isCustom ? selectedColor : '#ff0000';
+        inp.style.position = 'fixed'; inp.style.opacity = '0'; inp.style.pointerEvents = 'none';
+        document.body.appendChild(inp);
+        inp.addEventListener('change', () => { selectedColor = inp.value; renderSwatches(); document.body.removeChild(inp); });
+        inp.click();
+      };
+      row.appendChild(custom);
     }
 
     /* ── Type selection ── */
