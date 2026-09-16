@@ -21,22 +21,44 @@
     .ob-step.active { display: flex; }
     @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } }
 
-    .ob-icon  { font-size: 48px; margin-bottom: 16px; }
     .ob-title { font-family: var(--font-display); font-size: 30px; letter-spacing: 2px; margin-bottom: 8px; white-space: pre-line; }
     .ob-sub   { font-size: 14px; color: var(--muted); line-height: 1.65; margin-bottom: 28px; }
+    .ob-step-icon {
+      width: 48px; height: 48px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display); font-size: 18px; letter-spacing: 1px;
+      margin-bottom: 20px; flex-shrink: 0;
+    }
+    .ob-step-icon.coral { background: rgba(254,77,94,0.12); color: var(--coral); }
+    .ob-step-icon.blue  { background: rgba(34,89,224,0.12); color: var(--blue); }
+    .ob-step-icon.green { background: rgba(61,186,110,0.12); color: var(--confirm); }
 
     /* Type cards */
     .type-cards { display: flex; flex-direction: column; gap: 12px; }
     .type-card {
-      background: var(--surface2); border: 2px solid var(--border);
+      background: var(--surface); border: 1.5px solid var(--border);
       border-radius: 16px; padding: 18px; cursor: pointer;
-      transition: border-color 0.15s, background 0.15s;
-      display: flex; align-items: flex-start; gap: 14px;
+      transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+      display: flex; align-items: center; gap: 16px;
+      position: relative;
     }
-    .type-card.active { border-color: var(--blue); background: rgba(34,89,224,0.06); }
-    .type-card-icon { font-size: 28px; line-height: 1; flex-shrink: 0; margin-top: 2px; }
-    .type-card-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
-    .type-card-desc  { font-size: 13px; color: var(--muted); line-height: 1.5; }
+    .type-card::after {
+      content: ''; position: absolute; bottom: 0; left: 16px; right: 16px;
+      height: 3px; border-radius: 2px; background: transparent;
+      transition: background 0.15s;
+    }
+    .type-card.active { border-color: var(--blue); background: rgba(34,89,224,0.03); box-shadow: 0 2px 12px rgba(34,89,224,0.08); }
+    .type-card.active::after { background: var(--blue); }
+    .type-card-badge {
+      width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display); font-size: 14px; letter-spacing: 1px;
+    }
+    .type-card-badge.coral { background: rgba(254,77,94,0.12); color: var(--coral); }
+    .type-card-badge.blue  { background: rgba(34,89,224,0.12); color: var(--blue); }
+    .type-card-badge.green { background: rgba(61,186,110,0.12); color: var(--confirm); }
+    .type-card-title { font-size: 15px; font-weight: 700; margin-bottom: 3px; }
+    .type-card-desc  { font-size: 12px; color: var(--muted); line-height: 1.5; }
 
     /* Band colors */
     .swatch-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
@@ -108,22 +130,28 @@
 
     <!-- STEP 0: Account type -->
     <div class="ob-step active" id="step-0">
-      <div class="ob-icon">👋</div>
       <div class="ob-title" data-i18n="ob.welcome.title">BEM-VINDO</div>
       <p class="ob-sub" data-i18n="ob.welcome.sub">Como vais usar o RoadBook?</p>
       <div class="type-cards">
-        <div class="type-card active" id="type-agency" onclick="selectType('agency')">
-          <div class="type-card-icon">🏢</div>
+        <div class="type-card" id="type-agency" onclick="selectType('agency')">
+          <div class="type-card-badge coral">AG</div>
           <div>
-            <div class="type-card-title" data-i18n="ob.type.agency.title">Agência / Promotora</div>
-            <div class="type-card-desc"  data-i18n="ob.type.agency.desc">Geres vários artistas e equipas. A agência é a entidade de faturação.</div>
+            <div class="type-card-title" data-i18n="ob.type.agency.title">Agência / Promotor</div>
+            <div class="type-card-desc"  data-i18n="ob.type.agency.desc">Faço a gestão de várias bandas e várias equipas.</div>
           </div>
         </div>
-        <div class="type-card" id="type-independent" onclick="selectType('independent')">
-          <div class="type-card-icon">🎸</div>
+        <div class="type-card active" id="type-independent" onclick="selectType('independent')">
+          <div class="type-card-badge blue">TM</div>
           <div>
             <div class="type-card-title" data-i18n="ob.type.indie.title">Tour Manager / Freelancer</div>
-            <div class="type-card-desc"  data-i18n="ob.type.indie.desc">Trabalhas para uma ou várias bandas de forma independente. Pagas por banda.</div>
+            <div class="type-card-desc"  data-i18n="ob.type.indie.desc">Sou Tour Manager independente de uma ou várias bandas.</div>
+          </div>
+        </div>
+        <div class="type-card" id="type-band" onclick="selectType('band')">
+          <div class="type-card-badge green">BC</div>
+          <div>
+            <div class="type-card-title" data-i18n="ob.type.band.title">Banda / Crew</div>
+            <div class="type-card-desc"  data-i18n="ob.type.band.desc">Sou artista ou membro de uma banda.</div>
           </div>
         </div>
       </div>
@@ -131,7 +159,7 @@
 
     <!-- STEP 1: Account name -->
     <div class="ob-step" id="step-1">
-      <div class="ob-icon" id="step1-icon">🏢</div>
+      <div class="ob-step-icon coral" id="step1-icon">AG</div>
       <div class="ob-title" id="step1-title" data-i18n="ob.step1.title.agency">NOME DA
 AGÊNCIA</div>
       <p class="ob-sub" id="step1-sub" data-i18n="ob.step1.sub.agency">Como se chama a tua agência ou empresa?</p>
@@ -143,8 +171,8 @@ AGÊNCIA</div>
 
     <!-- STEP 2: First band -->
     <div class="ob-step" id="step-2">
-      <div class="trial-pill" data-i18n="ob.step2.badge">🎉 14 dias grátis</div>
-      <div class="ob-icon">🎤</div>
+      <div class="trial-pill" data-i18n="ob.step2.badge">30 dias grátis</div>
+      <div class="ob-step-icon blue">BC</div>
       <div class="ob-title" data-i18n="ob.step2.title" style="white-space:pre-line;">PRIMEIRA
 BANDA</div>
       <p class="ob-sub" data-i18n="ob.step2.sub">Cria a tua primeira banda. Podes adicionar mais depois.</p>
@@ -187,7 +215,7 @@ BANDA</div>
 
     /* ── State ── */
     let currentStep = 0;
-    let accountType = 'agency';
+    let accountType = 'independent';
     let currentUser = null;
 
     /* ── Init ── */
@@ -223,6 +251,7 @@ BANDA</div>
       accountType = type;
       document.getElementById('type-agency').classList.toggle('active', type === 'agency');
       document.getElementById('type-independent').classList.toggle('active', type === 'independent');
+      document.getElementById('type-band').classList.toggle('active', type === 'band');
     };
 
     /* ── Steps ── */
@@ -251,15 +280,22 @@ BANDA</div>
     window.nextStep = async function() {
       hideError();
       if (currentStep === 0) {
-        // Update step 1 labels for TM
+        const icon  = document.getElementById('step1-icon');
+        const title = document.getElementById('step1-title');
+        const sub   = document.getElementById('step1-sub');
+        const inp   = document.getElementById('account-name');
         if (accountType === 'independent') {
-          document.getElementById('step1-icon').textContent = '🎸';
-          document.getElementById('step1-title').textContent = t('ob.step1.title.indie');
-          document.getElementById('step1-title').removeAttribute('data-i18n');
-          document.getElementById('step1-sub').textContent = t('ob.step1.sub.indie');
-          document.getElementById('step1-sub').removeAttribute('data-i18n');
-          document.getElementById('account-name').placeholder = t('ob.step1.placeholder.indie');
-          document.getElementById('account-name').removeAttribute('data-i18n-ph');
+          icon.textContent = 'TM'; icon.className = 'ob-step-icon blue';
+          title.textContent = t('ob.step1.title.indie'); title.removeAttribute('data-i18n');
+          sub.textContent   = t('ob.step1.sub.indie');   sub.removeAttribute('data-i18n');
+          inp.placeholder   = t('ob.step1.placeholder.indie'); inp.removeAttribute('data-i18n-ph');
+        } else if (accountType === 'band') {
+          icon.textContent = 'BC'; icon.className = 'ob-step-icon green';
+          title.textContent = t('ob.step1.title.band'); title.removeAttribute('data-i18n');
+          sub.textContent   = t('ob.step1.sub.band');   sub.removeAttribute('data-i18n');
+          inp.placeholder   = t('ob.step1.placeholder.band'); inp.removeAttribute('data-i18n-ph');
+        } else {
+          icon.textContent = 'AG'; icon.className = 'ob-step-icon coral';
         }
         goToStep(1);
         return;
