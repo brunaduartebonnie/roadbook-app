@@ -11,6 +11,15 @@
       ]
     }
   ],
+  "redirects": [
+    { "source": "/index.html",      "destination": "/",           "permanent": true },
+    { "source": "/app.html",        "destination": "/app",        "permanent": true },
+    { "source": "/band.html",       "destination": "/band",       "permanent": true },
+    { "source": "/event.html",      "destination": "/event",      "permanent": true },
+    { "source": "/onboarding.html", "destination": "/onboarding", "permanent": true },
+    { "source": "/invite.html",     "destination": "/invite",     "permanent": true },
+    { "source": "/billing.html",    "destination": "/billing",    "permanent": true }
+  ],
   "rewrites": [
     { "source": "/app",        "destination": "/app.html" },
     { "source": "/band",       "destination": "/band.html" },
