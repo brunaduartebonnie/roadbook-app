@@ -149,7 +149,7 @@
             <div class="type-card-desc"  data-i18n="ob.type.agency.desc">Faço a gestão de várias bandas e várias equipas.</div>
           </div>
         </div>
-        <div class="type-card active" id="type-independent" onclick="selectType('independent')">
+        <div class="type-card" id="type-independent" onclick="selectType('independent')">
           <div class="type-card-badge">
             <!-- Person -->
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -263,7 +263,7 @@ PRONTO!</div>
 
     /* ── State ── */
     let currentStep = 0;
-    let accountType = 'independent';
+    let accountType = null;
     let currentUser = null;
 
     /* ── Init ── */
@@ -357,6 +357,7 @@ PRONTO!</div>
     window.nextStep = async function() {
       hideError();
       if (currentStep === 0) {
+        if (!accountType) { showError('Escolhe uma opção para continuar.'); return; }
         const icon  = document.getElementById('step1-icon');
         const title = document.getElementById('step1-title');
         const sub   = document.getElementById('step1-sub');
