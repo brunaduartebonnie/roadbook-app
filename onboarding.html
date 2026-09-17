@@ -226,6 +226,20 @@ BANDA</div>
       </div>
     </div>
 
+    <!-- STEP 3: Preview success (only shown in ?preview mode) -->
+    <div class="ob-step" id="step-3" style="align-items:center;justify-content:center;text-align:center;gap:20px;">
+      <div style="width:64px;height:64px;border-radius:50%;background:rgba(61,186,110,0.12);display:flex;align-items:center;justify-content:center;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3dba6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+          <polyline points="22 4 12 14.01 9 11.01"/>
+        </svg>
+      </div>
+      <div class="ob-title" style="margin-bottom:0;">TUDO
+PRONTO!</div>
+      <p class="ob-sub" style="margin-bottom:0;">No flow real, o dashboard abria aqui com a banda já criada.</p>
+      <button class="btn btn-outline" onclick="location.href='/onboarding?preview'" style="margin-top:8px;">Reiniciar preview</button>
+    </div>
+
   </div><!-- /ob-wrap -->
 
   <!-- Action buttons (outside scrollable area) -->
@@ -320,7 +334,10 @@ BANDA</div>
         const d = document.getElementById('dot-' + i);
         d.className = 'step-dot ' + (i < currentStep ? 'done' : i === currentStep ? 'active' : '');
       });
+      const isDone = currentStep === 3;
       document.getElementById('ob-skip-btn').style.display = currentStep === 2 ? 'block' : 'none';
+      document.getElementById('ob-next-btn').style.display = isDone ? 'none' : '';
+      document.querySelector('.ob-action').style.display = isDone ? 'none' : '';
     }
 
     function goToStep(n) {
@@ -386,7 +403,7 @@ BANDA</div>
 
       setBtnLoading(true);
 
-      if (PREVIEW) { await new Promise(r => setTimeout(r, 800)); window.location.href = '/app'; return; }
+      if (PREVIEW) { setBtnLoading(true); await new Promise(r => setTimeout(r, 800)); goToStep(3); setBtnLoading(false); return; }
 
       try {
         // 1. Create account
@@ -427,7 +444,7 @@ BANDA</div>
       const accountName = document.getElementById('account-name').value.trim();
       if (!accountName) { showError(t('ob.step1.label') + ' obrigatório.'); return; }
       setBtnLoading(true);
-      if (PREVIEW) { await new Promise(r => setTimeout(r, 800)); window.location.href = '/app'; return; }
+      if (PREVIEW) { setBtnLoading(true); await new Promise(r => setTimeout(r, 800)); goToStep(3); setBtnLoading(false); return; }
       try {
         const { data: acct, error } = await supabase
           .from('accounts')
