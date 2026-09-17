@@ -7,7 +7,7 @@
   font-style: normal;
 }</style>
   </defs>
-  <text x="0" y="64" font-family="'Bebas Neue', sans-serif" font-size="68" fill="#1a1817">ROAD</text>
+  <text x="0" y="64" font-family="'Bebas Neue', sans-serif" font-size="68" fill="#f2f2f2">ROAD</text>
   <circle cx="182" cy="34" r="6" fill="#fe4d5e"/>
   <text x="196" y="64" font-family="'Bebas Neue', sans-serif" font-size="68" fill="#fe4d5e">BOOK</text>
 </svg>
