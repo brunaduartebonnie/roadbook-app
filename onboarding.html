@@ -247,6 +247,7 @@ PRONTO!</div>
     <div class="auth-error" id="ob-error" style="margin-bottom:4px;"></div>
     <button class="btn btn-primary" id="ob-next-btn" onclick="nextStep()" data-i18n="ob.btn.continue">Continuar</button>
     <button class="btn btn-ghost" id="ob-skip-btn" onclick="skipBand()" style="display:none;" data-i18n="ob.btn.skip">Fazer isso mais tarde</button>
+    <button class="btn btn-ghost" id="ob-back-btn" onclick="prevStep()" style="display:none;">← Voltar</button>
   </div>
 
   <script type="module">
@@ -336,9 +337,15 @@ PRONTO!</div>
       });
       const isDone = currentStep === 3;
       document.getElementById('ob-skip-btn').style.display = currentStep === 2 ? 'block' : 'none';
+      document.getElementById('ob-back-btn').style.display = (currentStep >= 1 && !isDone) ? 'block' : 'none';
       document.getElementById('ob-next-btn').style.display = isDone ? 'none' : '';
       document.querySelector('.ob-action').style.display = isDone ? 'none' : '';
     }
+
+    window.prevStep = function() {
+      hideError();
+      goToStep(currentStep - 1);
+    };
 
     function goToStep(n) {
       document.getElementById('step-' + currentStep).classList.remove('active');
