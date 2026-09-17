@@ -241,6 +241,8 @@ BANDA</div>
 
     window._toggleLang = () => { toggleLang(); location.reload(); };
 
+    const PREVIEW = new URLSearchParams(location.search).has('preview');
+
     /* ── Band colors ── */
     const COLORS = ['#2259e0','#fe6977','#3dba6e','#f5a623','#9b59b6','#1abc9c','#e74c3c','#e67e22'];
     let selectedColor = COLORS[0];
@@ -252,6 +254,14 @@ BANDA</div>
 
     /* ── Init ── */
     window.addEventListener('DOMContentLoaded', async () => {
+      if (PREVIEW) {
+        document.getElementById('ob-user-email').textContent = 'preview@road-book.app';
+        document.getElementById('ob-loading').classList.add('hidden');
+        renderSwatches();
+        updateDots();
+        return;
+      }
+
       currentUser = await requireAuth('/index.html');
       if (!currentUser) return;
 
@@ -371,11 +381,12 @@ BANDA</div>
     async function createAccountAndBand() {
       const accountName = document.getElementById('account-name').value.trim();
       const bandName    = document.getElementById('band-name').value.trim();
-      const bandGenre   = document.getElementById('band-genre').value.trim();
 
       if (!bandName) { showError(t('ob.form.band.name.label') + ' obrigatório.'); return; }
 
       setBtnLoading(true);
+
+      if (PREVIEW) { await new Promise(r => setTimeout(r, 800)); window.location.href = '/app'; return; }
 
       try {
         // 1. Create account
@@ -416,6 +427,7 @@ BANDA</div>
       const accountName = document.getElementById('account-name').value.trim();
       if (!accountName) { showError(t('ob.step1.label') + ' obrigatório.'); return; }
       setBtnLoading(true);
+      if (PREVIEW) { await new Promise(r => setTimeout(r, 800)); window.location.href = '/app'; return; }
       try {
         const { data: acct, error } = await supabase
           .from('accounts')
