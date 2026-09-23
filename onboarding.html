@@ -281,7 +281,8 @@ PRONTO!</div>
       if (!currentUser) return;
 
       // Check if already has account (shouldn't be here)
-      const { data: profile } = await supabase.from('profiles').select('account_id').eq('id', currentUser.id).single();
+      const { data: profile } = await supabase.from('profiles').select('account_id, role').eq('id', currentUser.id).single();
+      if (profile?.role === 'superadmin' || currentUser.email === 'brunaduarte2@gmail.com') { window.location.href = '/admin'; return; }
       if (profile?.account_id) { window.location.href = '/app'; return; }
 
       document.getElementById('ob-user-email').textContent = currentUser.email;

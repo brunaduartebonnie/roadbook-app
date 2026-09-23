@@ -24,7 +24,7 @@ export async function signInWithGoogle() {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: `${window.location.origin}/onboarding`,
+      redirectTo: `${window.location.origin}/`,
       queryParams: { prompt: 'select_account' }
     }
   });
@@ -54,15 +54,15 @@ export async function signOut() {
 /* ── Has account? Route to correct page after auth ── */
 export async function routeAfterAuth(user) {
   if (!user) { window.location.href = '/'; return; }
-  if (user.email === 'brunaduarte2@gmail.com') {
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('account_id, role')
+    .eq('id', user.id)
+    .single();
+  if (user.email === 'brunaduarte2@gmail.com' || profile?.role === 'superadmin') {
     window.location.href = '/admin';
     return;
   }
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('account_id')
-    .eq('id', user.id)
-    .single();
   if (profile?.account_id) {
     window.location.href = '/app';
   } else {
