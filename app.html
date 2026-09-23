@@ -2309,45 +2309,75 @@ function showToast(msg) {
 (function(){ setTheme(localStorage.getItem('rb-theme2') !== 'dark'); })(); // diurno por defeito, nocturno se o utilizador escolheu
 
 async function loadAllData() {
-  const [a,e,ed2,t,c,s,g,ex,ch,ri,mi,vi,ml,mmo,mmc,ap,sh,er,eh,ec,edev,me,ic,ies,tc,sa] = await Promise.all([
-    sb.from('artists').select('*'),
-    sb.from('events').select('*').order('date'),
-    sb.from('event_days').select('*').order('sort_order'),
-    sb.from('timeline_items').select('*').order('sort_order'),
-    sb.from('comitiva').select('*').order('sort_order'),
-    sb.from('setlist_items').select('*').order('sort_order'),
-    sb.from('guestlist').select('*'),
-    sb.from('expenses').select('*'),
-    sb.from('chat_messages').select('*').order('created_at'),
-    sb.from('rider_items').select('*').order('sort_order'),
-    sb.from('media_items').select('*').order('created_at'),
-    sb.from('vehicles').select('*').order('sort_order'),
-    sb.from('event_meals').select('*').order('sort_order'),
-    sb.from('meal_menu_options').select('*').order('sort_order'),
-    sb.from('meal_menu_choices').select('*'),
-    sb.from('artist_people').select('*').order('sort_order'),
-    sb.from('saved_hotels').select('*').order('name'),
-    sb.from('event_rooms').select('*').order('sort_order'),
-    sb.from('event_hotels').select('*').order('sort_order'),
-    sb.from('event_contacts').select('*').order('sort_order'),
-    sb.from('event_departures').select('*').order('sort_order'),
-    sb.from('merch_items').select('*').order('sort_order'),
-    sb.from('inv_catalog').select('*').order('sort_order'),
-    sb.from('inv_event_stock').select('*'),
-    sb.from('tour_companies').select('*').order('sort_order'),
-    sb.from('event_support_acts').select('*').order('sort_order')
-  ]);
-  artists = a.data || []; events = e.data || []; eventDays = ed2.data || [];
-  timelineItems = t.data || [];
+  // Step 1: get account_id for current user, then fetch artists + events scoped to it
+  var accountId = null;
+  if (currentUser) {
+    var profSnap = await sb.from('profiles').select('account_id').eq('id', currentUser.id).single();
+    accountId = profSnap.data && profSnap.data.account_id;
+  }
+
+  var artistQ = accountId
+    ? sb.from('artists').select('*').eq('account_id', accountId)
+    : sb.from('artists').select('*');
+  var eventQ = accountId
+    ? sb.from('events').select('*').eq('account_id', accountId).order('date')
+    : sb.from('events').select('*').order('date');
+
+  const [a, e] = await Promise.all([artistQ, eventQ]);
+  artists = a.data || [];
+  events  = e.data || [];
+
+  var artistIds = artists.map(function(x){ return x.id; });
+  var eventIds  = events.map(function(x){ return x.id; });
+
+  // Step 2: fetch everything else scoped by artistIds / eventIds
+  var empty = { data: [] };
+  var [ed2,t,c,s,g,ex,ch,ri,mi,vi,ml,ap,sh,er,eh,ec,edev,me,ic,ies,tc,sa] = eventIds.length || artistIds.length
+    ? await Promise.all([
+        eventIds.length ? sb.from('event_days').select('*').in('event_id', eventIds).order('sort_order')         : empty,
+        eventIds.length ? sb.from('timeline_items').select('*').in('event_id', eventIds).order('sort_order')     : empty,
+        eventIds.length ? sb.from('comitiva').select('*').in('event_id', eventIds).order('sort_order')           : empty,
+        eventIds.length ? sb.from('setlist_items').select('*').in('event_id', eventIds).order('sort_order')      : empty,
+        eventIds.length ? sb.from('guestlist').select('*').in('event_id', eventIds)                              : empty,
+        eventIds.length ? sb.from('expenses').select('*').in('event_id', eventIds)                               : empty,
+        eventIds.length ? sb.from('chat_messages').select('*').in('event_id', eventIds).order('created_at')      : empty,
+        eventIds.length ? sb.from('rider_items').select('*').in('event_id', eventIds).order('sort_order')        : empty,
+        eventIds.length ? sb.from('media_items').select('*').in('event_id', eventIds).order('created_at')        : empty,
+        eventIds.length ? sb.from('vehicles').select('*').in('event_id', eventIds).order('sort_order')           : empty,
+        eventIds.length ? sb.from('event_meals').select('*').in('event_id', eventIds).order('sort_order')        : empty,
+        artistIds.length ? sb.from('artist_people').select('*').in('artist_id', artistIds).order('sort_order')   : empty,
+        sb.from('saved_hotels').select('*').order('name'),
+        eventIds.length ? sb.from('event_rooms').select('*').in('event_id', eventIds).order('sort_order')        : empty,
+        eventIds.length ? sb.from('event_hotels').select('*').in('event_id', eventIds).order('sort_order')       : empty,
+        eventIds.length ? sb.from('event_contacts').select('*').in('event_id', eventIds).order('sort_order')     : empty,
+        eventIds.length ? sb.from('event_departures').select('*').in('event_id', eventIds).order('sort_order')   : empty,
+        artistIds.length ? sb.from('merch_items').select('*').in('artist_id', artistIds).order('sort_order')     : empty,
+        artistIds.length ? sb.from('inv_catalog').select('*').in('artist_id', artistIds).order('sort_order')     : empty,
+        eventIds.length ? sb.from('inv_event_stock').select('*').in('event_id', eventIds)                        : empty,
+        artistIds.length ? sb.from('tour_companies').select('*').in('artist_id', artistIds).order('sort_order')  : empty,
+        eventIds.length ? sb.from('event_support_acts').select('*').in('event_id', eventIds).order('sort_order') : empty,
+      ])
+    : new Array(22).fill(empty);
+
+  eventDays = ed2.data || []; timelineItems = t.data || [];
   comitivaItems = c.data || []; setlistItems = s.data || []; guestlistItems = g.data || [];
   expenseItems = ex.data || []; chatMessages = ch.data || [];
   riderItems = ri.data || []; mediaItems = mi.data || [];
   vehicleItems = vi.data || []; mealItems = ml.data || [];
-  mealMenuOptions = mmo.data || []; mealMenuChoices = mmc.data || [];
   artistPeople = ap.data || []; savedHotels = sh.data || []; eventRooms = er.data || [];
   eventHotels = eh.data || []; eventContacts = ec.data || []; eventDepartures = edev.data || [];
   merchItems = me.data || []; invCatalog = ic.data || []; invEventStock = ies.data || [];
   tourCompanies = tc.data || []; supportActs = sa.data || [];
+
+  // meal_menu_options and meal_menu_choices filtered client-side by loaded meal IDs
+  var mealIds = mealItems.map(function(x){ return x.id; });
+  var [mmo, mmc] = mealIds.length
+    ? await Promise.all([
+        sb.from('meal_menu_options').select('*').in('meal_id', mealIds).order('sort_order'),
+        sb.from('meal_menu_choices').select('*').in('meal_id', mealIds)
+      ])
+    : [empty, empty];
+  mealMenuOptions = mmo.data || []; mealMenuChoices = mmc.data || [];
 }
 
 // ── HOTEL AMENITIES ──────────────────────────────────────────────────────────
