@@ -406,6 +406,7 @@ PRONTO!</div>
     async function createAccountAndBand() {
       const accountName = document.getElementById('account-name').value.trim();
       const bandName    = document.getElementById('band-name').value.trim();
+      const bandGenre   = document.getElementById('band-genre').value.trim();
 
       if (!bandName) { showError(t('ob.form.band.name.label') + ' obrigatório.'); return; }
 
