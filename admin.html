@@ -6,263 +6,708 @@
   <title>RoadBook — Admin</title>
   <meta name="theme-color" content="#0a0a0a">
   <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-32.png">
-  <link rel="stylesheet" href="css/design.css">
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #0a0a0a; --surface: #141414; --surface2: #1c1c1c;
-      --border: #2a2a2a; --text: #f2f2f2; --muted: #777; --blue: #2259e0;
-      --coral: #fe6977; --confirm: #3dba6e; --danger: #e05c5c;
+      --bg: #0c0c0c; --surface: #161616; --surface2: #1e1e1e; --surface3: #262626;
+      --border: #2a2a2a; --text: #f0f0f0; --muted: #666; --muted2: #444;
+      --blue: #2259e0; --blue-dim: rgba(34,89,224,0.12);
+      --coral: #fe6977; --coral-dim: rgba(254,105,119,0.12);
+      --green: #3dba6e; --green-dim: rgba(61,186,110,0.12);
+      --yellow: #f5a623; --yellow-dim: rgba(245,166,35,0.12);
+      --purple: #9b6dff; --purple-dim: rgba(155,109,255,0.12);
+      --danger: #e05c5c;
+      --font: 'Plus Jakarta Sans', system-ui, sans-serif;
+      --font-display: 'Bebas Neue', sans-serif;
+      --sidebar-w: 220px;
     }
-    body { background: var(--bg); color: var(--text); font-family: var(--font-card, 'Plus Jakarta Sans', sans-serif); min-height: 100vh; margin: 0; }
+    html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; }
 
-    .admin-topbar {
-      display: flex; align-items: center; justify-content: space-between;
+    /* ── LAYOUT ── */
+    .layout { display: flex; height: 100vh; overflow: hidden; }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: var(--sidebar-w); flex-shrink: 0; background: var(--surface);
+      border-right: 1px solid var(--border); display: flex; flex-direction: column;
+      padding: 20px 0; overflow-y: auto;
+    }
+    .sidebar-logo {
+      padding: 4px 20px 20px; border-bottom: 1px solid var(--border); margin-bottom: 12px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .logo-road { font-family: var(--font-display); font-size: 20px; letter-spacing: 2px; }
+    .logo-dot  { width: 6px; height: 6px; border-radius: 50%; background: var(--coral); flex-shrink: 0; }
+    .logo-book { font-family: var(--font-display); font-size: 20px; letter-spacing: 2px; color: var(--coral); }
+    .logo-badge { margin-left: 6px; background: var(--coral-dim); border: 1px solid rgba(254,105,119,0.3); color: var(--coral); font-size: 9px; font-weight: 800; letter-spacing: 1px; border-radius: 5px; padding: 2px 6px; }
+
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 20px; cursor: pointer; border-radius: 0;
+      font-size: 13px; font-weight: 600; color: var(--muted);
+      transition: background 0.12s, color 0.12s;
+      border-left: 3px solid transparent;
+      position: relative;
+    }
+    .nav-item:hover { background: var(--surface2); color: var(--text); }
+    .nav-item.active { background: var(--blue-dim); color: var(--blue); border-left-color: var(--blue); }
+    .nav-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+    .nav-badge {
+      margin-left: auto; background: var(--coral); color: #fff;
+      font-size: 10px; font-weight: 800; border-radius: 10px; padding: 1px 6px; min-width: 18px; text-align: center;
+    }
+
+    .sidebar-bottom { margin-top: auto; padding: 16px 20px; border-top: 1px solid var(--border); }
+    .sidebar-user { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
+    .btn-logout { width: 100%; background: none; border: 1px solid var(--border); color: var(--muted); font-size: 12px; border-radius: 8px; padding: 8px; cursor: pointer; font-family: var(--font); transition: border-color 0.12s, color 0.12s; }
+    .btn-logout:hover { border-color: var(--danger); color: var(--danger); }
+
+    /* ── MAIN ── */
+    .main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+    .topbar {
       padding: 18px 28px; border-bottom: 1px solid var(--border);
-      position: sticky; top: 0; background: var(--bg); z-index: 10;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; background: var(--bg); z-index: 5; flex-shrink: 0;
     }
-    .admin-logo { display: flex; align-items: center; gap: 5px; }
-    .admin-logo-road { font-family: var(--font-display, 'Bebas Neue', sans-serif); font-size: 22px; letter-spacing: 2px; color: var(--text); }
-    .admin-logo-dot  { width: 6px; height: 6px; border-radius: 50%; background: var(--coral); }
-    .admin-logo-book { font-family: var(--font-display, 'Bebas Neue', sans-serif); font-size: 22px; letter-spacing: 2px; color: var(--coral); }
-    .admin-badge { background: rgba(254,105,119,0.15); border: 1px solid rgba(254,105,119,0.3); color: var(--coral); font-size: 10px; font-weight: 800; letter-spacing: 1px; border-radius: 6px; padding: 3px 8px; text-transform: uppercase; }
-    .admin-logout { background: none; border: 1px solid var(--border); color: var(--muted); font-size: 12px; border-radius: 8px; padding: 6px 14px; cursor: pointer; }
+    .topbar-title { font-family: var(--font-display); font-size: 22px; letter-spacing: 2px; }
+    .topbar-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
 
-    .admin-body { max-width: 960px; margin: 0 auto; padding: 28px 20px 60px; }
+    .content { padding: 24px 28px; flex: 1; }
 
-    .admin-section { margin-bottom: 36px; }
-    .admin-section-title { font-family: var(--font-display, 'Bebas Neue', sans-serif); font-size: 18px; letter-spacing: 2px; color: var(--muted); margin-bottom: 14px; }
+    /* ── PANELS ── */
+    .panel { display: none; }
+    .panel.active { display: block; }
 
-    .stat-row { display: flex; gap: 12px; margin-bottom: 28px; flex-wrap: wrap; }
-    .stat-card { flex: 1; min-width: 120px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; }
-    .stat-num  { font-family: var(--font-display, 'Bebas Neue', sans-serif); font-size: 36px; letter-spacing: 1px; line-height: 1; }
-    .stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+    /* ── STATS ── */
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 28px; }
+    .stat-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      padding: 18px 20px; cursor: default;
+    }
+    .stat-num  { font-family: var(--font-display); font-size: 38px; letter-spacing: 1px; line-height: 1; }
+    .stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 5px; }
 
-    .admin-table { width: 100%; border-collapse: collapse; }
-    .admin-table th { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border); }
-    .admin-table td { font-size: 13px; padding: 12px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-    .admin-table tr:last-child td { border-bottom: none; }
-    .admin-table tr:hover td { background: var(--surface2); }
+    /* ── SECTION HEADER ── */
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .section-title { font-family: var(--font-display); font-size: 16px; letter-spacing: 1.5px; color: var(--muted); }
 
-    .pill { display: inline-flex; align-items: center; font-size: 10px; font-weight: 700; letter-spacing: 0.4px; border-radius: 6px; padding: 3px 8px; text-transform: uppercase; }
-    .pill-agency     { background: rgba(34,89,224,0.15);  color: #6a9bff; }
-    .pill-independent{ background: rgba(254,105,119,0.12); color: var(--coral); }
-    .pill-band       { background: rgba(61,186,110,0.12);  color: var(--confirm); }
-    .pill-pending    { background: rgba(245,166,35,0.15);  color: #f5a623; }
-    .pill-accepted   { background: rgba(61,186,110,0.12);  color: var(--confirm); }
+    /* ── TABLE ── */
+    .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin-bottom: 24px; }
+    table { width: 100%; border-collapse: collapse; }
+    th { font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--muted); text-align: left; padding: 10px 16px; border-bottom: 1px solid var(--border); font-weight: 700; }
+    td { font-size: 13px; padding: 13px 16px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tbody tr { cursor: pointer; transition: background 0.1s; }
+    tbody tr:hover td { background: var(--surface2); }
+    .td-muted { color: var(--muted); }
+    .td-bold { font-weight: 700; }
 
-    .acct-bands { display: flex; gap: 6px; flex-wrap: wrap; }
-    .acct-band-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    /* ── PILLS ── */
+    .pill { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; letter-spacing: 0.4px; border-radius: 6px; padding: 3px 8px; white-space: nowrap; }
+    .pill-blue   { background: var(--blue-dim);   color: #6a9bff; }
+    .pill-coral  { background: var(--coral-dim);  color: var(--coral); }
+    .pill-green  { background: var(--green-dim);  color: var(--green); }
+    .pill-yellow { background: var(--yellow-dim); color: var(--yellow); }
+    .pill-purple { background: var(--purple-dim); color: var(--purple); }
+    .pill-grey   { background: var(--surface3);   color: var(--muted); }
 
-    .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+    /* ── ACTION BUTTONS ── */
+    .btn-action {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: none; border: 1px solid var(--border); color: var(--text);
+      font-size: 11px; font-weight: 600; border-radius: 7px; padding: 5px 11px;
+      cursor: pointer; font-family: var(--font); transition: border-color 0.12s, color 0.12s, background 0.12s;
+    }
+    .btn-action:hover { border-color: var(--blue); color: var(--blue); }
+    .btn-action.green:hover { border-color: var(--green); color: var(--green); }
+    .btn-action.danger:hover { border-color: var(--danger); color: var(--danger); }
+    .btn-action.primary { background: var(--blue); border-color: var(--blue); color: #fff; }
+    .btn-action.primary:hover { background: #1a46b8; }
 
-    #admin-loading { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; height: 60vh; }
+    /* ── ROLE GROUPS ── */
+    .role-group { margin-bottom: 20px; }
+    .role-group-label {
+      font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;
+      color: var(--muted); padding: 0 0 8px; border-bottom: 1px solid var(--border); margin-bottom: 0;
+    }
+
+    /* ── BUG CARD ── */
+    .bug-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+      padding: 16px; margin-bottom: 10px; display: flex; align-items: flex-start; gap: 14px;
+      cursor: pointer; transition: border-color 0.12s;
+    }
+    .bug-card:hover { border-color: var(--muted2); }
+    .bug-card.resolved { opacity: 0.45; }
+    .bug-priority { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+    .bug-priority.high   { background: var(--coral); }
+    .bug-priority.medium { background: var(--yellow); }
+    .bug-priority.low    { background: var(--green); }
+    .bug-body { flex: 1; }
+    .bug-title { font-weight: 700; font-size: 13px; margin-bottom: 3px; }
+    .bug-desc  { font-size: 12px; color: var(--muted); line-height: 1.5; }
+    .bug-meta  { font-size: 11px; color: var(--muted2); margin-top: 6px; display: flex; gap: 10px; }
+
+    /* ── ADD BUG FORM ── */
+    .add-bug-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin-bottom: 20px; }
+    .field-label { font-size: 10px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 6px; }
+    .field-input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; color: var(--text); font-size: 13px; font-family: var(--font); outline: none; margin-bottom: 12px; }
+    .field-input:focus { border-color: var(--blue); }
+    textarea.field-input { resize: vertical; min-height: 72px; }
+    select.field-input { cursor: pointer; appearance: none; }
+    .field-row { display: flex; gap: 12px; }
+    .field-row > * { flex: 1; }
+
+    /* ── COLOR DOT ── */
+    .color-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+
+    /* ── EMPTY ── */
+    .empty { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 13px; }
+
+    /* ── LOADING ── */
+    #admin-loading { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 100; }
     #admin-loading.hidden { display: none; }
-    #admin-content { display: none; }
-    #admin-content.visible { display: block; }
-    #admin-error { color: var(--danger); text-align: center; padding: 60px 20px; display: none; }
-    #admin-error.visible { display: block; }
+    .spinner { width: 28px; height: 28px; border: 3px solid var(--surface3); border-top-color: var(--blue); border-radius: 50%; animation: spin 0.7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    .empty-row td { color: var(--muted); text-align: center; padding: 24px; }
+    /* ── ACCESS DENIED ── */
+    #admin-denied { display: none; position: fixed; inset: 0; background: var(--bg); align-items: center; justify-content: center; flex-direction: column; gap: 12px; }
+    #admin-denied.show { display: flex; }
+    #admin-denied h2 { font-family: var(--font-display); font-size: 28px; letter-spacing: 2px; color: var(--danger); }
 
-    .action-btn { background: none; border: 1px solid var(--border); color: var(--text); font-size: 11px; border-radius: 7px; padding: 4px 10px; cursor: pointer; }
-    .action-btn:hover { border-color: var(--blue); color: var(--blue); }
+    /* ── MODAL ── */
+    .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 50; display: flex; align-items: center; justify-content: center; }
+    .modal-bg.hidden { display: none; }
+    .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; width: 480px; max-width: 96vw; padding: 24px; }
+    .modal-title { font-family: var(--font-display); font-size: 20px; letter-spacing: 1.5px; margin-bottom: 18px; }
+    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; }
+
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
   </style>
 </head>
 <body>
 
-  <div class="admin-topbar">
-    <div class="admin-logo">
-      <span class="admin-logo-road">ROAD</span>
-      <span class="admin-logo-dot"></span>
-      <span class="admin-logo-book">BOOK</span>
-      <span class="admin-badge" style="margin-left:10px;">Admin</span>
+<div id="admin-loading"><div class="spinner"></div></div>
+<div id="admin-denied"><h2>ACESSO NEGADO</h2><p style="color:var(--muted)">Só para superadmin.</p></div>
+
+<div class="layout" id="admin-layout" style="display:none;">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-road">ROAD</span>
+      <span class="logo-dot"></span>
+      <span class="logo-book">BOOK</span>
+      <span class="logo-badge">Admin</span>
     </div>
-    <button class="admin-logout" onclick="doLogout()">Sair</button>
-  </div>
 
-  <div class="admin-body">
-    <div id="admin-loading">
-      <div class="spinner"></div>
+    <div class="nav-item active" onclick="showPanel('overview')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Overview
     </div>
-    <div id="admin-error">Acesso negado.</div>
-    <div id="admin-content">
+    <div class="nav-item" onclick="showPanel('accounts')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V8l8-5 8 5v13H4z"/><path d="M9 21v-6h6v6"/></svg>
+      Contas
+      <span class="nav-badge" id="badge-accounts" style="display:none"></span>
+    </div>
+    <div class="nav-item" onclick="showPanel('users')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><path d="M19 8v6M22 11h-6"/></svg>
+      Utilizadores
+    </div>
+    <div class="nav-item" onclick="showPanel('bands')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="15" rx="8" ry="3.5"/><path d="M4 15v4c0 1.9 3.6 3.5 8 3.5s8-1.6 8-3.5v-4"/><path d="M8 5.5L5.5 12M16 5.5L18.5 12"/><circle cx="8" cy="5" r="1.5" fill="currentColor" stroke="none"/><circle cx="16" cy="5" r="1.5" fill="currentColor" stroke="none"/></svg>
+      Bandas
+    </div>
+    <div class="nav-item" onclick="showPanel('invites')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+      Convites
+      <span class="nav-badge" id="badge-invites" style="display:none"></span>
+    </div>
+    <div class="nav-item" onclick="showPanel('bugs')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l1 4H7L8 2z"/><path d="M7 6v2a5 5 0 0 0 10 0V6"/><path d="M5 10H3l-1 7h20l-1-7h-2"/><path d="M12 13v4"/></svg>
+      Bugs
+      <span class="nav-badge" id="badge-bugs" style="display:none"></span>
+    </div>
 
-      <!-- Stats -->
-      <div class="stat-row" id="stat-row"></div>
+    <div class="sidebar-bottom">
+      <div class="sidebar-user" id="sidebar-email"></div>
+      <button class="btn-logout" onclick="doLogout()">Sair da conta</button>
+    </div>
+  </aside>
 
-      <!-- Accounts -->
-      <div class="admin-section">
-        <div class="admin-section-title">Contas</div>
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <div class="topbar-title" id="topbar-title">OVERVIEW</div>
+        <div class="topbar-sub" id="topbar-sub">Central de comando</div>
+      </div>
+      <button class="btn-action" onclick="loadAll()" style="gap:6px;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
+        Actualizar
+      </button>
+    </div>
+
+    <div class="content">
+
+      <!-- OVERVIEW -->
+      <div class="panel active" id="panel-overview">
+        <div class="stat-grid" id="stat-grid"></div>
+        <div class="section-header"><div class="section-title">ACTIVIDADE RECENTE</div></div>
         <div class="table-wrap">
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th>Nome</th>
-                <th>Tipo</th>
-                <th>Bandas</th>
-                <th>Membros</th>
-                <th>Criada em</th>
-              </tr>
-            </thead>
+          <table>
+            <thead><tr><th>Conta</th><th>Tipo</th><th>Bandas</th><th>Utilizadores</th><th>Criada</th><th>Estado</th></tr></thead>
+            <tbody id="overview-accounts-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- CONTAS -->
+      <div class="panel" id="panel-accounts">
+        <div class="section-header">
+          <div class="section-title">TODAS AS CONTAS</div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn-action" id="filter-pending" onclick="filterAccounts('pending')" style="border-color:var(--yellow);color:var(--yellow)">Pendentes</button>
+            <button class="btn-action" id="filter-all-acc" onclick="filterAccounts('all')">Todas</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Nome</th><th>Tipo</th><th>Owner</th><th>Bandas</th><th>Membros</th><th>Estado</th><th>Criada</th><th></th></tr></thead>
             <tbody id="accounts-body"></tbody>
           </table>
         </div>
       </div>
 
-      <!-- Users / Profiles -->
-      <div class="admin-section">
-        <div class="admin-section-title">Utilizadores</div>
+      <!-- UTILIZADORES -->
+      <div class="panel" id="panel-users">
+        <div id="users-by-role"></div>
+      </div>
+
+      <!-- BANDAS -->
+      <div class="panel" id="panel-bands">
+        <div class="section-header"><div class="section-title">TODAS AS BANDAS</div></div>
         <div class="table-wrap">
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th>Nome</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Conta</th>
-                <th>Desde</th>
-              </tr>
-            </thead>
-            <tbody id="users-body"></tbody>
+          <table>
+            <thead><tr><th>Banda</th><th>Conta</th><th>Género</th><th>Membros</th><th>Eventos</th><th>Cor</th></tr></thead>
+            <tbody id="bands-body"></tbody>
           </table>
         </div>
       </div>
 
-      <!-- Invitations -->
-      <div class="admin-section">
-        <div class="admin-section-title">Convites</div>
+      <!-- CONVITES -->
+      <div class="panel" id="panel-invites">
+        <div class="section-header"><div class="section-title">CONVITES</div></div>
         <div class="table-wrap">
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th>Email</th>
-                <th>Banda</th>
-                <th>Role</th>
-                <th>Estado</th>
-                <th>Enviado em</th>
-              </tr>
-            </thead>
+          <table>
+            <thead><tr><th>Email</th><th>Banda</th><th>Role</th><th>Enviado por</th><th>Estado</th><th>Data</th><th></th></tr></thead>
             <tbody id="invites-body"></tbody>
           </table>
         </div>
       </div>
 
-    </div><!-- /admin-content -->
+      <!-- BUGS -->
+      <div class="panel" id="panel-bugs">
+        <!-- Add bug form -->
+        <div class="add-bug-wrap">
+          <div class="section-title" style="margin-bottom:16px;">REPORTAR BUG</div>
+          <label class="field-label">Título</label>
+          <input type="text" class="field-input" id="bug-title" placeholder="Descrição curta do problema">
+          <label class="field-label">Descrição</label>
+          <textarea class="field-input" id="bug-desc" placeholder="Contexto, como reproduzir, impacto..."></textarea>
+          <div class="field-row">
+            <div>
+              <label class="field-label">Prioridade</label>
+              <select class="field-input" id="bug-priority">
+                <option value="high">🔴 Alta</option>
+                <option value="medium" selected>🟡 Média</option>
+                <option value="low">🟢 Baixa</option>
+              </select>
+            </div>
+            <div style="display:flex;align-items:flex-end;">
+              <button class="btn-action primary" style="width:100%;justify-content:center;padding:10px;" onclick="addBug()">Adicionar bug</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-header">
+          <div class="section-title">BUGS ABERTOS</div>
+          <button class="btn-action" onclick="toggleResolved()" id="toggle-resolved-btn">Ver resolvidos</button>
+        </div>
+        <div id="bugs-list"></div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /layout -->
+
+<!-- MODAL: conta details -->
+<div class="modal-bg hidden" id="modal-account">
+  <div class="modal">
+    <div class="modal-title" id="modal-acc-title"></div>
+    <div id="modal-acc-body"></div>
+    <div class="modal-actions">
+      <button class="btn-action danger" id="modal-acc-suspend" onclick="suspendAccount()">Suspender</button>
+      <button class="btn-action green" id="modal-acc-approve" onclick="approveAccount()">Aprovar</button>
+      <button class="btn-action" onclick="closeModal('modal-account')">Fechar</button>
+    </div>
   </div>
+</div>
 
-  <script type="module">
-    import { supabase } from './js/config.js';
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-    const ADMIN_EMAIL = 'brunaduarte2@gmail.com';
+  const SUPABASE_URL = 'https://gtgklxevhiysceumsgxy.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0Z2tseGV2aGl5c2NldW1zZ3h5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI0ODgwMzEsImV4cCI6MjA1ODA2NDAzMX0.8KE26eanEI-9sj6PKclqnFnlrMXUjMZqWAZHCMc-m1k';
+  const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
 
-    async function init() {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session || session.user.email !== ADMIN_EMAIL) {
-        document.getElementById('admin-loading').classList.add('hidden');
-        document.getElementById('admin-error').classList.add('visible');
-        return;
-      }
+  const ADMIN_EMAIL = 'brunaduarte2@gmail.com';
 
-      const [accountsRes, artistsRes, profilesRes, invitesRes, bandMembersRes] = await Promise.all([
-        supabase.from('accounts').select('*').order('created_at', { ascending: false }),
-        supabase.from('artists').select('*'),
-        supabase.from('profiles').select('*').order('created_at', { ascending: false }),
-        supabase.from('invitations').select('*').order('created_at', { ascending: false }),
-        supabase.from('band_members').select('*'),
-      ]);
+  let _accounts = [], _artists = [], _profiles = [], _invites = [], _bandMembers = [], _events = [], _bugs = [];
+  let _showResolved = false;
+  let _accFilter = 'all';
+  let _selectedAccountId = null;
 
-      const accounts   = accountsRes.data   || [];
-      const artists    = artistsRes.data    || [];
-      const profiles   = profilesRes.data   || [];
-      const invites    = invitesRes.data    || [];
-      const bandMembers= bandMembersRes.data || [];
-
-      // Stats
-      document.getElementById('stat-row').innerHTML = `
-        <div class="stat-card"><div class="stat-num">${accounts.length}</div><div class="stat-label">Contas</div></div>
-        <div class="stat-card"><div class="stat-num">${artists.length}</div><div class="stat-label">Bandas</div></div>
-        <div class="stat-card"><div class="stat-num">${profiles.length}</div><div class="stat-label">Utilizadores</div></div>
-        <div class="stat-card"><div class="stat-num" style="color:var(--coral)">${invites.filter(i=>i.status==='pending').length}</div><div class="stat-label">Convites pendentes</div></div>
-      `;
-
-      // Accounts table
-      const accountsBody = document.getElementById('accounts-body');
-      if (accounts.length === 0) {
-        accountsBody.innerHTML = '<tr class="empty-row"><td colspan="5">Sem contas criadas</td></tr>';
-      } else {
-        accountsBody.innerHTML = accounts.map(acc => {
-          const acctArtists = artists.filter(a => a.account_id === acc.id);
-          const acctMembers = bandMembers.filter(m => m.account_id === acc.id);
-          const uniqueMembers = [...new Set(acctMembers.map(m => m.user_id))].length;
-          const dotsHtml = acctArtists.map(a =>
-            `<div class="acct-band-dot" style="background:${a.color||'#2259e0'}" title="${escHtml(a.name)}"></div>`
-          ).join('');
-          const typeLabel = { agency: 'Agência', independent: 'Tour Manager', band: 'Banda' }[acc.type] || acc.type || '—';
-          const typePill  = { agency: 'pill-agency', independent: 'pill-independent', band: 'pill-band' }[acc.type] || '';
-          const date = acc.created_at ? new Date(acc.created_at).toLocaleDateString('pt-PT') : '—';
-          return `<tr>
-            <td style="font-weight:700">${escHtml(acc.name || '—')}</td>
-            <td><span class="pill ${typePill}">${typeLabel}</span></td>
-            <td><div class="acct-bands">${dotsHtml || '<span style="color:var(--muted);font-size:11px;">nenhuma</span>'}</div></td>
-            <td>${uniqueMembers}</td>
-            <td style="color:var(--muted)">${date}</td>
-          </tr>`;
-        }).join('');
-      }
-
-      // Users table
-      const usersBody = document.getElementById('users-body');
-      if (profiles.length === 0) {
-        usersBody.innerHTML = '<tr class="empty-row"><td colspan="5">Sem utilizadores</td></tr>';
-      } else {
-        usersBody.innerHTML = profiles.map(p => {
-          const acct = accounts.find(a => a.id === p.account_id);
-          const roleColor = p.role === 'superadmin' ? 'color:var(--coral)' : p.role === 'owner' ? 'color:#6a9bff' : '';
-          const date = p.created_at ? new Date(p.created_at).toLocaleDateString('pt-PT') : '—';
-          return `<tr>
-            <td style="font-weight:600">${escHtml(p.name || '—')}</td>
-            <td style="color:var(--muted)">${escHtml(p.email || '—')}</td>
-            <td style="${roleColor}">${escHtml(p.role || 'guest')}</td>
-            <td>${acct ? escHtml(acct.name) : '<span style="color:var(--muted)">—</span>'}</td>
-            <td style="color:var(--muted)">${date}</td>
-          </tr>`;
-        }).join('');
-      }
-
-      // Invites table
-      const invitesBody = document.getElementById('invites-body');
-      if (invites.length === 0) {
-        invitesBody.innerHTML = '<tr class="empty-row"><td colspan="5">Sem convites</td></tr>';
-      } else {
-        invitesBody.innerHTML = invites.map(inv => {
-          const artist = artists.find(a => a.id === inv.artist_id);
-          const statusPill = inv.status === 'pending' ? 'pill-pending' : 'pill-accepted';
-          const statusLabel = inv.status === 'pending' ? 'Pendente' : inv.status === 'accepted' ? 'Aceite' : inv.status || '—';
-          const date = inv.created_at ? new Date(inv.created_at).toLocaleDateString('pt-PT') : '—';
-          return `<tr>
-            <td>${escHtml(inv.email || '—')}</td>
-            <td>${artist ? escHtml(artist.name) : '<span style="color:var(--muted)">—</span>'}</td>
-            <td style="color:var(--muted)">${escHtml(inv.role || '—')}</td>
-            <td><span class="pill ${statusPill}">${statusLabel}</span></td>
-            <td style="color:var(--muted)">${date}</td>
-          </tr>`;
-        }).join('');
-      }
-
-      document.getElementById('admin-loading').classList.add('hidden');
-      document.getElementById('admin-content').classList.add('visible');
+  // ── Init ──
+  async function init() {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session || (session.user.email !== ADMIN_EMAIL)) {
+      // Check by role
+      if (session) {
+        const { data: p } = await sb.from('profiles').select('role').eq('id', session.user.id).single();
+        if (p?.role !== 'superadmin') { showDenied(); return; }
+      } else { showDenied(); return; }
     }
+    document.getElementById('sidebar-email').textContent = session.user.email;
+    await loadAll();
+    document.getElementById('admin-loading').classList.add('hidden');
+    document.getElementById('admin-layout').style.display = 'flex';
+  }
 
-    function escHtml(str) {
-      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-    }
+  function showDenied() {
+    document.getElementById('admin-loading').classList.add('hidden');
+    document.getElementById('admin-denied').classList.add('show');
+  }
 
-    window.doLogout = async function() {
-      await supabase.auth.signOut();
-      window.location.href = '/';
-    };
+  window.loadAll = async function() {
+    const [acR, arR, prR, inR, bmR, evR, bgR] = await Promise.all([
+      sb.from('accounts').select('*').order('created_at', { ascending: false }),
+      sb.from('artists').select('*').order('name'),
+      sb.from('profiles').select('*').order('created_at', { ascending: false }),
+      sb.from('invitations').select('*').order('created_at', { ascending: false }),
+      sb.from('band_members').select('*'),
+      sb.from('events').select('id, artist_id').order('date'),
+      sb.from('admin_bugs').select('*').order('created_at', { ascending: false }),
+    ]);
+    _accounts   = acR.data || [];
+    _artists    = arR.data || [];
+    _profiles   = prR.data || [];
+    _invites    = inR.data || [];
+    _bandMembers= bmR.data || [];
+    _events     = evR.data || [];
+    _bugs       = bgR.data || [];
 
-    init();
-  </script>
+    updateBadges();
+    renderOverview();
+    renderAccounts();
+    renderUsers();
+    renderBands();
+    renderInvites();
+    renderBugs();
+  };
+
+  function updateBadges() {
+    const pendingAcc = _accounts.filter(a => a.status === 'pending').length;
+    const pendingInv = _invites.filter(i => i.status === 'pending').length;
+    const openBugs   = _bugs.filter(b => b.status === 'open').length;
+    setBadge('badge-accounts', pendingAcc);
+    setBadge('badge-invites', pendingInv);
+    setBadge('badge-bugs', openBugs);
+  }
+  function setBadge(id, n) {
+    const el = document.getElementById(id);
+    if (n > 0) { el.textContent = n; el.style.display = ''; }
+    else { el.style.display = 'none'; }
+  }
+
+  // ── OVERVIEW ──
+  function renderOverview() {
+    document.getElementById('stat-grid').innerHTML = [
+      { num: _accounts.length,   label: 'Contas',        color: '' },
+      { num: _artists.length,    label: 'Bandas',         color: '' },
+      { num: _profiles.length,   label: 'Utilizadores',  color: '' },
+      { num: _invites.filter(i=>i.status==='pending').length, label: 'Convites pend.', color: 'color:var(--yellow)' },
+      { num: _bugs.filter(b=>b.status==='open').length,       label: 'Bugs abertos',   color: 'color:var(--coral)' },
+    ].map(s => `<div class="stat-card">
+      <div class="stat-num" style="${s.color}">${s.num}</div>
+      <div class="stat-label">${s.label}</div>
+    </div>`).join('');
+
+    document.getElementById('overview-accounts-body').innerHTML = _accounts.slice(0,10).map(acc => accountRow(acc, true)).join('') || emptyRow(6);
+  }
+
+  function accountRow(acc, compact) {
+    const acctArtists = _artists.filter(a => a.account_id === acc.id);
+    const acctMembers = [...new Set(_bandMembers.filter(m => m.account_id === acc.id).map(m => m.user_id))].length;
+    const owner = _profiles.find(p => p.id === acc.owner_id);
+    const typeMap = { agency: ['Agência','pill-blue'], independent: ['Tour Manager','pill-coral'], band: ['Banda','pill-green'] };
+    const [typeLabel, typePill] = typeMap[acc.type] || ['—','pill-grey'];
+    const statusMap = { active: ['Activa','pill-green'], pending: ['Pendente','pill-yellow'], suspended: ['Suspensa','pill-coral'] };
+    const [stLabel, stPill] = statusMap[acc.status || 'active'] || ['—','pill-grey'];
+    const date = acc.created_at ? new Date(acc.created_at).toLocaleDateString('pt-PT') : '—';
+    return `<tr onclick="openAccount('${acc.id}')">
+      <td class="td-bold">${esc(acc.name || '—')}</td>
+      <td><span class="pill ${typePill}">${typeLabel}</span></td>
+      ${compact ? '' : `<td class="td-muted">${esc(owner?.name || owner?.email || '—')}</td>`}
+      <td>${acctArtists.map(a=>`<span class="color-dot" style="background:${a.color||'#2259e0'}" title="${esc(a.name)}"></span>`).join(' ') || '<span class="td-muted">—</span>'}</td>
+      <td class="td-muted">${acctMembers || 0}</td>
+      <td><span class="pill ${stPill}">${stLabel}</span></td>
+      <td class="td-muted">${date}</td>
+      ${compact ? '' : '<td><button class="btn-action" onclick="event.stopPropagation();openAccount(\''+acc.id+'\')">Gerir →</button></td>'}
+    </tr>`;
+  }
+
+  // ── ACCOUNTS ──
+  function renderAccounts() {
+    const list = _accFilter === 'pending' ? _accounts.filter(a => a.status === 'pending') : _accounts;
+    document.getElementById('accounts-body').innerHTML = list.map(acc => accountRow(acc, false)).join('') || emptyRow(8);
+  }
+
+  window.filterAccounts = function(f) {
+    _accFilter = f;
+    document.getElementById('filter-pending').style.borderColor = f==='pending' ? 'var(--yellow)' : 'var(--border)';
+    document.getElementById('filter-pending').style.color = f==='pending' ? 'var(--yellow)' : 'var(--muted)';
+    renderAccounts();
+  };
+
+  window.openAccount = function(id) {
+    _selectedAccountId = id;
+    const acc = _accounts.find(a => a.id === id);
+    if (!acc) return;
+    const owner = _profiles.find(p => p.id === acc.owner_id);
+    const acctArtists = _artists.filter(a => a.account_id === id);
+    const acctMembers = _bandMembers.filter(m => m.account_id === id);
+    const uniqueUsers = [...new Set(acctMembers.map(m => m.user_id))];
+    const statusMap = { active: ['Activa','pill-green'], pending: ['Pendente','pill-yellow'], suspended: ['Suspensa','pill-coral'] };
+    const [stLabel, stPill] = statusMap[acc.status || 'active'] || ['Activa','pill-green'];
+
+    document.getElementById('modal-acc-title').textContent = acc.name || '—';
+    document.getElementById('modal-acc-body').innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <span class="pill ${stPill}">${stLabel}</span>
+          <span class="pill pill-grey">${{ agency:'Agência', independent:'Tour Manager', band:'Banda' }[acc.type]||acc.type||'—'}</span>
+        </div>
+        <div style="font-size:12px;color:var(--muted)">Owner: <span style="color:var(--text)">${esc(owner?.name||owner?.email||'—')}</span></div>
+        <div style="font-size:12px;color:var(--muted)">Criada: <span style="color:var(--text)">${acc.created_at ? new Date(acc.created_at).toLocaleDateString('pt-PT') : '—'}</span></div>
+        <div style="margin-top:4px;">
+          <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:8px;">Bandas (${acctArtists.length})</div>
+          ${acctArtists.map(a=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);">
+            <span class="color-dot" style="background:${a.color||'#2259e0'}"></span>
+            <span style="font-weight:600;font-size:13px;">${esc(a.name)}</span>
+            <span style="font-size:11px;color:var(--muted);margin-left:auto;">${a.genre||''}</span>
+          </div>`).join('') || '<div style="color:var(--muted);font-size:12px;">Sem bandas</div>'}
+        </div>
+        <div style="margin-top:4px;">
+          <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:8px;">Membros (${uniqueUsers.length})</div>
+          ${uniqueUsers.map(uid => {
+            const p = _profiles.find(x => x.id === uid);
+            return p ? `<div style="font-size:12px;padding:4px 0;color:var(--muted)">${esc(p.name||p.email||'—')} <span style="color:var(--muted2)">(${p.role||'guest'})</span></div>` : '';
+          }).join('') || '<div style="color:var(--muted);font-size:12px;">Sem membros</div>'}
+        </div>
+      </div>`;
+
+    const isPending   = acc.status === 'pending';
+    const isSuspended = acc.status === 'suspended';
+    document.getElementById('modal-acc-approve').style.display  = (isPending || isSuspended) ? '' : 'none';
+    document.getElementById('modal-acc-suspend').style.display  = isSuspended ? 'none' : '';
+    document.getElementById('modal-account').classList.remove('hidden');
+  };
+
+  window.closeModal = function(id) { document.getElementById(id).classList.add('hidden'); };
+  window.approveAccount = async function() {
+    if (!_selectedAccountId) return;
+    await sb.from('accounts').update({ status: 'active' }).eq('id', _selectedAccountId);
+    closeModal('modal-account');
+    await loadAll();
+  };
+  window.suspendAccount = async function() {
+    if (!_selectedAccountId) return;
+    await sb.from('accounts').update({ status: 'suspended' }).eq('id', _selectedAccountId);
+    closeModal('modal-account');
+    await loadAll();
+  };
+
+  // ── USERS ──
+  function renderUsers() {
+    const roles = ['superadmin','owner','tour_manager','manager','artist','guest'];
+    const roleLabels = { superadmin:'Super Admin', owner:'Owner', tour_manager:'Tour Manager', manager:'Manager', artist:'Artista / Crew', guest:'Guest' };
+    const rolePills  = { superadmin:'pill-coral', owner:'pill-blue', tour_manager:'pill-purple', manager:'pill-green', artist:'pill-yellow', guest:'pill-grey' };
+
+    let html = '';
+    roles.forEach(role => {
+      const users = _profiles.filter(p => (p.role || 'guest') === role);
+      if (users.length === 0) return;
+      html += `<div class="role-group">
+        <div class="role-group-label" style="display:flex;align-items:center;gap:8px;padding:12px 0 10px;">
+          <span class="pill ${rolePills[role]||'pill-grey'}">${roleLabels[role]||role}</span>
+          <span style="color:var(--muted2)">${users.length} utilizador${users.length!==1?'es':''}</span>
+        </div>
+        <div class="table-wrap" style="margin-bottom:0;">
+          <table>
+            <thead><tr><th>Nome</th><th>Email</th><th>Conta</th><th>Desde</th></tr></thead>
+            <tbody>${users.map(p => {
+              const acct = _accounts.find(a => a.id === p.account_id);
+              const date = p.created_at ? new Date(p.created_at).toLocaleDateString('pt-PT') : '—';
+              return `<tr>
+                <td class="td-bold">${esc(p.name||'—')}</td>
+                <td class="td-muted">${esc(p.email||'—')}</td>
+                <td>${acct ? `<span style="font-size:12px;">${esc(acct.name)}</span>` : '<span class="td-muted">—</span>'}</td>
+                <td class="td-muted">${date}</td>
+              </tr>`;
+            }).join('')}</tbody>
+          </table>
+        </div>
+      </div>`;
+    });
+
+    // Users with unrecognised roles
+    const other = _profiles.filter(p => !roles.includes(p.role || 'guest'));
+    if (other.length) html += `<div class="role-group"><div class="role-group-label">Outros (${other.length})</div></div>`;
+
+    document.getElementById('users-by-role').innerHTML = html || '<div class="empty">Sem utilizadores.</div>';
+  }
+
+  // ── BANDS ──
+  function renderBands() {
+    document.getElementById('bands-body').innerHTML = _artists.map(a => {
+      const acct  = _accounts.find(x => x.id === a.account_id);
+      const evCnt = _events.filter(e => e.artist_id === a.id).length;
+      const mbrCnt= [...new Set(_bandMembers.filter(m => m.artist_id === a.id).map(m => m.user_id))].length;
+      return `<tr>
+        <td class="td-bold">${esc(a.name||'—')}</td>
+        <td class="td-muted">${acct ? esc(acct.name) : '—'}</td>
+        <td class="td-muted">${esc(a.genre||'—')}</td>
+        <td class="td-muted">${mbrCnt}</td>
+        <td class="td-muted">${evCnt}</td>
+        <td><span class="color-dot" style="background:${a.color||'#2259e0'};width:16px;height:16px;"></span></td>
+      </tr>`;
+    }).join('') || emptyRow(6);
+  }
+
+  // ── INVITES ──
+  function renderInvites() {
+    const statusMap = { pending:['Pendente','pill-yellow'], accepted:['Aceite','pill-green'], expired:['Expirado','pill-grey'] };
+    document.getElementById('invites-body').innerHTML = _invites.map(inv => {
+      const artist = _artists.find(a => a.id === inv.artist_id);
+      const sender = _profiles.find(p => p.id === inv.invited_by);
+      const [stLabel, stPill] = statusMap[inv.status] || ['—','pill-grey'];
+      const date = inv.created_at ? new Date(inv.created_at).toLocaleDateString('pt-PT') : '—';
+      const resendBtn = inv.status === 'pending'
+        ? `<button class="btn-action" onclick="event.stopPropagation();resendInvite('${inv.id}')">Reenviar</button>` : '';
+      return `<tr>
+        <td class="td-bold">${esc(inv.email||'—')}</td>
+        <td>${artist ? `<span style="display:flex;align-items:center;gap:6px;"><span class="color-dot" style="background:${artist.color||'#2259e0'}"></span>${esc(artist.name)}</span>` : '<span class="td-muted">—</span>'}</td>
+        <td class="td-muted">${esc(inv.role||'—')}</td>
+        <td class="td-muted">${esc(sender?.name||sender?.email||'—')}</td>
+        <td><span class="pill ${stPill}">${stLabel}</span></td>
+        <td class="td-muted">${date}</td>
+        <td>${resendBtn}</td>
+      </tr>`;
+    }).join('') || emptyRow(7);
+  }
+
+  window.resendInvite = async function(id) {
+    // placeholder — would trigger email resend edge function
+    alert('Reenvio de convite: não implementado ainda.');
+  };
+
+  // ── BUGS ──
+  function renderBugs() {
+    const list = _showResolved ? _bugs : _bugs.filter(b => b.status === 'open');
+    document.getElementById('bugs-list').innerHTML = list.length ? list.map(b => {
+      const date = b.created_at ? new Date(b.created_at).toLocaleDateString('pt-PT') : '—';
+      const resolved = b.status === 'resolved';
+      const resolveBtn = !resolved
+        ? `<button class="btn-action green" onclick="resolveBug('${b.id}')">Resolver ✓</button>` : '';
+      return `<div class="bug-card ${resolved ? 'resolved' : ''}">
+        <div class="bug-priority ${b.priority||'medium'}"></div>
+        <div class="bug-body">
+          <div class="bug-title">${esc(b.title||'—')}</div>
+          ${b.description ? `<div class="bug-desc">${esc(b.description)}</div>` : ''}
+          <div class="bug-meta">
+            <span>${date}</span>
+            ${b.reported_by ? `<span>por ${esc(b.reported_by)}</span>` : ''}
+            ${resolved ? '<span style="color:var(--green)">✓ Resolvido</span>' : ''}
+          </div>
+        </div>
+        ${resolveBtn}
+      </div>`;
+    }).join('') : '<div class="empty">Sem bugs ' + (_showResolved ? '' : 'abertos') + '.</div>';
+  }
+
+  window.toggleResolved = function() {
+    _showResolved = !_showResolved;
+    document.getElementById('toggle-resolved-btn').textContent = _showResolved ? 'Ocultar resolvidos' : 'Ver resolvidos';
+    renderBugs();
+  };
+
+  window.addBug = async function() {
+    const title = document.getElementById('bug-title').value.trim();
+    const desc  = document.getElementById('bug-desc').value.trim();
+    const prio  = document.getElementById('bug-priority').value;
+    if (!title) { alert('Título obrigatório.'); return; }
+    await sb.from('admin_bugs').insert({ title, description: desc || null, priority: prio, reported_by: ADMIN_EMAIL, status: 'open' });
+    document.getElementById('bug-title').value = '';
+    document.getElementById('bug-desc').value = '';
+    await loadAll();
+  };
+
+  window.resolveBug = async function(id) {
+    await sb.from('admin_bugs').update({ status: 'resolved', resolved_at: new Date().toISOString() }).eq('id', id);
+    await loadAll();
+  };
+
+  // ── NAVIGATION ──
+  const panelMeta = {
+    overview: { title: 'OVERVIEW',       sub: 'Central de comando' },
+    accounts: { title: 'CONTAS',         sub: 'Gerir e aprovar contas' },
+    users:    { title: 'UTILIZADORES',   sub: 'Por role e permissão' },
+    bands:    { title: 'BANDAS',         sub: 'Todos os artistas registados' },
+    invites:  { title: 'CONVITES',       sub: 'Gestão de convites enviados' },
+    bugs:     { title: 'BUGS',           sub: 'Tracker de problemas' },
+  };
+
+  window.showPanel = function(id) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('panel-' + id).classList.add('active');
+    event.currentTarget.classList.add('active');
+    const meta = panelMeta[id] || {};
+    document.getElementById('topbar-title').textContent = meta.title || id.toUpperCase();
+    document.getElementById('topbar-sub').textContent = meta.sub || '';
+  };
+
+  // ── LOGOUT ──
+  window.doLogout = async function() {
+    await sb.auth.signOut();
+    window.location.href = '/';
+  };
+
+  // ── UTILS ──
+  function esc(str) {
+    return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function emptyRow(cols) {
+    return `<tr><td colspan="${cols}" style="text-align:center;padding:28px;color:var(--muted);">Sem dados</td></tr>`;
+  }
+
+  // Close modal on bg click
+  document.getElementById('modal-account').addEventListener('click', function(e) {
+    if (e.target === this) closeModal('modal-account');
+  });
+
+  init();
+</script>
 </body>
 </html>
