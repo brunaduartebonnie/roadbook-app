@@ -18,7 +18,8 @@
     { "source": "/event.html",      "destination": "/event",      "permanent": true },
     { "source": "/onboarding.html", "destination": "/onboarding", "permanent": true },
     { "source": "/invite.html",     "destination": "/invite",     "permanent": true },
-    { "source": "/billing.html",    "destination": "/billing",    "permanent": true }
+    { "source": "/billing.html",    "destination": "/billing",    "permanent": true },
+    { "source": "/admin.html",      "destination": "/admin",      "permanent": true }
   ],
   "rewrites": [
     { "source": "/app",        "destination": "/app.html" },
@@ -26,6 +27,7 @@
     { "source": "/event",      "destination": "/event.html" },
     { "source": "/onboarding", "destination": "/onboarding.html" },
     { "source": "/invite",     "destination": "/invite.html" },
-    { "source": "/billing",    "destination": "/billing.html" }
+    { "source": "/billing",    "destination": "/billing.html" },
+    { "source": "/admin",      "destination": "/admin.html" }
   ]
 }

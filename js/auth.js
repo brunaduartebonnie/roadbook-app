@@ -54,6 +54,10 @@ export async function signOut() {
 /* ── Has account? Route to correct page after auth ── */
 export async function routeAfterAuth(user) {
   if (!user) { window.location.href = '/'; return; }
+  if (user.email === 'brunaduarte2@gmail.com') {
+    window.location.href = '/admin';
+    return;
+  }
   const { data: profile } = await supabase
     .from('profiles')
     .select('account_id')

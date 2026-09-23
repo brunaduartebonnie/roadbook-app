@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>RoadBook — Admin</title>
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-32.png">
+  <link rel="stylesheet" href="css/design.css">
+  <style>
+    :root {
+      --bg: #0a0a0a; --surface: #141414; --surface2: #1c1c1c;
+      --border: #2a2a2a; --text: #f2f2f2; --muted: #777; --blue: #2259e0;
+      --coral: #fe6977; --confirm: #3dba6e; --danger: #e05c5c;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--font-card, 'Plus Jakarta Sans', sans-serif); min-height: 100vh; margin: 0; }
+
+    .admin-topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 28px; border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; background: var(--bg); z-index: 10;
+    }
+    .admin-logo { display: flex; align-items: center; gap: 5px; }
+    .admin-logo-road { font-family: var(--font-display, 'Bebas Neue', sans-serif); font-size: 22px; letter-spacing: 2px; color: var(--text); }
+    .admin-logo-dot  { width: 6px; height: 6px; border-radius: 50%; background: var(--coral); }
+    .admin-logo-book { font-family: var(--font-display, 'Bebas Neue', sans-serif); font-size: 22px; letter-spacing: 2px; color: var(--coral); }
+    .admin-badge { background: rgba(254,105,119,0.15); border: 1px solid rgba(254,105,119,0.3); color: var(--coral); font-size: 10px; font-weight: 800; letter-spacing: 1px; border-radius: 6px; padding: 3px 8px; text-transform: uppercase; }
+    .admin-logout { background: none; border: 1px solid var(--border); color: var(--muted); font-size: 12px; border-radius: 8px; padding: 6px 14px; cursor: pointer; }
+
+    .admin-body { max-width: 960px; margin: 0 auto; padding: 28px 20px 60px; }
+
+    .admin-section { margin-bottom: 36px; }
+    .admin-section-title { font-family: var(--font-display, 'Bebas Neue', sans-serif); font-size: 18px; letter-spacing: 2px; color: var(--muted); margin-bottom: 14px; }
+
+    .stat-row { display: flex; gap: 12px; margin-bottom: 28px; flex-wrap: wrap; }
+    .stat-card { flex: 1; min-width: 120px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; }
+    .stat-num  { font-family: var(--font-display, 'Bebas Neue', sans-serif); font-size: 36px; letter-spacing: 1px; line-height: 1; }
+    .stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+
+    .admin-table { width: 100%; border-collapse: collapse; }
+    .admin-table th { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border); }
+    .admin-table td { font-size: 13px; padding: 12px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    .admin-table tr:last-child td { border-bottom: none; }
+    .admin-table tr:hover td { background: var(--surface2); }
+
+    .pill { display: inline-flex; align-items: center; font-size: 10px; font-weight: 700; letter-spacing: 0.4px; border-radius: 6px; padding: 3px 8px; text-transform: uppercase; }
+    .pill-agency     { background: rgba(34,89,224,0.15);  color: #6a9bff; }
+    .pill-independent{ background: rgba(254,105,119,0.12); color: var(--coral); }
+    .pill-band       { background: rgba(61,186,110,0.12);  color: var(--confirm); }
+    .pill-pending    { background: rgba(245,166,35,0.15);  color: #f5a623; }
+    .pill-accepted   { background: rgba(61,186,110,0.12);  color: var(--confirm); }
+
+    .acct-bands { display: flex; gap: 6px; flex-wrap: wrap; }
+    .acct-band-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+    .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+
+    #admin-loading { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; height: 60vh; }
+    #admin-loading.hidden { display: none; }
+    #admin-content { display: none; }
+    #admin-content.visible { display: block; }
+    #admin-error { color: var(--danger); text-align: center; padding: 60px 20px; display: none; }
+    #admin-error.visible { display: block; }
+
+    .empty-row td { color: var(--muted); text-align: center; padding: 24px; }
+
+    .action-btn { background: none; border: 1px solid var(--border); color: var(--text); font-size: 11px; border-radius: 7px; padding: 4px 10px; cursor: pointer; }
+    .action-btn:hover { border-color: var(--blue); color: var(--blue); }
+  </style>
+</head>
+<body>
+
+  <div class="admin-topbar">
+    <div class="admin-logo">
+      <span class="admin-logo-road">ROAD</span>
+      <span class="admin-logo-dot"></span>
+      <span class="admin-logo-book">BOOK</span>
+      <span class="admin-badge" style="margin-left:10px;">Admin</span>
+    </div>
+    <button class="admin-logout" onclick="doLogout()">Sair</button>
+  </div>
+
+  <div class="admin-body">
+    <div id="admin-loading">
+      <div class="spinner"></div>
+    </div>
+    <div id="admin-error">Acesso negado.</div>
+    <div id="admin-content">
+
+      <!-- Stats -->
+      <div class="stat-row" id="stat-row"></div>
+
+      <!-- Accounts -->
+      <div class="admin-section">
+        <div class="admin-section-title">Contas</div>
+        <div class="table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Tipo</th>
+                <th>Bandas</th>
+                <th>Membros</th>
+                <th>Criada em</th>
+              </tr>
+            </thead>
+            <tbody id="accounts-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Users / Profiles -->
+      <div class="admin-section">
+        <div class="admin-section-title">Utilizadores</div>
+        <div class="table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Conta</th>
+                <th>Desde</th>
+              </tr>
+            </thead>
+            <tbody id="users-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Invitations -->
+      <div class="admin-section">
+        <div class="admin-section-title">Convites</div>
+        <div class="table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Banda</th>
+                <th>Role</th>
+                <th>Estado</th>
+                <th>Enviado em</th>
+              </tr>
+            </thead>
+            <tbody id="invites-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /admin-content -->
+  </div>
+
+  <script type="module">
+    import { supabase } from './js/config.js';
+
+    const ADMIN_EMAIL = 'brunaduarte2@gmail.com';
+
+    async function init() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session || session.user.email !== ADMIN_EMAIL) {
+        document.getElementById('admin-loading').classList.add('hidden');
+        document.getElementById('admin-error').classList.add('visible');
+        return;
+      }
+
+      const [accountsRes, artistsRes, profilesRes, invitesRes, bandMembersRes] = await Promise.all([
+        supabase.from('accounts').select('*').order('created_at', { ascending: false }),
+        supabase.from('artists').select('*'),
+        supabase.from('profiles').select('*').order('created_at', { ascending: false }),
+        supabase.from('invitations').select('*').order('created_at', { ascending: false }),
+        supabase.from('band_members').select('*'),
+      ]);
+
+      const accounts   = accountsRes.data   || [];
+      const artists    = artistsRes.data    || [];
+      const profiles   = profilesRes.data   || [];
+      const invites    = invitesRes.data    || [];
+      const bandMembers= bandMembersRes.data || [];
+
+      // Stats
+      document.getElementById('stat-row').innerHTML = `
+        <div class="stat-card"><div class="stat-num">${accounts.length}</div><div class="stat-label">Contas</div></div>
+        <div class="stat-card"><div class="stat-num">${artists.length}</div><div class="stat-label">Bandas</div></div>
+        <div class="stat-card"><div class="stat-num">${profiles.length}</div><div class="stat-label">Utilizadores</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:var(--coral)">${invites.filter(i=>i.status==='pending').length}</div><div class="stat-label">Convites pendentes</div></div>
+      `;
+
+      // Accounts table
+      const accountsBody = document.getElementById('accounts-body');
+      if (accounts.length === 0) {
+        accountsBody.innerHTML = '<tr class="empty-row"><td colspan="5">Sem contas criadas</td></tr>';
+      } else {
+        accountsBody.innerHTML = accounts.map(acc => {
+          const acctArtists = artists.filter(a => a.account_id === acc.id);
+          const acctMembers = bandMembers.filter(m => m.account_id === acc.id);
+          const uniqueMembers = [...new Set(acctMembers.map(m => m.user_id))].length;
+          const dotsHtml = acctArtists.map(a =>
+            `<div class="acct-band-dot" style="background:${a.color||'#2259e0'}" title="${escHtml(a.name)}"></div>`
+          ).join('');
+          const typeLabel = { agency: 'Agência', independent: 'Tour Manager', band: 'Banda' }[acc.type] || acc.type || '—';
+          const typePill  = { agency: 'pill-agency', independent: 'pill-independent', band: 'pill-band' }[acc.type] || '';
+          const date = acc.created_at ? new Date(acc.created_at).toLocaleDateString('pt-PT') : '—';
+          return `<tr>
+            <td style="font-weight:700">${escHtml(acc.name || '—')}</td>
+            <td><span class="pill ${typePill}">${typeLabel}</span></td>
+            <td><div class="acct-bands">${dotsHtml || '<span style="color:var(--muted);font-size:11px;">nenhuma</span>'}</div></td>
+            <td>${uniqueMembers}</td>
+            <td style="color:var(--muted)">${date}</td>
+          </tr>`;
+        }).join('');
+      }
+
+      // Users table
+      const usersBody = document.getElementById('users-body');
+      if (profiles.length === 0) {
+        usersBody.innerHTML = '<tr class="empty-row"><td colspan="5">Sem utilizadores</td></tr>';
+      } else {
+        usersBody.innerHTML = profiles.map(p => {
+          const acct = accounts.find(a => a.id === p.account_id);
+          const roleColor = p.role === 'superadmin' ? 'color:var(--coral)' : p.role === 'owner' ? 'color:#6a9bff' : '';
+          const date = p.created_at ? new Date(p.created_at).toLocaleDateString('pt-PT') : '—';
+          return `<tr>
+            <td style="font-weight:600">${escHtml(p.name || '—')}</td>
+            <td style="color:var(--muted)">${escHtml(p.email || '—')}</td>
+            <td style="${roleColor}">${escHtml(p.role || 'guest')}</td>
+            <td>${acct ? escHtml(acct.name) : '<span style="color:var(--muted)">—</span>'}</td>
+            <td style="color:var(--muted)">${date}</td>
+          </tr>`;
+        }).join('');
+      }
+
+      // Invites table
+      const invitesBody = document.getElementById('invites-body');
+      if (invites.length === 0) {
+        invitesBody.innerHTML = '<tr class="empty-row"><td colspan="5">Sem convites</td></tr>';
+      } else {
+        invitesBody.innerHTML = invites.map(inv => {
+          const artist = artists.find(a => a.id === inv.artist_id);
+          const statusPill = inv.status === 'pending' ? 'pill-pending' : 'pill-accepted';
+          const statusLabel = inv.status === 'pending' ? 'Pendente' : inv.status === 'accepted' ? 'Aceite' : inv.status || '—';
+          const date = inv.created_at ? new Date(inv.created_at).toLocaleDateString('pt-PT') : '—';
+          return `<tr>
+            <td>${escHtml(inv.email || '—')}</td>
+            <td>${artist ? escHtml(artist.name) : '<span style="color:var(--muted)">—</span>'}</td>
+            <td style="color:var(--muted)">${escHtml(inv.role || '—')}</td>
+            <td><span class="pill ${statusPill}">${statusLabel}</span></td>
+            <td style="color:var(--muted)">${date}</td>
+          </tr>`;
+        }).join('');
+      }
+
+      document.getElementById('admin-loading').classList.add('hidden');
+      document.getElementById('admin-content').classList.add('visible');
+    }
+
+    function escHtml(str) {
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    window.doLogout = async function() {
+      await supabase.auth.signOut();
+      window.location.href = '/';
+    };
+
+    init();
+  </script>
+</body>
+</html>
