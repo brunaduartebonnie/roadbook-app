@@ -2239,6 +2239,7 @@ const CHAT_EVENT_MAP = {dc:'22222222-0000-0000-0000-000000000004', sc:'22222222-
 var artists = [], events = [], eventDays = [], timelineItems = [], comitivaItems = [], setlistItems = [], guestlistItems = [], expenseItems = [], chatMessages = [];
 var _currentEventDay = null; // ISO date string of the selected day in a multi-day event, null = show all
 var activeFilter = 'all';
+var _initialBandId = null;
 var currentEventId = null;
 var currentChatEventId = null;
 var previousScreen = 'screen-dashboard';
@@ -3014,7 +3015,13 @@ function showScreen(id) {
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
   if (id === 'screen-dashboard') {
-    activeFilter = 'all';
+    if (_initialBandId) {
+      var _ba = artists.find(function(a){ return a.id === _initialBandId; });
+      activeFilter = (_ba && _ba.code) ? _ba.code : 'all';
+      _initialBandId = null;
+    } else {
+      activeFilter = 'all';
+    }
     buildArtistsRow();
     buildCalendar();
     buildNextDateCard();
@@ -17668,6 +17675,10 @@ document.addEventListener('DOMContentLoaded', async function() {
     localStorage.setItem('rb_access_token', _urlToken);
     window.history.replaceState({}, '', window.location.pathname); // clean URL
   }
+
+  // Capture ?band=ID from onboarding redirect to auto-select band on first dashboard open
+  _initialBandId = new URLSearchParams(window.location.search).get('band') || null;
+  if (_initialBandId) window.history.replaceState({}, '', window.location.pathname);
 
   // Hide welcome (which is active in HTML as fallback) and show splash while checking
   document.getElementById('screen-welcome').classList.remove('active');

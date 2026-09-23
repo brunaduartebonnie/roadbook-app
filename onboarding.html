@@ -441,7 +441,7 @@ PRONTO!</div>
         // 4. Link profile to account
         await supabase.from('profiles').update({ account_id: acct.id }).eq('id', currentUser.id);
 
-        window.location.href = '/app';
+        window.location.href = '/app?band=' + band.id;
       } catch (err) {
         setBtnLoading(false);
         showError(t('common.error') + ' ' + (err.message || err));
