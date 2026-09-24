@@ -625,19 +625,27 @@
   // ── BUGS ──
   function renderBugs() {
     const list = _showResolved ? _bugs : _bugs.filter(b => b.status === 'open');
+    // Sort: user_reports first, then admin bugs
+    list.sort((a,b) => (a.type==='user_report'?0:1) - (b.type==='user_report'?0:1) || new Date(b.created_at)-new Date(a.created_at));
     document.getElementById('bugs-list').innerHTML = list.length ? list.map(b => {
-      const date = b.created_at ? new Date(b.created_at).toLocaleDateString('pt-PT') : '—';
+      const date = b.created_at ? new Date(b.created_at).toLocaleDateString('pt-PT') + ' ' + new Date(b.created_at).toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'}) : '—';
       const resolved = b.status === 'resolved';
+      const isUserReport = b.type === 'user_report';
       const resolveBtn = !resolved
         ? `<button class="btn-action green" onclick="resolveBug('${b.id}')">Resolver ✓</button>` : '';
       return `<div class="bug-card ${resolved ? 'resolved' : ''}">
         <div class="bug-priority ${b.priority||'medium'}"></div>
         <div class="bug-body">
-          <div class="bug-title">${esc(b.title||'—')}</div>
-          ${b.description ? `<div class="bug-desc">${esc(b.description)}</div>` : ''}
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            ${isUserReport ? '<span class="pill pill-coral" style="font-size:9px;">UTILIZADOR</span>' : '<span class="pill pill-grey" style="font-size:9px;">ADMIN</span>'}
+            <div class="bug-title" style="margin:0;">${esc(b.title||'—')}</div>
+          </div>
+          ${b.description && b.description !== b.title ? `<div class="bug-desc">${esc(b.description)}</div>` : ''}
           <div class="bug-meta">
-            <span>${date}</span>
-            ${b.reported_by ? `<span>por ${esc(b.reported_by)}</span>` : ''}
+            <span>📅 ${date}</span>
+            ${b.screen ? `<span>📍 ${esc(b.screen)}</span>` : ''}
+            ${b.user_name ? `<span>👤 ${esc(b.user_name)}</span>` : ''}
+            ${b.user_email ? `<span style="color:var(--muted2)">${esc(b.user_email)}</span>` : ''}
             ${resolved ? '<span style="color:var(--green)">✓ Resolvido</span>' : ''}
           </div>
         </div>

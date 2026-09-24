@@ -18001,6 +18001,179 @@ if ('serviceWorker' in navigator) {
 
 </div>
 
+<!-- ════════════ BUG REPORT ════════════ -->
+<style>
+  #bug-report-btn {
+    position: fixed; bottom: calc(72px + env(safe-area-inset-bottom) + 12px); right: 16px;
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--muted); font-size: 16px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; z-index: 90; transition: opacity 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  body.pre-login #bug-report-btn { display: none; }
+  #bug-report-btn:active { opacity: 0.7; }
+
+  #bug-report-sheet {
+    position: fixed; inset: 0; z-index: 200;
+    display: flex; align-items: flex-end; justify-content: center;
+    background: rgba(0,0,0,0.6);
+    opacity: 0; pointer-events: none; transition: opacity 0.2s;
+  }
+  #bug-report-sheet.open { opacity: 1; pointer-events: all; }
+  .bug-sheet-inner {
+    background: var(--surface); border-radius: 20px 20px 0 0;
+    padding: 20px 20px calc(20px + env(safe-area-inset-bottom));
+    width: 100%; max-width: 520px;
+    transform: translateY(40px); transition: transform 0.25s ease;
+  }
+  #bug-report-sheet.open .bug-sheet-inner { transform: translateY(0); }
+  .bug-sheet-handle { width: 36px; height: 4px; border-radius: 2px; background: var(--border); margin: 0 auto 18px; }
+  .bug-sheet-title { font-family: var(--font-display); font-size: 20px; letter-spacing: 1.5px; margin-bottom: 4px; }
+  .bug-sheet-sub { font-size: 12px; color: var(--muted); margin-bottom: 18px; }
+  .bug-sheet-context { background: var(--surface2); border-radius: 10px; padding: 10px 14px; font-size: 12px; color: var(--muted); margin-bottom: 14px; line-height: 1.6; }
+  .bug-sheet-context b { color: var(--text); }
+  .bug-sheet-textarea {
+    width: 100%; background: var(--surface2); border: 1.5px solid var(--border);
+    border-radius: 12px; padding: 12px 14px; color: var(--text);
+    font-size: 14px; font-family: var(--font-body, sans-serif);
+    outline: none; resize: none; min-height: 100px; margin-bottom: 12px;
+    transition: border-color 0.15s;
+  }
+  .bug-sheet-textarea:focus { border-color: var(--blue); }
+  .bug-sheet-actions { display: flex; gap: 10px; }
+  .bug-sheet-cancel { flex: 1; background: none; border: 1px solid var(--border); color: var(--muted); border-radius: 12px; padding: 12px; font-size: 14px; cursor: pointer; font-family: var(--font-body, sans-serif); }
+  .bug-sheet-submit { flex: 2; background: var(--coral); border: none; color: #fff; border-radius: 12px; padding: 12px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: var(--font-body, sans-serif); transition: opacity 0.15s; }
+  .bug-sheet-submit:active { opacity: 0.8; }
+  .bug-sheet-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+  .bug-sent { display: none; flex-direction: column; align-items: center; gap: 10px; padding: 20px 0; text-align: center; }
+  .bug-sent.show { display: flex; }
+  .bug-sent-icon { width: 48px; height: 48px; border-radius: 50%; background: rgba(61,186,110,0.15); display: flex; align-items: center; justify-content: center; }
+</style>
+
+<button id="bug-report-btn" onclick="openBugReport()" title="Reportar problema">?</button>
+
+<div id="bug-report-sheet" onclick="closeBugReport(event)">
+  <div class="bug-sheet-inner">
+    <div class="bug-sheet-handle"></div>
+
+    <!-- Form state -->
+    <div id="bug-form-state">
+      <div class="bug-sheet-title">REPORTAR PROBLEMA</div>
+      <div class="bug-sheet-sub">Descreve o que aconteceu — vou ver e resolver.</div>
+      <div class="bug-sheet-context" id="bug-context-info"></div>
+      <textarea class="bug-sheet-textarea" id="bug-user-desc" placeholder="Ex: Tentei adicionar um hotel e a app ficou bloqueada..."></textarea>
+      <div class="bug-sheet-actions">
+        <button class="bug-sheet-cancel" onclick="closeBugReport()">Cancelar</button>
+        <button class="bug-sheet-submit" id="bug-submit-btn" onclick="submitBugReport()">Enviar report</button>
+      </div>
+    </div>
+
+    <!-- Success state -->
+    <div class="bug-sent" id="bug-sent-state">
+      <div class="bug-sent-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3dba6e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div style="font-family:var(--font-display);font-size:20px;letter-spacing:1.5px;">OBRIGADO!</div>
+      <div style="font-size:13px;color:var(--muted);">O teu report foi enviado. Vou analisar e resolver.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  function getCurrentScreenName() {
+    var screens = {
+      'screen-dashboard': 'Agenda / Dashboard',
+      'screen-profile': 'Perfil',
+      'screen-bands': 'Bandas',
+      'screen-chat': 'Chat',
+      'screen-destaque': 'Destaque',
+      'screen-backoffice': 'Backoffice',
+      'screen-event': 'Evento',
+      'screen-band': 'Banda',
+    };
+    for (var id in screens) {
+      var el = document.getElementById(id);
+      if (el && el.classList.contains('active')) return screens[id];
+    }
+    return 'Desconhecido';
+  }
+
+  window.openBugReport = function() {
+    var screen = getCurrentScreenName();
+    var email  = (typeof currentProfile !== 'undefined' && currentProfile) ? (currentProfile.email || '') : '';
+    var name   = (typeof currentProfile !== 'undefined' && currentProfile) ? (currentProfile.name  || '') : '';
+
+    document.getElementById('bug-context-info').innerHTML =
+      '<b>Ecrã:</b> ' + screen +
+      (name  ? ' &nbsp;·&nbsp; <b>Utilizador:</b> ' + name  : '') +
+      (email ? ' &nbsp;·&nbsp; ' + email : '');
+
+    document.getElementById('bug-user-desc').value = '';
+    document.getElementById('bug-form-state').style.display = '';
+    document.getElementById('bug-sent-state').classList.remove('show');
+    document.getElementById('bug-submit-btn').disabled = false;
+    document.getElementById('bug-submit-btn').textContent = 'Enviar report';
+    document.getElementById('bug-report-sheet').classList.add('open');
+    setTimeout(function(){ document.getElementById('bug-user-desc').focus(); }, 300);
+  };
+
+  window.closeBugReport = function(e) {
+    if (e && e.target !== document.getElementById('bug-report-sheet')) return;
+    document.getElementById('bug-report-sheet').classList.remove('open');
+  };
+
+  window.submitBugReport = async function() {
+    var desc = document.getElementById('bug-user-desc').value.trim();
+    if (!desc) { document.getElementById('bug-user-desc').focus(); return; }
+
+    var btn = document.getElementById('bug-submit-btn');
+    btn.disabled = true; btn.textContent = 'A enviar...';
+
+    var screen     = getCurrentScreenName();
+    var userEmail  = (typeof currentProfile !== 'undefined' && currentProfile) ? (currentProfile.email || '') : '';
+    var userName   = (typeof currentProfile !== 'undefined' && currentProfile) ? (currentProfile.name  || '') : '';
+    var acctName   = '';
+    if (typeof currentProfile !== 'undefined' && currentProfile && currentProfile.account_id) {
+      // Try to get account name from loaded data
+      if (typeof artists !== 'undefined' && artists.length) {
+        var a = artists[0];
+        // account name not stored locally, just skip
+      }
+    }
+
+    try {
+      var { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+      var _sb = createClient(
+        'https://gtgklxevhiysceumsgxy.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0Z2tseGV2aGl5c2NldW1zZ3h5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI0ODgwMzEsImV4cCI6MjA1ODA2NDAzMX0.8KE26eanEI-9sj6PKclqnFnlrMXUjMZqWAZHCMc-m1k'
+      );
+      await _sb.from('admin_bugs').insert({
+        title: desc.length > 80 ? desc.substring(0, 80) + '…' : desc,
+        description: desc,
+        screen: screen,
+        user_email: userEmail,
+        user_name: userName,
+        reported_by: userEmail || userName || 'Utilizador',
+        status: 'open',
+        priority: 'medium',
+        type: 'user_report',
+      });
+
+      document.getElementById('bug-form-state').style.display = 'none';
+      document.getElementById('bug-sent-state').classList.add('show');
+      setTimeout(function(){ document.getElementById('bug-report-sheet').classList.remove('open'); }, 2500);
+    } catch(err) {
+      btn.disabled = false;
+      btn.textContent = 'Enviar report';
+      alert('Erro ao enviar. Tenta de novo.');
+    }
+  };
+})();
+</script>
+
 </body>
 </html>
   
